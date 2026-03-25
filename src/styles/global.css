@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro',
+    Menlo, Consolas, monospace;
+  --font-mono: 'Geist Mono', ui-monospace, 'Cascadia Code', 'Source Code Pro',
+    Menlo, Consolas, monospace;
+}
+
+::selection {
+  background: rgba(56, 189, 248, 0.25);
+}

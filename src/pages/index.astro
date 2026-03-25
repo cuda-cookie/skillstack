@@ -1,11 +1,412 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import '../styles/global.css';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const technologies = [
+  'React', 'Next.js', 'Vue', 'Nuxt', 'Astro', 'Svelte',
+  'Angular', 'Tailwind CSS', 'shadcn/ui', 'TypeScript',
+  'Playwright', 'Supabase', 'Neon', 'Expo', 'React Native',
+  'Remotion', 'Better Auth', 'Turborepo', 'Vite', 'Azure',
+  'Vercel AI SDK', 'Vercel', 'ElevenLabs', 'Cloudflare',
+  'AWS', 'SwiftUI',
+];
 ---
 
 <Layout>
-	<Welcome />
+  <main class="max-w-2xl mx-auto px-6 py-16 text-sm leading-relaxed">
+
+    <!-- ASCII Logo (animated reveal) -->
+    <pre id="ascii-logo" class="text-[10px] sm:text-xs leading-none mb-8 h-[6lh]" aria-hidden="true"></pre>
+
+    <p class="text-zinc-400 mb-2">Auto-detect your tech stack and install the best</p>
+    <p class="text-zinc-400 mb-8">AI agent skills for your project.</p>
+
+    <!-- Install command -->
+    <div class="mb-16">
+      <p class="text-zinc-600 mb-2 uppercase tracking-widest text-xs">Try it now</p>
+      <div class="flex items-center gap-3 bg-zinc-900/80 border border-zinc-800 px-4 py-3 w-fit cursor-pointer group" id="install-cmd">
+        <span class="text-zinc-600">$</span>
+        <span class="text-zinc-100">npx autoskills</span>
+        <button
+          class="ml-6 text-zinc-600 hover:text-zinc-300 transition-colors"
+          aria-label="Copy command"
+          id="copy-btn"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Terminal output (animated) -->
+    <div class="mb-16">
+      <p class="text-zinc-600 mb-2 uppercase tracking-widest text-xs">Output</p>
+      <div class="border border-zinc-800 bg-zinc-950" id="terminal">
+        <div class="flex items-center gap-1.5 px-3 py-2 border-b border-zinc-800">
+          <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+          <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
+        </div>
+        <div class="p-4 text-xs leading-relaxed overflow-x-auto min-h-[420px]" id="term-body"></div>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="text-zinc-700 mb-16">{'─'.repeat(60)}</div>
+
+    <!-- How it works -->
+    <div class="mb-16">
+      <p class="text-zinc-600 mb-6 uppercase tracking-widest text-xs">How it works</p>
+      <div class="space-y-4">
+        <div class="flex gap-4">
+          <span class="text-zinc-600 shrink-0">[1]</span>
+          <div>
+            <p class="text-zinc-200">Run the command</p>
+            <p class="text-zinc-500">Execute <span class="text-zinc-400">npx autoskills</span> in your project root.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-zinc-600 shrink-0">[2]</span>
+          <div>
+            <p class="text-zinc-200">Auto-detect</p>
+            <p class="text-zinc-500">Scans your package.json and config files to detect your stack.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-zinc-600 shrink-0">[3]</span>
+          <div>
+            <p class="text-zinc-200">Install skills</p>
+            <p class="text-zinc-500">The best AI agent skills are installed automatically via <span class="text-zinc-400">skills.sh</span>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="text-zinc-700 mb-16">{'─'.repeat(60)}</div>
+
+    <!-- Supported Technologies -->
+    <div class="mb-16">
+      <p class="text-zinc-600 mb-2 uppercase tracking-widest text-xs">Supported technologies</p>
+      <p class="text-zinc-600 mb-6">Detected from dependencies and config files.</p>
+      <div class="flex flex-wrap gap-x-1 gap-y-0 text-zinc-500">
+        {technologies.map((tech, i) => (
+          <span>
+            <span class="text-zinc-300 hover:text-zinc-100 transition-colors">{tech}</span>{i < technologies.length - 1 && <span class="text-zinc-700"> · </span>}
+          </span>
+        ))}
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="text-zinc-700 mb-16">{'─'.repeat(60)}</div>
+
+    <!-- Options -->
+    <div class="mb-16">
+      <p class="text-zinc-600 mb-6 uppercase tracking-widest text-xs">Options</p>
+      <div class="space-y-2">
+        <div class="flex gap-2">
+          <span class="text-cyan-400 w-32 shrink-0">-y, --yes</span>
+          <span class="text-zinc-500">Skip confirmation prompt</span>
+        </div>
+        <div class="flex gap-2">
+          <span class="text-cyan-400 w-32 shrink-0">--dry-run</span>
+          <span class="text-zinc-500">Show repos without installing</span>
+        </div>
+        <div class="flex gap-2">
+          <span class="text-cyan-400 w-32 shrink-0">-h, --help</span>
+          <span class="text-zinc-500">Show help message</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Separator -->
+    <div class="text-zinc-700 mb-16">{'─'.repeat(60)}</div>
+
+    <!-- Footer -->
+    <footer class="text-zinc-600 space-y-1">
+      <p>Made by <a href="https://midu.dev" target="_blank" rel="noopener" class="text-zinc-400 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 transition-colors">midudev</a></p>
+      <p class="flex gap-4">
+        <a href="https://skills.sh" target="_blank" rel="noopener" class="text-zinc-500 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 hover:text-zinc-300 transition-colors">skills.sh</a>
+        <a href="https://github.com/midudev/autoskills.sh" target="_blank" rel="noopener" class="text-zinc-500 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 hover:text-zinc-300 transition-colors">github</a>
+      </p>
+    </footer>
+
+  </main>
+
+  <script>
+    // ── Copy button ───────────────────────────────────────────
+    document.getElementById('copy-btn')?.addEventListener('click', async () => {
+      await navigator.clipboard.writeText('npx autoskills')
+      const btn = document.getElementById('copy-btn')
+      if (btn) {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+        setTimeout(() => {
+          btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`
+        }, 2000)
+      }
+    })
+
+    document.getElementById('install-cmd')?.addEventListener('click', async (e) => {
+      if ((e.target as HTMLElement).closest('#copy-btn')) return
+      await navigator.clipboard.writeText('npx autoskills')
+    })
+
+    // ── ASCII logo animation ─────────────────────────────────
+    {
+      const LOGO_LINES = [
+        ' █████╗ ██╗   ██╗████████╗ ██████╗ ███████╗██╗  ██╗██╗██╗     ██╗     ███████╗',
+        '██╔══██╗██║   ██║╚══██╔══╝██╔═══██╗██╔════╝██║ ██╔╝██║██║     ██║     ██╔════╝',
+        '███████║██║   ██║   ██║   ██║   ██║███████╗█████╔╝ ██║██║     ██║     ███████╗',
+        '██╔══██║██║   ██║   ██║   ██║   ██║╚════██║██╔═██╗ ██║██║     ██║     ╚════██║',
+        '██║  ██║╚██████╔╝   ██║   ╚██████╔╝███████║██║  ██╗██║███████╗███████╗███████║',
+        '╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝ ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚══════╝',
+      ]
+
+      const START_COLOR = '#3f3f46'  // zinc-700 (gris clarito)
+      const END_COLOR = '#f4f4f5'    // zinc-100 (blanco)
+
+      const logo = document.getElementById('ascii-logo')!
+      const cols = Math.max(...LOGO_LINES.map(l => l.length))
+      const rows = LOGO_LINES.length
+
+      // Build grid
+      const grid: HTMLSpanElement[][] = []
+      for (const line of LOGO_LINES) {
+        const row: HTMLSpanElement[] = []
+        const lineEl = document.createElement('div')
+        lineEl.style.height = '1lh'
+        for (let c = 0; c < cols; c++) {
+          const ch = line[c] ?? ' '
+          const span = document.createElement('span')
+          span.textContent = ch
+          span.style.color = START_COLOR
+          lineEl.appendChild(span)
+          row.push(span)
+        }
+        logo.appendChild(lineEl)
+        grid.push(row)
+      }
+
+      // Diagonal sweep: top-left to bottom-right, gray → white
+      const maxDist = cols + rows
+      const SPEED = 0.9
+      let frame = 0
+      const totalFrames = Math.ceil((maxDist + 10) / SPEED)
+
+      function animate() {
+        const waveFront = frame * SPEED
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < grid[r].length; c++) {
+            const dist = c + r * 3
+            const progress = Math.max(0, Math.min(1, (waveFront - dist) / 10))
+
+            const gray = Math.round(63 + progress * (244 - 63))
+            grid[r][c].style.color = `rgb(${gray},${gray},${gray})`
+          }
+        }
+
+        frame++
+        if (frame <= totalFrames) {
+          requestAnimationFrame(animate)
+        } else {
+          for (let r = 0; r < rows; r++)
+            for (let c = 0; c < grid[r].length; c++)
+              grid[r][c].style.color = END_COLOR
+        }
+      }
+
+      requestAnimationFrame(animate)
+    }
+
+    // ── Terminal animation ────────────────────────────────────
+    const C = {
+      z1: 'color:#e4e4e7',  // zinc-200
+      z4: 'color:#a1a1aa',  // zinc-400
+      z5: 'color:#71717a',  // zinc-500
+      z6: 'color:#52525b',  // zinc-600
+      z7: 'color:#3f3f46',  // zinc-700
+      cy: 'color:#22d3ee',  // cyan-400
+      c3: 'color:#67e8f9',  // cyan-300
+      em: 'color:#34d399',  // emerald-400
+      wh: 'color:#f4f4f5',  // zinc-100
+      gn: 'color:#22c55e',  // green-500
+    }
+
+    function s(style: string, text: string) {
+      return `<span style="${style}">${text}</span>`
+    }
+
+    type Step = { html: string; delay: number; class?: string } | { type: 'char'; text: string; target: string; charDelay: number; delay: number }
+
+    const BANNER = [
+      s(C.cy, '   ╔═══════════════════════════════════════╗'),
+      s(C.cy, '   ║') + s(C.wh, '   autoskills                        ') + s(C.cy, '║'),
+      s(C.cy, '   ║') + s(C.z5, '   Auto-install the best AI skills   ') + s(C.cy, '║'),
+      s(C.cy, '   ║') + s(C.z5, '   for your project                  ') + s(C.cy, '║'),
+      s(C.cy, '   ╚═══════════════════════════════════════╝'),
+    ]
+
+    const TECHS = [
+      s(C.em, '     ✔ Next.js'),
+      s(C.em, '     ✔ React'),
+      s(C.em, '     ✔ Tailwind CSS'),
+      s(C.em, '     ✔ TypeScript'),
+      s(C.em, '     ✔ Supabase'),
+      s(C.z6, '     ● Astro ') + s(C.z7, '(no skills yet)'),
+    ]
+
+    const REPOS = [
+      s(C.z6, '    1.') + ' ' + s(C.c3, 'vercel-labs/agent-skills') + '   ' + s(C.z7, '← React'),
+      s(C.z6, '    2.') + ' ' + s(C.c3, 'vercel-labs/next-skills') + '    ' + s(C.z7, '← Next.js'),
+      s(C.z6, '    3.') + ' ' + s(C.c3, 'wshobson/agents') + '            ' + s(C.z7, '← Tailwind CSS, TypeScript'),
+      s(C.z6, '    4.') + ' ' + s(C.c3, 'supabase/agent-skills') + '      ' + s(C.z7, '← Supabase'),
+      s(C.z6, '    5.') + ' ' + s(C.c3, 'anthropics/skills') + '          ' + s(C.z7, '← Frontend'),
+    ]
+
+    const INSTALLS = [
+      { repo: 'vercel-labs/agent-skills', count: 6 },
+      { repo: 'vercel-labs/next-skills', count: 3 },
+      { repo: 'wshobson/agents', count: 5 },
+      { repo: 'supabase/agent-skills', count: 1 },
+      { repo: 'anthropics/skills', count: 18 },
+    ]
+
+    function buildSteps(): Step[] {
+      const steps: Step[] = []
+      const d = (delay: number, html: string, cls?: string) =>
+        steps.push({ html, delay, class: cls })
+
+      // Typing the command
+      steps.push({ type: 'char', text: '$ npx autoskills', target: 'cmd-line', charDelay: 60, delay: 400 })
+
+      // Banner
+      d(500, '')
+      for (const line of BANNER) d(30, line)
+
+      // Detected
+      d(400, '')
+      d(0, s(C.wh, '   Detected technologies:'))
+      d(200, '')
+      for (const t of TECHS) d(120, t)
+
+      // Repos header
+      d(400, '')
+      d(0, s(C.wh, '   Skill repos to install ') + s(C.z6, '(5)') + s(C.wh, ':'))
+      d(200, '')
+      for (const r of REPOS) d(100, r)
+
+      // Prompt + answer
+      d(400, '   Install skills from ' + s(C.wh, '5') + ' repos? ' + s(C.z6, '[Y/n]') + ' <span id="term-cursor" class="animate-pulse" style="' + C.z4 + '">▋</span>')
+      d(800, '__ANSWER_Y__')
+
+      // Installation
+      d(300, '')
+      for (const inst of INSTALLS) {
+        d(0, '__SPINNER__' + inst.repo)
+        d(600 + Math.random() * 800, '__DONE__' + JSON.stringify(inst))
+      }
+
+      // Summary
+      d(400, '')
+      d(0, s(C.gn, '   ✔ Done! 33 skills installed from 5 repos.'))
+      d(0, s(C.z6, '   Powered by https://skills.sh'))
+
+      return steps
+    }
+
+    async function sleep(ms: number) {
+      return new Promise(r => setTimeout(r, ms))
+    }
+
+    async function runAnimation() {
+      const body = document.getElementById('term-body')!
+      body.innerHTML = ''
+
+      const steps = buildSteps()
+
+      for (const step of steps) {
+        if ('type' in step && step.type === 'char') {
+          const line = document.createElement('p')
+          line.id = step.target
+          body.appendChild(line)
+          const cursor = '<span class="animate-pulse" style="' + C.z4 + '">▋</span>'
+          for (let i = 0; i < step.text.length; i++) {
+            const ch = step.text[i]
+            const sofar = step.text.slice(0, i + 1)
+            const colored = sofar.startsWith('$ ')
+              ? '<span style="' + C.z6 + '">$ </span><span style="' + C.z4 + '">' + sofar.slice(2) + '</span>'
+              : sofar
+            line.innerHTML = colored + cursor
+            await sleep(step.charDelay)
+          }
+          line.innerHTML = '<span style="' + C.z6 + '">$ </span><span style="' + C.z4 + '">npx autoskills</span>'
+          await sleep(step.delay)
+          continue
+        }
+
+        const { html, delay } = step as { html: string; delay: number; class?: string }
+
+        // Special: answer Y
+        if (html === '__ANSWER_Y__') {
+          const cursor = document.getElementById('term-cursor')
+          if (cursor) cursor.outerHTML = s(C.wh, 'Y')
+          await sleep(delay)
+          continue
+        }
+
+        // Special: spinner
+        if (html.startsWith('__SPINNER__')) {
+          const repo = html.replace('__SPINNER__', '')
+          const line = document.createElement('p')
+          line.id = 'install-line'
+          line.innerHTML = s(C.z6, '   ◌ ') + s(C.z5, repo + '...')
+          body.appendChild(line)
+          body.parentElement!.scrollTop = body.parentElement!.scrollHeight
+          await sleep(delay)
+          continue
+        }
+
+        // Special: done
+        if (html.startsWith('__DONE__')) {
+          const inst = JSON.parse(html.replace('__DONE__', ''))
+          const line = document.getElementById('install-line')
+          if (line) {
+            const label = inst.count === 1 ? 'skill' : 'skills'
+            line.innerHTML = s(C.em, '   ✔ ' + inst.repo) + ' ' + s(C.z6, '(' + inst.count + ' ' + label + ')')
+            line.removeAttribute('id')
+          }
+          body.parentElement!.scrollTop = body.parentElement!.scrollHeight
+          await sleep(delay)
+          continue
+        }
+
+        const line = document.createElement('p')
+        line.innerHTML = html
+        if ((step as any).class) line.className = (step as any).class
+        body.appendChild(line)
+        body.parentElement!.scrollTop = body.parentElement!.scrollHeight
+        if (delay > 0) await sleep(delay)
+      }
+    }
+
+    // Start when terminal scrolls into view, then loop
+    let running = false
+    const observer = new IntersectionObserver(async (entries) => {
+      if (entries[0].isIntersecting && !running) {
+        running = true
+        observer.disconnect()
+        while (true) {
+          await runAnimation()
+          await sleep(4000)
+        }
+      }
+    }, { threshold: 0.3 })
+
+    const terminal = document.getElementById('terminal')
+    if (terminal) observer.observe(terminal)
+  </script>
 </Layout>
