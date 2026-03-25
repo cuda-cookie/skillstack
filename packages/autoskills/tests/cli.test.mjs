@@ -67,7 +67,7 @@ describe('CLI', () => {
       assert.ok(output.includes('No supported technologies'))
     })
 
-    it('shows repos grouped by source technology', () => {
+    it('shows skills grouped by source technology', () => {
       writeFileSync(
         join(tmpDir, 'package.json'),
         JSON.stringify({
@@ -78,7 +78,8 @@ describe('CLI', () => {
 
       const output = run(['--dry-run'], tmpDir)
 
-      assert.ok(output.includes('wshobson/agents'))
+      assert.ok(output.includes('tailwind-design-system'))
+      assert.ok(output.includes('typescript-advanced-types'))
       assert.ok(output.includes('Tailwind CSS'))
       assert.ok(output.includes('TypeScript'))
     })

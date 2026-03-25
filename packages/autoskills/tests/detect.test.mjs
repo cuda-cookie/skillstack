@@ -7,6 +7,7 @@ import {
   getAllPackageNames,
   readPackageJson,
   detectTechnologies,
+  detectCombos,
 } from '../lib.mjs'
 
 // ── getAllPackageNames ─────────────────────────────────────────
@@ -226,5 +227,61 @@ describe('detectTechnologies', () => {
     )
     const { isFrontend } = detectTechnologies(tmpDir)
     assert.strictEqual(isFrontend, false)
+  })
+
+  it('detects combos when multiple technologies match', () => {
+    writeFileSync(
+      join(tmpDir, 'package.json'),
+      JSON.stringify({ dependencies: { expo: '^52.0.0', tailwindcss: '^4.0.0' } }),
+    )
+    const { combos } = detectTechnologies(tmpDir)
+    const comboIds = combos.map((c) => c.id)
+    assert.ok(comboIds.includes('expo-tailwind'))
+  })
+
+  it('returns no combos when only one technology of a pair is present', () => {
+    writeFileSync(
+      join(tmpDir, 'package.json'),
+      JSON.stringify({ dependencies: { expo: '^52.0.0' } }),
+    )
+    const { combos } = detectTechnologies(tmpDir)
+    const comboIds = combos.map((c) => c.id)
+    assert.ok(!comboIds.includes('expo-tailwind'))
+  })
+})
+
+// ── detectCombos ──────────────────────────────────────────────
+
+describe('detectCombos', () => {
+  it('returns empty array when no combos match', () => {
+    const combos = detectCombos(['react'])
+    assert.strictEqual(combos.length, 0)
+  })
+
+  it('returns empty array for empty input', () => {
+    const combos = detectCombos([])
+    assert.strictEqual(combos.length, 0)
+  })
+
+  it('detects expo + tailwind combo', () => {
+    const combos = detectCombos(['expo', 'tailwind'])
+    assert.ok(combos.some((c) => c.id === 'expo-tailwind'))
+  })
+
+  it('detects combo even with extra technologies', () => {
+    const combos = detectCombos(['react', 'expo', 'tailwind', 'typescript'])
+    assert.ok(combos.some((c) => c.id === 'expo-tailwind'))
+  })
+
+  it('detects multiple combos simultaneously', () => {
+    const combos = detectCombos(['nextjs', 'supabase', 'playwright'])
+    const ids = combos.map((c) => c.id)
+    assert.ok(ids.includes('nextjs-supabase'))
+    assert.ok(ids.includes('nextjs-playwright'))
+  })
+
+  it('does not detect combo when only one requirement is met', () => {
+    const combos = detectCombos(['nextjs'])
+    assert.ok(!combos.some((c) => c.id === 'nextjs-supabase'))
   })
 })

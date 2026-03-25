@@ -1,109 +1,177 @@
 import { describe, it } from 'node:test'
 import assert from 'node:assert/strict'
-import { collectRepos } from '../lib.mjs'
+import { collectSkills } from '../lib.mjs'
 
-describe('collectRepos', () => {
+describe('collectSkills', () => {
   it('returns empty array when no technologies detected', () => {
-    const repos = collectRepos([], false)
-    assert.deepStrictEqual(repos, [])
+    const skills = collectSkills([], false)
+    assert.deepStrictEqual(skills, [])
   })
 
-  it('collects repos from a single technology', () => {
+  it('collects skills from a single technology', () => {
     const detected = [
-      { id: 'react', name: 'React', repos: ['vercel-labs/agent-skills'] },
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 1)
-    assert.strictEqual(repos[0].repo, 'vercel-labs/agent-skills')
-    assert.deepStrictEqual(repos[0].sources, ['React'])
+    assert.strictEqual(skills.length, 1)
+    assert.strictEqual(skills[0].skill, 'vercel-labs/agent-skills/vercel-react-best-practices')
+    assert.deepStrictEqual(skills[0].sources, ['React'])
   })
 
-  it('deduplicates repos from different technologies', () => {
+  it('deduplicates skills shared across technologies', () => {
     const detected = [
-      { id: 'tailwind', name: 'Tailwind CSS', repos: ['wshobson/agents'] },
-      { id: 'typescript', name: 'TypeScript', repos: ['wshobson/agents'] },
+      { id: 'a', name: 'Tech A', skills: ['shared/repo/my-skill'] },
+      { id: 'b', name: 'Tech B', skills: ['shared/repo/my-skill'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 1)
-    assert.strictEqual(repos[0].repo, 'wshobson/agents')
-    assert.deepStrictEqual(repos[0].sources, ['Tailwind CSS', 'TypeScript'])
+    assert.strictEqual(skills.length, 1)
+    assert.strictEqual(skills[0].skill, 'shared/repo/my-skill')
+    assert.deepStrictEqual(skills[0].sources, ['Tech A', 'Tech B'])
   })
 
-  it('keeps unique repos from different technologies', () => {
+  it('keeps unique skills from different technologies', () => {
     const detected = [
-      { id: 'react', name: 'React', repos: ['vercel-labs/agent-skills'] },
-      { id: 'nextjs', name: 'Next.js', repos: ['vercel-labs/next-skills'] },
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
+      { id: 'nextjs', name: 'Next.js', skills: ['vercel-labs/next-skills/next-best-practices'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 2)
-    assert.strictEqual(repos[0].repo, 'vercel-labs/agent-skills')
-    assert.strictEqual(repos[1].repo, 'vercel-labs/next-skills')
+    assert.strictEqual(skills.length, 2)
+    assert.strictEqual(skills[0].skill, 'vercel-labs/agent-skills/vercel-react-best-practices')
+    assert.strictEqual(skills[1].skill, 'vercel-labs/next-skills/next-best-practices')
   })
 
-  it('handles technologies with multiple repos', () => {
+  it('handles technologies with multiple skills', () => {
     const detected = [
-      { id: 'vue', name: 'Vue', repos: ['hyf0/vue-skills', 'antfu/skills'] },
+      { id: 'vue', name: 'Vue', skills: ['hyf0/vue-skills/vue-best-practices', 'antfu/skills/vue'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 2)
-    assert.strictEqual(repos[0].repo, 'hyf0/vue-skills')
-    assert.strictEqual(repos[1].repo, 'antfu/skills')
+    assert.strictEqual(skills.length, 2)
+    assert.strictEqual(skills[0].skill, 'hyf0/vue-skills/vue-best-practices')
+    assert.strictEqual(skills[1].skill, 'antfu/skills/vue')
   })
 
-  it('adds frontend bonus repos for frontend projects', () => {
+  it('adds frontend bonus skills for frontend projects', () => {
     const detected = [
-      { id: 'react', name: 'React', repos: ['vercel-labs/agent-skills'] },
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
     ]
-    const repos = collectRepos(detected, true)
+    const skills = collectSkills(detected, true)
 
-    assert.ok(repos.some((r) => r.repo === 'anthropics/skills'))
-    const bonus = repos.find((r) => r.repo === 'anthropics/skills')
+    assert.ok(skills.some((s) => s.skill === 'anthropics/skills/frontend-design'))
+    const bonus = skills.find((s) => s.skill === 'anthropics/skills/frontend-design')
     assert.deepStrictEqual(bonus.sources, ['Frontend'])
   })
 
-  it('does not add frontend bonus repos for non-frontend projects', () => {
+  it('does not add frontend bonus skills for non-frontend projects', () => {
     const detected = [
-      { id: 'typescript', name: 'TypeScript', repos: ['wshobson/agents'] },
+      { id: 'typescript', name: 'TypeScript', skills: ['wshobson/agents/typescript-advanced-types'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.ok(!repos.some((r) => r.repo === 'anthropics/skills'))
+    assert.ok(!skills.some((s) => s.skill === 'anthropics/skills/frontend-design'))
   })
 
-  it('does not duplicate frontend bonus repos if already present', () => {
+  it('does not duplicate frontend bonus skills if already present', () => {
     const detected = [
-      { id: 'custom', name: 'Custom', repos: ['anthropics/skills'] },
+      { id: 'custom', name: 'Custom', skills: ['anthropics/skills/frontend-design'] },
     ]
-    const repos = collectRepos(detected, true)
+    const skills = collectSkills(detected, true)
 
-    const matches = repos.filter((r) => r.repo === 'anthropics/skills')
+    const matches = skills.filter((s) => s.skill === 'anthropics/skills/frontend-design')
     assert.strictEqual(matches.length, 1)
   })
 
-  it('skips technologies with empty repos', () => {
+  it('skips technologies with empty skills', () => {
     const detected = [
-      { id: 'svelte', name: 'Svelte', repos: [] },
-      { id: 'react', name: 'React', repos: ['vercel-labs/agent-skills'] },
+      { id: 'svelte', name: 'Svelte', skills: [] },
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 1)
-    assert.strictEqual(repos[0].repo, 'vercel-labs/agent-skills')
+    assert.strictEqual(skills.length, 1)
+    assert.strictEqual(skills[0].skill, 'vercel-labs/agent-skills/vercel-react-best-practices')
   })
 
-  it('accumulates three sources for the same repo', () => {
+  it('accumulates three sources for the same skill', () => {
     const detected = [
-      { id: 'a', name: 'Tech A', repos: ['shared/repo'] },
-      { id: 'b', name: 'Tech B', repos: ['shared/repo'] },
-      { id: 'c', name: 'Tech C', repos: ['shared/repo'] },
+      { id: 'a', name: 'Tech A', skills: ['shared/repo/shared-skill'] },
+      { id: 'b', name: 'Tech B', skills: ['shared/repo/shared-skill'] },
+      { id: 'c', name: 'Tech C', skills: ['shared/repo/shared-skill'] },
     ]
-    const repos = collectRepos(detected, false)
+    const skills = collectSkills(detected, false)
 
-    assert.strictEqual(repos.length, 1)
-    assert.deepStrictEqual(repos[0].sources, ['Tech A', 'Tech B', 'Tech C'])
+    assert.strictEqual(skills.length, 1)
+    assert.deepStrictEqual(skills[0].sources, ['Tech A', 'Tech B', 'Tech C'])
+  })
+
+  it('adds skills from combo skills', () => {
+    const detected = [
+      { id: 'expo', name: 'Expo', skills: ['expo/skills/building-native-ui'] },
+    ]
+    const combos = [
+      { id: 'expo-tailwind', name: 'Expo + Tailwind CSS', skills: ['expo/skills/expo-tailwind-setup'] },
+    ]
+    const skills = collectSkills(detected, false, combos)
+
+    assert.strictEqual(skills.length, 2)
+    assert.ok(skills.some((s) => s.skill === 'expo/skills/building-native-ui'))
+    assert.ok(skills.some((s) => s.skill === 'expo/skills/expo-tailwind-setup'))
+  })
+
+  it('deduplicates combo skills already present from techs', () => {
+    const detected = [
+      { id: 'expo', name: 'Expo', skills: ['expo/skills/expo-tailwind-setup'] },
+    ]
+    const combos = [
+      { id: 'expo-tailwind', name: 'Expo + Tailwind CSS', skills: ['expo/skills/expo-tailwind-setup'] },
+    ]
+    const skills = collectSkills(detected, false, combos)
+
+    assert.strictEqual(skills.length, 1)
+    assert.strictEqual(skills[0].skill, 'expo/skills/expo-tailwind-setup')
+    assert.ok(skills[0].sources.includes('Expo'))
+    assert.ok(skills[0].sources.includes('Expo + Tailwind CSS'))
+  })
+
+  it('adds new skills from combos not present in individual techs', () => {
+    const detected = [
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
+    ]
+    const combos = [
+      { id: 'react-custom', name: 'React + Custom', skills: ['custom/repo/combo-skill'] },
+    ]
+    const skills = collectSkills(detected, false, combos)
+
+    assert.strictEqual(skills.length, 2)
+    assert.ok(skills.some((s) => s.skill === 'custom/repo/combo-skill'))
+    const combo = skills.find((s) => s.skill === 'custom/repo/combo-skill')
+    assert.deepStrictEqual(combo.sources, ['React + Custom'])
+  })
+
+  it('works with combos and frontend bonus skills together', () => {
+    const detected = [
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
+    ]
+    const combos = [
+      { id: 'test-combo', name: 'Test Combo', skills: ['combo/repo/combo-skill'] },
+    ]
+    const skills = collectSkills(detected, true, combos)
+
+    assert.ok(skills.some((s) => s.skill === 'vercel-labs/agent-skills/vercel-react-best-practices'))
+    assert.ok(skills.some((s) => s.skill === 'combo/repo/combo-skill'))
+    assert.ok(skills.some((s) => s.skill === 'anthropics/skills/frontend-design'))
+  })
+
+  it('handles empty combos array', () => {
+    const detected = [
+      { id: 'react', name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices'] },
+    ]
+    const skills = collectSkills(detected, false, [])
+
+    assert.strictEqual(skills.length, 1)
+    assert.strictEqual(skills[0].skill, 'vercel-labs/agent-skills/vercel-react-best-practices')
   })
 })
