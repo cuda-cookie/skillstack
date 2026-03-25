@@ -2,14 +2,69 @@
 import Layout from '../layouts/Layout.astro';
 import '../styles/global.css';
 
-const technologies = [
-  'React', 'Next.js', 'Vue', 'Nuxt', 'Astro', 'Svelte',
-  'Angular', 'Tailwind CSS', 'shadcn/ui', 'TypeScript',
-  'Playwright', 'Supabase', 'Neon', 'Expo', 'React Native',
-  'Remotion', 'Better Auth', 'Turborepo', 'Vite', 'Azure',
-  'Vercel AI SDK', 'Vercel', 'ElevenLabs', 'Cloudflare',
-  'AWS', 'SwiftUI',
+interface SvglEntry {
+  title: string;
+  route: string | { light: string; dark: string };
+}
+
+const SVGL_OVERRIDES: Record<string, string> = {
+  'React Native': 'React',
+  'Vercel AI SDK': 'Vercel',
+  'Azure': 'Microsoft Azure',
+  'SwiftUI': 'Swift',
+  'AWS': 'Amazon Web Services',
+};
+
+const skillsMap = [
+  { name: 'React', repos: ['vercel-labs/agent-skills'] },
+  { name: 'Next.js', repos: ['vercel-labs/next-skills'] },
+  { name: 'Vue', repos: ['hyf0/vue-skills', 'antfu/skills'] },
+  { name: 'Nuxt', repos: ['hyf0/vue-skills'] },
+  { name: 'Astro', repos: [] },
+  { name: 'Svelte', repos: [] },
+  { name: 'Angular', repos: [] },
+  { name: 'Tailwind CSS', repos: ['wshobson/agents'] },
+  { name: 'shadcn/ui', repos: ['shadcn/ui'] },
+  { name: 'TypeScript', repos: ['wshobson/agents'] },
+  { name: 'Playwright', repos: ['currents-dev/playwright-best-practices-skill'] },
+  { name: 'Supabase', repos: ['supabase/agent-skills'] },
+  { name: 'Neon', repos: ['neondatabase/agent-skills'] },
+  { name: 'Expo', repos: ['expo/skills'] },
+  { name: 'React Native', repos: ['sleekdotdesign/agent-skills'] },
+  { name: 'Remotion', repos: ['remotion-dev/skills'] },
+  { name: 'Better Auth', repos: ['better-auth/skills'] },
+  { name: 'Turborepo', repos: ['vercel/turborepo'] },
+  { name: 'Vite', repos: ['antfu/skills'] },
+  { name: 'Azure', repos: ['microsoft/github-copilot-for-azure', 'microsoft/azure-skills'] },
+  { name: 'Vercel AI SDK', repos: ['vercel/ai'] },
+  { name: 'Vercel', repos: ['vercel-labs/agent-skills'] },
+  { name: 'ElevenLabs', repos: ['inferen-sh/skills'] },
+  { name: 'Cloudflare', repos: [] },
+  { name: 'AWS', repos: [] },
+  { name: 'SwiftUI', repos: ['avdlee/swiftui-agent-skill'] },
 ];
+
+const technologies = skillsMap.map((s) => s.name);
+
+let svgMap: Record<string, string> = {};
+try {
+  const res = await fetch('https://api.svgl.app?limit=2000');
+  const data: SvglEntry[] = await res.json();
+
+  for (const tech of technologies) {
+    const searchTitle = SVGL_OVERRIDES[tech] || tech;
+    const match = data.find(
+      (s) => s.title.toLowerCase() === searchTitle.toLowerCase()
+    );
+    if (match) {
+      svgMap[tech] = typeof match.route === 'string'
+        ? match.route
+        : (match.route.dark || match.route.light);
+    }
+  }
+} catch {
+  // Build continues without logos if API is down
+}
 ---
 
 <Layout>
@@ -87,15 +142,47 @@ const technologies = [
     <!-- Separator -->
     <div class="text-zinc-700 mb-16">{'─'.repeat(60)}</div>
 
-    <!-- Supported Technologies -->
+    <!-- Supported Technologies & Skills -->
     <div class="mb-16">
-      <p class="text-zinc-600 mb-2 uppercase tracking-widest text-xs">Supported technologies</p>
-      <p class="text-zinc-600 mb-6">Detected from dependencies and config files.</p>
-      <div class="flex flex-wrap gap-x-1 gap-y-0 text-zinc-500">
-        {technologies.map((tech, i) => (
-          <span>
-            <span class="text-zinc-300 hover:text-zinc-100 transition-colors">{tech}</span>{i < technologies.length - 1 && <span class="text-zinc-700"> · </span>}
-          </span>
+      <p class="text-zinc-600 mb-2 uppercase tracking-widest text-xs">Supported technologies & skill repos</p>
+      <p class="text-zinc-600 mb-6">Each technology auto-installs these repos from <a href="https://skills.sh" target="_blank" rel="noopener" class="text-zinc-400 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 transition-colors">skills.sh</a>.</p>
+      <div class="space-y-0">
+        {skillsMap.map((tech) => (
+          <div class="group border-b border-zinc-800/40 py-2.5 first:border-t">
+            <div class="flex items-start gap-3">
+              <div class="flex items-center gap-2 w-36 shrink-0 pt-px">
+                {svgMap[tech.name] ? (
+                  <img
+                    src={svgMap[tech.name]}
+                    alt=""
+                    width="14"
+                    height="14"
+                    class="w-3.5 h-3.5 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span class="w-3.5 h-3.5 shrink-0"></span>
+                )}
+                <span class="text-zinc-300 group-hover:text-zinc-100 transition-colors text-xs">{tech.name}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                {tech.repos.length > 0 ? (
+                  <div class="flex flex-wrap gap-x-3 gap-y-0.5">
+                    {tech.repos.map((repo) => (
+                      <a
+                        href={`https://github.com/${repo}`}
+                        target="_blank"
+                        rel="noopener"
+                        class="text-xs text-zinc-600 hover:text-cyan-400 transition-colors"
+                      >{repo}</a>
+                    ))}
+                  </div>
+                ) : (
+                  <span class="text-xs text-zinc-700 italic">no skills yet</span>
+                )}
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     </div>
