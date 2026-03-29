@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 
-import { resolve } from 'node:path'
+import { resolve, dirname, join } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
 import { detectTechnologies, collectSkills, parseSkillPath } from './lib.mjs'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const VERSION = JSON.parse(readFileSync(join(__dirname, 'package.json'), 'utf-8')).version
 
 // ── ANSI Colors ───────────────────────────────────────────────
 
@@ -16,6 +21,7 @@ const green = useColor ? (s) => `\x1b[32m${s}\x1b[39m` : (s) => s
 const yellow = useColor ? (s) => `\x1b[33m${s}\x1b[39m` : (s) => s
 const cyan = useColor ? (s) => `\x1b[36m${s}\x1b[39m` : (s) => s
 const red = useColor ? (s) => `\x1b[31m${s}\x1b[39m` : (s) => s
+const magenta = useColor ? (s) => `\x1b[35m${s}\x1b[39m` : (s) => s
 const white = useColor ? (s) => `\x1b[97m${s}\x1b[39m` : (s) => s
 const HIDE_CURSOR = process.stdout.isTTY ? '\x1b[?25l' : ''
 const SHOW_CURSOR = process.stdout.isTTY ? '\x1b[?25h' : ''
@@ -40,9 +46,11 @@ function formatTime(ms) {
 // ── Terminal UI ───────────────────────────────────────────────
 
 function printBanner() {
+  const ver = `v${VERSION}`
+  const gap = ' '.repeat(39 - 14 - ver.length - 1)
   console.log()
   console.log(bold(cyan('   ╔═══════════════════════════════════════╗')))
-  console.log(bold(cyan('   ║')) + bold('   autoskills                          ') + bold(cyan('║')))
+  console.log(bold(cyan('   ║')) + bold(white('   autoskills')) + gap + dim(ver) + ' ' + bold(cyan('║')))
   console.log(bold(cyan('   ║')) + dim('   Auto-install the best AI skills     ') + bold(cyan('║')))
   console.log(bold(cyan('   ║')) + dim('   for your project                    ') + bold(cyan('║')))
   console.log(bold(cyan('   ╚═══════════════════════════════════════╝')))
@@ -326,8 +334,6 @@ async function main() {
     --dry-run       Show skills without installing
     -v, --verbose   Show error details on failure
     -h, --help      Show this help message
-
-  ${dim('Powered by https://skills.sh')}
 `)
     process.exit(0)
   }
@@ -351,23 +357,37 @@ async function main() {
   // ── Show detected technologies
   const withSkills = detected.filter((t) => t.skills.length > 0)
   const withoutSkills = detected.filter((t) => t.skills.length === 0)
+  const allTech = [...withSkills, ...withoutSkills]
 
-  console.log(bold('   Detected technologies:'))
+  console.log(cyan('   ▸ ') + bold('Detected technologies:'))
   console.log()
 
-  for (const tech of withSkills) {
-    console.log(green(`     ✔ ${tech.name}`))
-  }
-  for (const tech of withoutSkills) {
-    console.log(dim(`     ● ${tech.name}`) + dim(' (no skills yet)'))
+  const COLS = 3
+  const maxNameLen = Math.max(...allTech.map((t) => t.name.length))
+  const colWidth = maxNameLen + 3
+  const rows = Math.ceil(allTech.length / COLS)
+
+  for (let r = 0; r < rows; r++) {
+    let line = '     '
+    for (let c = 0; c < COLS; c++) {
+      const idx = r * COLS + c
+      if (idx < allTech.length) {
+        const tech = allTech[idx]
+        const hasSkills = tech.skills.length > 0
+        const icon = hasSkills ? green('✔') : dim('●')
+        const padded = tech.name.padEnd(colWidth)
+        line += `${icon} ${hasSkills ? padded : dim(padded)}`
+      }
+    }
+    console.log(line)
   }
 
   if (combos.length > 0) {
     console.log()
-    console.log(bold('   Detected combos:'))
+    console.log(magenta('   ▸ ') + bold('Detected combos:'))
     console.log()
     for (const combo of combos) {
-      console.log(cyan(`     ⚡ ${combo.name}`))
+      console.log(magenta(`     ⚡ `) + combo.name)
     }
   }
   console.log()
@@ -387,7 +407,7 @@ async function main() {
 
   // ── Dry run: just list and exit
   if (dryRun) {
-    console.log(bold(`   Skills to install ${dim(`(${skills.length})`)}:`))
+    console.log(cyan('   ▸ ') + bold(`Skills to install `) + dim(`(${skills.length})`))
     console.log()
     for (let i = 0; i < skills.length; i++) {
       const { skillName } = parseSkillPath(skills[i].skill)
@@ -406,7 +426,7 @@ async function main() {
   let selectedSkills
 
   if (autoYes) {
-    console.log(bold(`   Skills to install ${dim(`(${skills.length})`)}:`))
+    console.log(cyan('   ▸ ') + bold(`Skills to install `) + dim(`(${skills.length})`))
     console.log()
     for (let i = 0; i < skills.length; i++) {
       const { skillName } = parseSkillPath(skills[i].skill)
@@ -418,7 +438,7 @@ async function main() {
     console.log()
     selectedSkills = skills
   } else {
-    console.log(bold(`   Select skills to install ${dim(`(${skills.length} found)`)}:`))
+    console.log(cyan('   ▸ ') + bold(`Select skills to install `) + dim(`(${skills.length} found)`))
     console.log()
 
     selectedSkills = await multiSelect(skills, {
@@ -475,7 +495,6 @@ async function main() {
       }
     }
   }
-  console.log(dim('   Powered by https://skills.sh'))
   console.log()
 }
 
