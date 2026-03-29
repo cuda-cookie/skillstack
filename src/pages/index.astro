@@ -15,6 +15,10 @@ const SVGL_OVERRIDES: Record<string, string> = {
   'AWS': 'Amazon Web Services',
 };
 
+const INLINE_SVGS: Record<string, string> = {
+  'ElevenLabs': `<svg width="876" height="876" viewBox="0 0 876 876" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M468 292H528V584H468V292Z" fill="white"/><path d="M348 292H408V584H348V292Z" fill="white"/></svg>`,
+};
+
 const skillsMap = [
   { name: 'React', skills: ['vercel-labs/agent-skills/vercel-react-best-practices', 'vercel-labs/agent-skills/vercel-composition-patterns'] },
   { name: 'Next.js', skills: ['vercel-labs/next-skills/next-best-practices', 'vercel-labs/next-skills/next-cache-components', 'vercel-labs/next-skills/next-upgrade'] },
@@ -105,7 +109,7 @@ try {
           <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
           <span class="w-2.5 h-2.5 rounded-full bg-zinc-800"></span>
         </div>
-        <div class="p-4 text-xs leading-relaxed overflow-x-auto min-h-[420px] lg:min-h-0 lg:overflow-y-auto lg:flex-1" id="term-body"></div>
+        <div class="p-4 text-xs leading-relaxed overflow-x-auto whitespace-pre min-h-[420px] lg:min-h-0 lg:overflow-y-auto lg:flex-1" id="term-body"></div>
       </div>
     </div>
 
@@ -152,13 +156,15 @@ try {
           <div class="group border-b border-zinc-800/40 py-2.5 first:border-t">
             <div class="flex items-start gap-3">
               <div class="flex items-center gap-2 w-32 shrink-0 pt-px">
-                {svgMap[tech.name] ? (
+                {INLINE_SVGS[tech.name] ? (
+                  <span class={`w-3.5 h-3.5 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity [&>svg]:w-full [&>svg]:h-full`} set:html={INLINE_SVGS[tech.name]} />
+                ) : svgMap[tech.name] ? (
                   <img
                     src={svgMap[tech.name]}
                     alt=""
                     width="14"
                     height="14"
-                    class="w-3.5 h-3.5 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity"
+                    class={`w-3.5 h-3.5 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity${tech.name === 'Expo' ? ' brightness-0 invert' : ''}`}
                     loading="lazy"
                   />
                 ) : (
@@ -216,8 +222,7 @@ try {
     <!-- Footer -->
     <footer class="text-zinc-600 space-y-1 pb-8">
       <p>Made by <a href="https://midu.dev" target="_blank" rel="noopener" class="text-zinc-400 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 transition-colors">midudev</a></p>
-      <p class="flex gap-4">
-        <a href="https://skills.sh" target="_blank" rel="noopener" class="text-zinc-500 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 hover:text-zinc-300 transition-colors">skills.sh</a>
+      <p>
         <a href="https://github.com/midudev/autoskills.sh" target="_blank" rel="noopener" class="text-zinc-500 underline underline-offset-2 decoration-zinc-700 hover:decoration-zinc-400 hover:text-zinc-300 transition-colors">github</a>
       </p>
     </footer>
@@ -332,9 +337,9 @@ try {
 
     const BANNER = [
       s(C.cy, '   ╔═══════════════════════════════════════╗'),
-      s(C.cy, '   ║') + s(C.wh, '   autoskills                        ') + s(C.cy, '║'),
-      s(C.cy, '   ║') + s(C.z5, '   Auto-install the best AI skills   ') + s(C.cy, '║'),
-      s(C.cy, '   ║') + s(C.z5, '   for your project                  ') + s(C.cy, '║'),
+      s(C.cy, '   ║') + s(C.wh, '   autoskills                          ') + s(C.cy, '║'),
+      s(C.cy, '   ║') + s(C.z5, '   Auto-install the best AI skills     ') + s(C.cy, '║'),
+      s(C.cy, '   ║') + s(C.z5, '   for your project                    ') + s(C.cy, '║'),
       s(C.cy, '   ╚═══════════════════════════════════════╝'),
     ]
 
@@ -354,7 +359,7 @@ try {
       s(C.z6, '    4.') + ' ' + s(C.c3, 'next-cache-components') + '                ' + s(C.z7, '← Next.js'),
       s(C.z6, '    5.') + ' ' + s(C.c3, 'next-upgrade') + '                         ' + s(C.z7, '← Next.js'),
       s(C.z6, '    6.') + ' ' + s(C.c3, 'tailwind-design-system') + '               ' + s(C.z7, '← Tailwind CSS'),
-      s(C.z6, '    7.') + ' ' + s(C.c3, 'typescript-advanced-types') + '             ' + s(C.z7, '← TypeScript'),
+      s(C.z6, '    7.') + ' ' + s(C.c3, 'typescript-advanced-types') + '            ' + s(C.z7, '← TypeScript'),
       s(C.z6, '    8.') + ' ' + s(C.c3, 'supabase-postgres-best-practices') + '     ' + s(C.z7, '← Supabase'),
       s(C.z6, '    9.') + ' ' + s(C.c3, 'frontend-design') + '                      ' + s(C.z7, '← Frontend'),
     ]
@@ -409,7 +414,6 @@ try {
       // Summary
       d(400, '')
       d(0, s(C.gn, '   ✔ Done! 9 skills installed.'))
-      d(0, s(C.z6, '   Powered by https://skills.sh'))
 
       return steps
     }
