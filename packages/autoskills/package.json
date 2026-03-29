@@ -1,6 +1,6 @@
 {
   "name": "autoskills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Auto-detect and install the best AI agent skills for your project",
   "type": "module",
   "bin": {
