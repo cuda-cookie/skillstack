@@ -226,7 +226,7 @@ async function installAll(skills) {
   const total = skills.length;
 
   const states = skills.map(({ skill }) => ({
-    name: parseSkillPath(skill).skillName,
+    name: skill,
     skill,
     status: "pending",
     output: "",
@@ -310,15 +310,14 @@ async function installAllSimple(skills) {
   const errors = [];
 
   for (const { skill } of skills) {
-    const name = parseSkillPath(skill).skillName;
     const result = await installSkill(skill);
 
     if (result.success) {
-      console.log(green(`   ✔ ${name}`));
+      console.log(green(`   ✔ ${skill}`));
       installed++;
     } else {
-      console.log(red(`   ✘ ${name}`) + dim(" — failed"));
-      errors.push({ name, output: result.output });
+      console.log(red(`   ✘ ${skill}`) + dim(" — failed"));
+      errors.push({ name: skill, output: result.output });
       failed++;
     }
   }
@@ -416,20 +415,18 @@ async function main() {
     process.exit(0);
   }
 
-  const skillNames = skills.map((s) => parseSkillPath(s.skill).skillName);
-  const maxSkillLen = Math.max(...skillNames.map((n) => n.length));
+  const maxSkillLen = Math.max(...skills.map((s) => s.skill.length));
 
   // ── Dry run: just list and exit
   if (dryRun) {
     console.log(cyan("   ▸ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
     console.log();
     for (let i = 0; i < skills.length; i++) {
-      const { skillName } = parseSkillPath(skills[i].skill);
-      const { sources } = skills[i];
-      const pad = " ".repeat(maxSkillLen - skillName.length);
+      const { skill, sources } = skills[i];
+      const pad = " ".repeat(maxSkillLen - skill.length);
       const num = String(i + 1).padStart(2, " ");
       console.log(
-        dim(`   ${num}.`) + ` ${cyan(skillName)}${pad}  ${dim(`← ${sources.join(", ")}`)}`,
+        dim(`   ${num}.`) + ` ${cyan(skill)}${pad}  ${dim(`← ${sources.join(", ")}`)}`,
       );
     }
     console.log();
@@ -445,12 +442,11 @@ async function main() {
     console.log(cyan("   ▸ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
     console.log();
     for (let i = 0; i < skills.length; i++) {
-      const { skillName } = parseSkillPath(skills[i].skill);
-      const { sources } = skills[i];
-      const pad = " ".repeat(maxSkillLen - skillName.length);
+      const { skill, sources } = skills[i];
+      const pad = " ".repeat(maxSkillLen - skill.length);
       const num = String(i + 1).padStart(2, " ");
       console.log(
-        dim(`   ${num}.`) + ` ${cyan(skillName)}${pad}  ${dim(`← ${sources.join(", ")}`)}`,
+        dim(`   ${num}.`) + ` ${cyan(skill)}${pad}  ${dim(`← ${sources.join(", ")}`)}`,
       );
     }
     console.log();
@@ -463,8 +459,7 @@ async function main() {
 
     selectedSkills = await multiSelect(skills, {
       labelFn: (s) => {
-        const { skillName } = parseSkillPath(s.skill);
-        return skillName + " ".repeat(maxSkillLen - skillName.length);
+        return s.skill + " ".repeat(maxSkillLen - s.skill.length);
       },
       hintFn: (s) => (s.sources.length > 1 ? `← ${s.sources.join(", ")}` : ""),
       groupFn: (s) => s.sources[0],

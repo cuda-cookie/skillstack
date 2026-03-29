@@ -150,5 +150,138 @@ describe("CLI", () => {
       assert.ok(output.includes("Pinia"));
       assert.ok(output.includes("vue-pinia-best-practices"));
     });
+
+    it("detects GSAP from package.json", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { gsap: "^3" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("GSAP"));
+      assert.ok(output.includes("gsap-core"));
+      assert.ok(output.includes("gsap-scrolltrigger"));
+    });
+
+    it("detects GSAP + React combo", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { gsap: "^3", react: "^19", "react-dom": "^19" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("GSAP"));
+      assert.ok(output.includes("React"));
+      assert.ok(output.includes("GSAP + React"));
+      assert.ok(output.includes("gsap-react"));
+    });
+
+    it("detects Tailwind + shadcn/ui combo", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          devDependencies: { tailwindcss: "^4" },
+        }),
+      );
+      writeFileSync(join(tmpDir, "components.json"), "{}");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Tailwind CSS"));
+      assert.ok(output.includes("shadcn/ui"));
+      assert.ok(output.includes("Tailwind CSS + shadcn/ui"));
+      assert.ok(output.includes("tailwind-v4-shadcn"));
+    });
+
+    it("detects Cloudflare base skills from wrangler package", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          devDependencies: { wrangler: "^3" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare"));
+      assert.ok(output.includes("cloudflare/skills/cloudflare"));
+      assert.ok(output.includes("cloudflare/skills/wrangler"));
+      assert.ok(output.includes("workers-best-practices"));
+    });
+
+    it("detects Cloudflare from wrangler.json config file", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(join(tmpDir, "wrangler.json"), JSON.stringify({ name: "my-worker" }));
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare"));
+    });
+
+    it("detects Durable Objects from wrangler.json content", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(
+        join(tmpDir, "wrangler.json"),
+        JSON.stringify({
+          name: "my-worker",
+          durable_objects: { bindings: [{ name: "MY_DO", class_name: "MyDO" }] },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Durable Objects"));
+      assert.ok(output.includes("cloudflare/skills/durable-objects"));
+    });
+
+    it("detects Cloudflare AI from wrangler.json content", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(
+        join(tmpDir, "wrangler.json"),
+        JSON.stringify({ name: "my-worker", ai: { binding: "AI" } }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare AI"));
+      assert.ok(output.includes("building-ai-agent-on-cloudflare"));
+    });
+
+    it("detects Cloudflare Agents from agents package", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { agents: "^1" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare Agents"));
+      assert.ok(output.includes("agents-sdk"));
+      assert.ok(output.includes("building-mcp-server-on-cloudflare"));
+    });
+
+    it("detects Cloudflare + Vite combo for vinext", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          devDependencies: { wrangler: "^3", vite: "^6" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare"));
+      assert.ok(output.includes("Vite"));
+      assert.ok(output.includes("Cloudflare + Vite"));
+      assert.ok(output.includes("migrate-to-vinext"));
+    });
   });
 });

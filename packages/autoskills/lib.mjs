@@ -244,9 +244,50 @@ export const SKILLS_MAP = [
     name: "Cloudflare",
     detect: {
       packages: ["wrangler", "@cloudflare/workers-types"],
-      configFiles: ["wrangler.toml", "wrangler.json"],
+      configFiles: ["wrangler.toml", "wrangler.json", "wrangler.jsonc"],
     },
-    skills: [],
+    skills: [
+      "cloudflare/skills/cloudflare",
+      "cloudflare/skills/wrangler",
+      "cloudflare/skills/workers-best-practices",
+      "cloudflare/skills/web-perf",
+      "openai/skills/cloudflare-deploy",
+    ],
+  },
+  {
+    id: "cloudflare-durable-objects",
+    name: "Durable Objects",
+    detect: {
+      configFileContent: {
+        files: ["wrangler.json", "wrangler.jsonc", "wrangler.toml"],
+        patterns: ["durable_objects"],
+      },
+    },
+    skills: ["cloudflare/skills/durable-objects"],
+  },
+  {
+    id: "cloudflare-agents",
+    name: "Cloudflare Agents",
+    detect: {
+      packages: ["agents"],
+    },
+    skills: [
+      "cloudflare/skills/agents-sdk",
+      "cloudflare/skills/building-mcp-server-on-cloudflare",
+      "cloudflare/skills/sandbox-sdk",
+    ],
+  },
+  {
+    id: "cloudflare-ai",
+    name: "Cloudflare AI",
+    detect: {
+      packages: ["@cloudflare/ai"],
+      configFileContent: {
+        files: ["wrangler.json", "wrangler.jsonc"],
+        patterns: ['"ai"'],
+      },
+    },
+    skills: ["cloudflare/skills/building-ai-agent-on-cloudflare"],
   },
   {
     id: "aws",
@@ -272,6 +313,22 @@ export const SKILLS_MAP = [
       configFiles: [".oxlintrc.json", "oxlint.config.ts"],
     },
     skills: ["delexw/claude-code-misc/oxlint"],
+  },
+  {
+    id: "gsap",
+    name: "GSAP",
+    detect: {
+      packages: ["gsap"],
+    },
+    skills: [
+      "greensock/gsap-skills/gsap-core",
+      "greensock/gsap-skills/gsap-scrolltrigger",
+      "greensock/gsap-skills/gsap-performance",
+      "greensock/gsap-skills/gsap-plugins",
+      "greensock/gsap-skills/gsap-timeline",
+      "greensock/gsap-skills/gsap-utils",
+      "greensock/gsap-skills/gsap-frameworks",
+    ],
   },
 ];
 
@@ -316,6 +373,24 @@ export const COMBO_SKILLS_MAP = [
     name: "React + shadcn/ui",
     requires: ["react", "shadcn"],
     skills: ["shadcn/ui/shadcn", "vercel-labs/agent-skills/vercel-react-best-practices"],
+  },
+  {
+    id: "tailwind-shadcn",
+    name: "Tailwind CSS + shadcn/ui",
+    requires: ["tailwind", "shadcn"],
+    skills: ["jezweb/claude-skills/tailwind-v4-shadcn"],
+  },
+  {
+    id: "gsap-react",
+    name: "GSAP + React",
+    requires: ["gsap", "react"],
+    skills: ["greensock/gsap-skills/gsap-react"],
+  },
+  {
+    id: "cloudflare-vite",
+    name: "Cloudflare + Vite",
+    requires: ["cloudflare", "vite"],
+    skills: ["cloudflare/vinext/migrate-to-vinext"],
   },
 ];
 
@@ -372,6 +447,20 @@ export function detectTechnologies(projectDir) {
 
     if (!found && tech.detect.configFiles) {
       found = tech.detect.configFiles.some((f) => existsSync(join(projectDir, f)));
+    }
+
+    if (!found && tech.detect.configFileContent) {
+      const { files, patterns } = tech.detect.configFileContent;
+      for (const f of files) {
+        const filePath = join(projectDir, f);
+        if (existsSync(filePath)) {
+          try {
+            const content = readFileSync(filePath, "utf-8");
+            found = patterns.some((p) => content.includes(p));
+            if (found) break;
+          } catch {}
+        }
+      }
     }
 
     if (found) {
