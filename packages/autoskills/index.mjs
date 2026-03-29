@@ -48,10 +48,11 @@ function formatTime(ms) {
 
 function printBanner() {
   const ver = `v${VERSION}`
-  const gap = ' '.repeat(39 - 14 - ver.length - 1)
+  const title = '   autoskills'
+  const gap = ' '.repeat(39 - title.length - ver.length - 1)
   console.log()
   console.log(bold(cyan('   ╔═══════════════════════════════════════╗')))
-  console.log(bold(cyan('   ║')) + bold(white('   autoskills')) + gap + dim(ver) + ' ' + bold(cyan('║')))
+  console.log(bold(cyan('   ║')) + bold(yellow(title)) + gap + gray(ver) + ' ' + bold(cyan('║')))
   console.log(bold(cyan('   ║')) + dim('   Auto-install the best AI skills     ') + bold(cyan('║')))
   console.log(bold(cyan('   ║')) + dim('   for your project                    ') + bold(cyan('║')))
   console.log(bold(cyan('   ╚═══════════════════════════════════════╝')))
