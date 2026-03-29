@@ -13,6 +13,7 @@ const green = (s) => `\x1b[32m${s}\x1b[39m`
 const yellow = (s) => `\x1b[33m${s}\x1b[39m`
 const cyan = (s) => `\x1b[36m${s}\x1b[39m`
 const red = (s) => `\x1b[31m${s}\x1b[39m`
+const white = (s) => `\x1b[97m${s}\x1b[39m`
 const HIDE_CURSOR = '\x1b[?25l'
 const SHOW_CURSOR = '\x1b[?25h'
 
@@ -32,9 +33,9 @@ function prompt(question) {
 function printBanner() {
   console.log()
   console.log(bold(cyan('   ╔═══════════════════════════════════════╗')))
-  console.log(bold(cyan('   ║')) + bold('   autoskills                        ') + bold(cyan('║')))
-  console.log(bold(cyan('   ║')) + dim('   Auto-install the best AI skills   ') + bold(cyan('║')))
-  console.log(bold(cyan('   ║')) + dim('   for your project                  ') + bold(cyan('║')))
+  console.log(bold(cyan('   ║')) + bold('   autoskills                          ') + bold(cyan('║')))
+  console.log(bold(cyan('   ║')) + dim('   Auto-install the best AI skills     ') + bold(cyan('║')))
+  console.log(bold(cyan('   ║')) + dim('   for your project                    ') + bold(cyan('║')))
   console.log(bold(cyan('   ╚═══════════════════════════════════════╝')))
   console.log()
 }
@@ -49,31 +50,41 @@ function multiSelect(items, { labelFn, hintFn }) {
   return new Promise((resolve) => {
     const selected = new Array(items.length).fill(true)
     let cursor = 0
-    const totalLines = items.length + 2
+    let rendered = false
 
     function render() {
-      // Move cursor up to overwrite previous render (except first time)
-      process.stdout.write(`\x1b[${totalLines}A`)
+      if (rendered) {
+        // Move up: items + blank line + instruction line (no trailing \n)
+        process.stdout.write(`\x1b[${items.length + 1}A\r`)
+      }
+      rendered = true
+      // Clear from cursor to end of screen to avoid leftover artifacts
+      process.stdout.write('\x1b[J')
       draw()
     }
 
     function draw() {
+      const count = selected.filter(Boolean).length
+
       for (let i = 0; i < items.length; i++) {
         const pointer = i === cursor ? cyan('❯') : ' '
         const check = selected[i] ? green('◼') : dim('◻')
         const label = labelFn(items[i], i)
         const hint = hintFn ? hintFn(items[i], i) : ''
         const line = selected[i] ? label : dim(label)
-        process.stdout.write(`   ${pointer} ${check} ${line}${hint ? '  ' + dim(hint) : ''}\x1b[K\n`)
+        process.stdout.write(`   ${pointer} ${check} ${line}${hint ? '  ' + dim(hint) : ''}\n`)
       }
-      process.stdout.write(`\x1b[K\n`)
-      const count = selected.filter(Boolean).length
-      process.stdout.write(dim(`   ↑↓ move · space toggle · a toggle all · enter confirm (${count}/${items.length})\x1b[K`))
+      process.stdout.write('\n')
+      process.stdout.write(
+        dim('   ') +
+        white(bold('[↑↓]')) + dim(' move · ') +
+        white(bold('[space]')) + dim(' toggle · ') +
+        white(bold('[a]')) + dim(' all · ') +
+        white(bold('[enter]')) + dim(` confirm (${count}/${items.length})`)
+      )
     }
 
-    // Print initial blank lines that draw() will fill
     process.stdout.write(HIDE_CURSOR)
-    for (let i = 0; i < totalLines; i++) process.stdout.write('\n')
     render()
 
     const { stdin } = process
@@ -82,32 +93,28 @@ function multiSelect(items, { labelFn, hintFn }) {
     stdin.setEncoding('utf-8')
 
     function onData(key) {
-      // Ctrl+C
       if (key === '\x03') {
         cleanup()
         process.stdout.write(SHOW_CURSOR + '\n')
         process.exit(0)
       }
 
-      // Enter
       if (key === '\r' || key === '\n') {
         cleanup()
+        // Clear blank + instruction lines, keep items visible
+        process.stdout.write('\x1b[1A\r\x1b[J')
         process.stdout.write(SHOW_CURSOR)
-        // Overwrite the hint line
-        process.stdout.write(`\r\x1b[K`)
         const result = items.filter((_, i) => selected[i])
         resolve(result)
         return
       }
 
-      // Space — toggle current
       if (key === ' ') {
         selected[cursor] = !selected[cursor]
         render()
         return
       }
 
-      // 'a' — toggle all
       if (key === 'a') {
         const allSelected = selected.every(Boolean)
         selected.fill(!allSelected)
@@ -115,7 +122,6 @@ function multiSelect(items, { labelFn, hintFn }) {
         return
       }
 
-      // Arrow keys (escape sequences)
       if (key === '\x1b[A' || key === 'k') {
         cursor = (cursor - 1 + items.length) % items.length
         render()
@@ -182,7 +188,6 @@ async function main() {
     --dry-run       Show skills without installing
     -h, --help      Show this help message
 
-  ${dim('Powered by https://skills.sh')}
 `)
     process.exit(0)
   }
@@ -328,7 +333,6 @@ async function main() {
       ),
     )
   }
-  console.log(dim('   Powered by https://skills.sh'))
   console.log()
 }
 
