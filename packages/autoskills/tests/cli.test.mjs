@@ -77,7 +77,7 @@ describe("CLI", () => {
 
       const output = run(["--dry-run"], tmpDir);
 
-      assert.ok(output.includes("tailwind-design-system"));
+      assert.ok(output.includes("tailwind-css-patterns"));
       assert.ok(output.includes("typescript-advanced-types"));
       assert.ok(output.includes("Tailwind CSS"));
       assert.ok(output.includes("TypeScript"));

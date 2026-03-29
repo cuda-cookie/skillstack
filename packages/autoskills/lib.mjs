@@ -92,7 +92,7 @@ export const SKILLS_MAP = [
       packages: ["tailwindcss", "@tailwindcss/vite"],
       configFiles: ["tailwind.config.js", "tailwind.config.ts", "tailwind.config.cjs"],
     },
-    skills: ["wshobson/agents/tailwind-design-system"],
+    skills: ["giuseppe-trisciuoglio/developer-kit/tailwind-css-patterns"],
   },
   {
     id: "shadcn",
