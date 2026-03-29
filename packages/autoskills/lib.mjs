@@ -234,8 +234,8 @@ export const SKILLS_MAP = [
     id: "vercel-deploy",
     name: "Vercel",
     detect: {
-      configFiles: ["vercel.json"],
-      packages: ["vercel"],
+      configFiles: ["vercel.json", ".vercel"],
+      packages: ["vercel", "@astrojs/vercel"],
     },
     skills: ["vercel-labs/agent-skills/deploy-to-vercel"],
   },
@@ -243,7 +243,7 @@ export const SKILLS_MAP = [
     id: "cloudflare",
     name: "Cloudflare",
     detect: {
-      packages: ["wrangler", "@cloudflare/workers-types"],
+      packages: ["wrangler", "@cloudflare/workers-types", "@astrojs/cloudflare"],
       configFiles: ["wrangler.toml", "wrangler.json", "wrangler.jsonc"],
     },
     skills: [

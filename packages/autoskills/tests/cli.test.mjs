@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -282,6 +282,45 @@ describe("CLI", () => {
       assert.ok(output.includes("Vite"));
       assert.ok(output.includes("Cloudflare + Vite"));
       assert.ok(output.includes("migrate-to-vinext"));
+    });
+
+    it("detects Vercel deploy from .vercel directory", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      mkdirSync(join(tmpDir, ".vercel"), { recursive: true });
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Vercel"));
+      assert.ok(output.includes("deploy-to-vercel"));
+    });
+
+    it("detects Vercel deploy from @astrojs/vercel adapter", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { astro: "^5", "@astrojs/vercel": "^8" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Vercel"));
+      assert.ok(output.includes("deploy-to-vercel"));
+    });
+
+    it("detects Cloudflare from @astrojs/cloudflare adapter", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { astro: "^5", "@astrojs/cloudflare": "^12" },
+        }),
+      );
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Cloudflare"));
+      assert.ok(output.includes("cloudflare/skills/cloudflare"));
+      assert.ok(output.includes("workers-best-practices"));
     });
   });
 });
