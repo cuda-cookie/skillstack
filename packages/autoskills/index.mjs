@@ -22,6 +22,7 @@ const yellow = useColor ? (s) => `\x1b[33m${s}\x1b[39m` : (s) => s
 const cyan = useColor ? (s) => `\x1b[36m${s}\x1b[39m` : (s) => s
 const red = useColor ? (s) => `\x1b[31m${s}\x1b[39m` : (s) => s
 const magenta = useColor ? (s) => `\x1b[35m${s}\x1b[39m` : (s) => s
+const gray = useColor ? (s) => `\x1b[90m${s}\x1b[39m` : (s) => s
 const white = useColor ? (s) => `\x1b[97m${s}\x1b[39m` : (s) => s
 const HIDE_CURSOR = process.stdout.isTTY ? '\x1b[?25l' : ''
 const SHOW_CURSOR = process.stdout.isTTY ? '\x1b[?25h' : ''
