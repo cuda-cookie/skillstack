@@ -12,7 +12,7 @@
 
 </div>
 
-Scans your project, detects your tech stack, and installs the best AI agent skills automatically.
+Scans your project, detects your tech stack, and installs the best AI agent skills from [skills.sh](https://skills.sh) automatically.
 
 ```bash
 npx autoskills
@@ -38,12 +38,10 @@ That's it. No config needed.
 
 React · Next.js · Vue · Nuxt · Pinia · Svelte · Angular · Astro · Tailwind CSS · shadcn/ui · TypeScript · Supabase · Neon · Playwright · Expo · React Native · Remotion · Better Auth · Turborepo · Vite · Azure · Vercel · Vercel AI SDK · ElevenLabs · Cloudflare · Durable Objects · Cloudflare Agents · Cloudflare AI · AWS · SwiftUI · oxlint · GSAP · Node.js · Express · Bun · Deno
 
-> More coming soon. Check [autoskills.sh](https://autoskills.sh) for the latest.
-
 ## Requirements
 
 Node.js >= 22
 
 ## License
 
-MIT — [midudev](https://midu.dev)
+[CC BY-NC 4.0](./LICENSE) — [midudev](https://midu.dev)
