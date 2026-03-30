@@ -13,6 +13,10 @@
 
 * {
   scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+*:hover {
   scrollbar-color: #27272a transparent;
 }
 
@@ -26,10 +30,14 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: transparent;
   border-radius: 3px;
 }
 
-*::-webkit-scrollbar-thumb:hover {
+*:hover::-webkit-scrollbar-thumb {
+  background: #27272a;
+}
+
+*:hover::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
 }
