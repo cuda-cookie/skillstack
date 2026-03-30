@@ -192,8 +192,11 @@ function multiSelect(items, { labelFn, hintFn, groupFn }) {
 
 function installSkill(skillPath) {
   const { repo, skillName } = parseSkillPath(skillPath);
+  const args = ["-y", "skills", "add", repo];
+  if (skillName) args.push("--skill", skillName);
+  args.push("-y");
   return new Promise((resolve) => {
-    const child = spawn("npx", ["-y", "skills", "add", repo, "--skill", skillName, "-y"], {
+    const child = spawn("npx", args, {
       stdio: ["pipe", "pipe", "pipe"],
     });
 

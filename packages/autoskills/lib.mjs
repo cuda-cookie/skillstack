@@ -330,6 +330,14 @@ export const SKILLS_MAP = [
       "greensock/gsap-skills/gsap-frameworks",
     ],
   },
+  {
+    id: "bun",
+    name: "Bun",
+    detect: {
+      configFiles: ["bun.lockb", "bun.lock", "bunfig.toml"],
+    },
+    skills: ["https://bun.sh/docs"],
+  },
 ];
 
 // ── Combo Skills Map (cross-technology) ──────────────────────
@@ -483,6 +491,9 @@ export function detectCombos(detectedIds) {
 // ── Helpers ──────────────────────────────────────────────────
 
 export function parseSkillPath(skill) {
+  if (skill.startsWith("http")) {
+    return { repo: skill, skillName: "", full: skill };
+  }
   const parts = skill.split("/");
   return {
     repo: parts.slice(0, 2).join("/"),

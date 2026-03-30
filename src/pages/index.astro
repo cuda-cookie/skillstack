@@ -57,6 +57,7 @@ const skillsMap = [
   { name: 'SwiftUI', skills: ['avdlee/swiftui-agent-skill/swiftui-expert-skill'] },
   { name: 'oxlint', skills: ['delexw/claude-code-misc/oxlint'] },
   { name: 'GSAP', skills: ['greensock/gsap-skills/gsap-core', 'greensock/gsap-skills/gsap-scrolltrigger', 'greensock/gsap-skills/gsap-performance', 'greensock/gsap-skills/gsap-plugins', 'greensock/gsap-skills/gsap-timeline', 'greensock/gsap-skills/gsap-utils', 'greensock/gsap-skills/gsap-frameworks'] },
+  { name: 'Bun', skills: ['https://bun.sh/docs'] },
 ];
 
 const technologies = skillsMap.map((s) => s.name);
@@ -188,11 +189,11 @@ try {
                   <div class="flex flex-wrap gap-x-3 gap-y-0.5">
                     {tech.skills.map((skill) => (
                       <a
-                        href={`https://skills.sh/${skill}`}
+                        href={skill.startsWith('http') ? skill : `https://skills.sh/${skill}`}
                         target="_blank"
                         rel="noopener"
                         class="text-xs text-zinc-600 hover:text-cyan-400 transition-colors"
-                      >{skill.split('/').slice(2).join('/')}</a>
+                      >{skill.startsWith('http') ? new URL(skill).hostname + new URL(skill).pathname : skill.split('/').slice(2).join('/')}</a>
                     ))}
                   </div>
                 ) : (

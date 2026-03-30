@@ -322,5 +322,24 @@ describe("CLI", () => {
       assert.ok(output.includes("cloudflare/skills/cloudflare"));
       assert.ok(output.includes("workers-best-practices"));
     });
+
+    it("detects Bun from bun.lockb", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(join(tmpDir, "bun.lockb"), "");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Bun"));
+      assert.ok(output.includes("https://bun.sh/docs"));
+    });
+
+    it("detects Bun from bunfig.toml", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(join(tmpDir, "bunfig.toml"), "[install]");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Bun"));
+    });
   });
 });
