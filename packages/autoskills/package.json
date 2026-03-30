@@ -25,7 +25,10 @@
   },
   "files": [
     "index.mjs",
-    "lib.mjs"
+    "lib.mjs",
+    "colors.mjs",
+    "ui.mjs",
+    "installer.mjs"
   ],
   "type": "module",
   "scripts": {
