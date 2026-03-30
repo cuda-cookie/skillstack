@@ -1,6 +1,16 @@
+<div align="center">
+
+<a href="https://autoskills.sh">
+<img src="https://autoskills.sh/og.jpg" alt="autoskills" />
+</a>
+
 # autoskills
 
 **One command. Your entire AI skill stack. Installed.**
+
+[autoskills.sh](https://autoskills.sh)
+
+</div>
 
 Scans your project, detects your tech stack, and installs the best AI agent skills automatically.
 
@@ -26,9 +36,9 @@ That's it. No config needed.
 
 ## Supported technologies
 
-React · Next.js · Vue · Nuxt · Svelte · Angular · Astro · Tailwind CSS · shadcn/ui · TypeScript · Supabase · Neon · Playwright · Expo · React Native · Remotion · Better Auth · Turborepo · Vite · Azure · Vercel AI SDK · ElevenLabs · Cloudflare · AWS · SwiftUI
+React · Next.js · Vue · Nuxt · Pinia · Svelte · Angular · Astro · Tailwind CSS · shadcn/ui · TypeScript · Supabase · Neon · Playwright · Expo · React Native · Remotion · Better Auth · Turborepo · Vite · Azure · Vercel · Vercel AI SDK · ElevenLabs · Cloudflare · Durable Objects · Cloudflare Agents · Cloudflare AI · AWS · SwiftUI · oxlint · GSAP · Node.js · Express · Bun · Deno
 
-> More coming soon. Check [skills.sh](https://skills.sh) for the latest.
+> More coming soon. Check [autoskills.sh](https://autoskills.sh) for the latest.
 
 ## Requirements
 
