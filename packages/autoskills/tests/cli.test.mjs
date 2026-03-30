@@ -341,5 +341,16 @@ describe("CLI", () => {
 
       assert.ok(output.includes("Bun"));
     });
+
+    it("detects Deno from deno.json", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(join(tmpDir, "deno.json"), "{}");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Deno"));
+      assert.ok(output.includes("deno-expert"));
+      assert.ok(output.includes("deno-typescript"));
+    });
   });
 });
