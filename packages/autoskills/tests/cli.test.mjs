@@ -352,5 +352,33 @@ describe("CLI", () => {
       assert.ok(output.includes("deno-expert"));
       assert.ok(output.includes("deno-typescript"));
     });
+
+    it("detects Node.js from package-lock.json", () => {
+      writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+      writeFileSync(join(tmpDir, "package-lock.json"), "{}");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Node.js"));
+      assert.ok(output.includes("nodejs-backend-patterns"));
+      assert.ok(output.includes("nodejs-best-practices"));
+    });
+
+    it("detects Node.js + Express combo", () => {
+      writeFileSync(
+        join(tmpDir, "package.json"),
+        JSON.stringify({
+          dependencies: { express: "^4" },
+        }),
+      );
+      writeFileSync(join(tmpDir, "package-lock.json"), "{}");
+
+      const output = run(["--dry-run"], tmpDir);
+
+      assert.ok(output.includes("Node.js"));
+      assert.ok(output.includes("Express"));
+      assert.ok(output.includes("Node.js + Express"));
+      assert.ok(output.includes("nodejs-express-server"));
+    });
   });
 });

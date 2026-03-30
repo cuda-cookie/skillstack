@@ -339,6 +339,25 @@ export const SKILLS_MAP = [
     skills: ["https://bun.sh/docs"],
   },
   {
+    id: "node",
+    name: "Node.js",
+    detect: {
+      configFiles: ["package-lock.json", "yarn.lock", "pnpm-lock.yaml", ".nvmrc", ".node-version"],
+    },
+    skills: [
+      "wshobson/agents/nodejs-backend-patterns",
+      "sickn33/antigravity-awesome-skills/nodejs-best-practices",
+    ],
+  },
+  {
+    id: "express",
+    name: "Express",
+    detect: {
+      packages: ["express"],
+    },
+    skills: [],
+  },
+  {
     id: "deno",
     name: "Deno",
     detect: {
@@ -414,6 +433,12 @@ export const COMBO_SKILLS_MAP = [
     name: "Cloudflare + Vite",
     requires: ["cloudflare", "vite"],
     skills: ["cloudflare/vinext/migrate-to-vinext"],
+  },
+  {
+    id: "node-express",
+    name: "Node.js + Express",
+    requires: ["node", "express"],
+    skills: ["aj-geddes/useful-ai-prompts/nodejs-express-server"],
   },
 ];
 
