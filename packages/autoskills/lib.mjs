@@ -487,7 +487,7 @@ export const COMBO_SKILLS_MAP = [
     id: "tailwind-shadcn",
     name: "Tailwind CSS + shadcn/ui",
     requires: ["tailwind", "shadcn"],
-    skills: ["jezweb/claude-skills/tailwind-v4-shadcn"],
+    skills: ["secondsky/claude-skills/tailwind-v4-shadcn"],
   },
   {
     id: "gsap-react",
