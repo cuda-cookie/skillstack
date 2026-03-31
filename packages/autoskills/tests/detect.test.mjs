@@ -296,6 +296,133 @@ plugins {
     assert.ok(ids.includes("kotlin-multiplatform"));
     assert.ok(ids.includes("android"));
   });
+
+  it("detects Java from pom.xml (Maven project)", () => {
+    writeFileSync(
+      join(tmpDir, "pom.xml"),
+      '<project><groupId>com.example</groupId></project>',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("detects Java from root build.gradle.kts with sourceCompatibility", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    writeFileSync(
+      join(tmpDir, "build.gradle.kts"),
+      'sourceCompatibility = JavaVersion.VERSION_17',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("detects Java from nested module build.gradle with java plugin", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    const mod = join(tmpDir, "app");
+    mkdirSync(mod, { recursive: true });
+    writeFileSync(
+      join(mod, "build.gradle"),
+      "apply plugin: 'java'\nsourceCompatibility = '17'",
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("detects Java from build.gradle.kts with id(\"java-library\")", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    writeFileSync(
+      join(tmpDir, "build.gradle.kts"),
+      'plugins { id("java-library") }',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("detects Spring Boot from application.properties", () => {
+    const resources = join(tmpDir, "src", "main", "resources");
+    mkdirSync(resources, { recursive: true });
+    writeFileSync(join(resources, "application.properties"), "server.port=8080");
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "springboot"));
+  });
+
+  it("detects Spring Boot from application.yml", () => {
+    const resources = join(tmpDir, "src", "main", "resources");
+    mkdirSync(resources, { recursive: true });
+    writeFileSync(join(resources, "application.yml"), "server:\n  port: 8080");
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "springboot"));
+  });
+
+  it("detects Spring Boot from pom.xml with spring-boot-starter", () => {
+    writeFileSync(
+      join(tmpDir, "pom.xml"),
+      `<project>
+        <dependencies>
+          <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+          </dependency>
+        </dependencies>
+      </project>`,
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "springboot"));
+  });
+
+  it("detects both Java and Spring Boot from a Maven Spring Boot project", () => {
+    writeFileSync(
+      join(tmpDir, "pom.xml"),
+      `<project>
+        <dependencies>
+          <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+          </dependency>
+        </dependencies>
+      </project>`,
+    );
+    const resources = join(tmpDir, "src", "main", "resources");
+    mkdirSync(resources, { recursive: true });
+    writeFileSync(join(resources, "application.properties"), "server.port=8080");
+    const { detected } = detectTechnologies(tmpDir);
+    const ids = detected.map((t) => t.id);
+    assert.ok(ids.includes("java"));
+    assert.ok(ids.includes("springboot"));
+  });
+
+  it("detects Java but not Spring Boot for a plain Maven project", () => {
+    writeFileSync(
+      join(tmpDir, "pom.xml"),
+      '<project><groupId>com.example</groupId></project>',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    const ids = detected.map((t) => t.id);
+    assert.ok(ids.includes("java"));
+    assert.ok(!ids.includes("springboot"));
+  });
+
+  it("returns correct skills for Java detection", () => {
+    writeFileSync(
+      join(tmpDir, "pom.xml"),
+      '<project><groupId>com.example</groupId></project>',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    const java = detected.find((t) => t.id === "java");
+    assert.ok(java);
+    assert.ok(java.skills.includes("github/awesome-copilot/java-docs"));
+    assert.ok(java.skills.includes("affaan-m/everything-claude-code/java-coding-standards"));
+  });
+
+  it("returns correct skills for Spring Boot detection", () => {
+    const resources = join(tmpDir, "src", "main", "resources");
+    mkdirSync(resources, { recursive: true });
+    writeFileSync(join(resources, "application.properties"), "server.port=8080");
+    const { detected } = detectTechnologies(tmpDir);
+    const springboot = detected.find((t) => t.id === "springboot");
+    assert.ok(springboot);
+    assert.ok(springboot.skills.includes("github/awesome-copilot/java-springboot"));
+  });
 });
 
 // ── detectTechnologies (monorepo) ─────────────────────────────

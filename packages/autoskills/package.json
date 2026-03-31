@@ -26,6 +26,7 @@
   "files": [
     "index.mjs",
     "lib.mjs",
+    "skills-map.mjs",
     "colors.mjs",
     "ui.mjs",
     "installer.mjs"
