@@ -31,6 +31,7 @@ const TECHNOLOGIES = [
   'Azure', 'Vercel AI SDK', 'Vercel', 'ElevenLabs', 'Cloudflare',
   'Durable Objects', 'Cloudflare Agents', 'Cloudflare AI', 'AWS', 'SwiftUI',
   'oxlint', 'GSAP', 'Node.js', 'Express', 'Bun', 'Deno',
+  'Prisma', 'Stripe', 'Hono', 'Vitest', 'Drizzle ORM', 'NestJS', 'Tauri',
 ]
 
 function toFilename(name) {

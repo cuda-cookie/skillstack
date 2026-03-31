@@ -423,6 +423,103 @@ plugins {
     assert.ok(springboot);
     assert.ok(springboot.skills.includes("github/awesome-copilot/java-springboot"));
   });
+
+  it("detects Prisma from @prisma/client package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { "@prisma/client": "^6.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "prisma"));
+  });
+
+  it("detects Prisma from prisma devDependency", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ devDependencies: { prisma: "^6.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "prisma"));
+  });
+
+  it("detects Stripe from stripe package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { stripe: "^17.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "stripe"));
+  });
+
+  it("detects Stripe from @stripe/stripe-js package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { "@stripe/stripe-js": "^5.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "stripe"));
+  });
+
+  it("detects Hono from package.json", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { hono: "^4.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "hono"));
+  });
+
+  it("detects Vitest from package.json", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ devDependencies: { vitest: "^3.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "vitest"));
+  });
+
+  it("detects Vitest from config file", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    writeFileSync(join(tmpDir, "vitest.config.ts"), "export default {}");
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "vitest"));
+  });
+
+  it("detects Drizzle ORM from drizzle-orm package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { "drizzle-orm": "^0.40.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "drizzle"));
+  });
+
+  it("detects NestJS from @nestjs/core package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { "@nestjs/core": "^11.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "nestjs"));
+  });
+
+  it("detects Tauri from @tauri-apps/api package", () => {
+    writeFileSync(
+      join(tmpDir, "package.json"),
+      JSON.stringify({ dependencies: { "@tauri-apps/api": "^2.0.0" } }),
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "tauri"));
+  });
+
+  it("detects Tauri from src-tauri config file", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    const tauriDir = join(tmpDir, "src-tauri");
+    mkdirSync(tauriDir, { recursive: true });
+    writeFileSync(join(tauriDir, "tauri.conf.json"), "{}");
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "tauri"));
+  });
 });
 
 // ── detectTechnologies (monorepo) ─────────────────────────────
