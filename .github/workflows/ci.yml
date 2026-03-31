@@ -14,26 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  test:
-    name: Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm install
-        working-directory: packages/autoskills
-
-      - name: Run tests
-        run: npm test
-        working-directory: packages/autoskills
-
   lint:
-    name: Lint
+    name: Lint & Format
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,3 +32,22 @@ jobs:
 
       - name: Check formatting
         run: npm run fmt:check
+
+  test:
+    name: Tests
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: packages/autoskills
+
+      - name: Run tests
+        run: npm test
+        working-directory: packages/autoskills
