@@ -6,6 +6,13 @@ export function getNpxCommand(platform = process.platform) {
   return platform === "win32" ? "npx.cmd" : "npx";
 }
 
+export function getNpxSpawnOptions(platform = process.platform) {
+  return {
+    stdio: ["pipe", "pipe", "pipe"],
+    shell: platform === "win32",
+  };
+}
+
 export function buildInstallArgs(skillPath, agents = []) {
   const { repo, skillName } = parseSkillPath(skillPath);
   const args = ["-y", "skills", "add", repo];
@@ -18,9 +25,7 @@ export function buildInstallArgs(skillPath, agents = []) {
 export function installSkill(skillPath, agents = []) {
   const args = buildInstallArgs(skillPath, agents);
   return new Promise((resolve) => {
-    const child = spawn(getNpxCommand(), args, {
-      stdio: ["pipe", "pipe", "pipe"],
-    });
+    const child = spawn(getNpxCommand(), args, getNpxSpawnOptions());
 
     let output = "";
     child.stdout?.on("data", (d) => {
