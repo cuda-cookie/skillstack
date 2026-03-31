@@ -71,7 +71,14 @@ export const SKILLS_MAP = [
       packages: ["@angular/core"],
       configFiles: ["angular.json"],
     },
-    skills: [],
+    skills: [
+      "angular/skills/angular-developer",
+      "angular/angular/reference-core",
+      "angular/angular/reference-signal-forms",
+      "angular/angular/reference-compiler-cli",
+      "angular/angular/adev-writing-guide",
+      "angular/angular/PR Review",
+    ],
   },
   {
     id: "astro",
