@@ -35,10 +35,10 @@ jobs:
         run: npm test
         working-directory: packages/autoskills
 
-      - name: Smoke test — detect and dry-run install
+      - name: E2E — install skills in fake project
         shell: bash
         run: |
           mkdir -p "$RUNNER_TEMP/test-project"
           echo '{ "dependencies": { "next": "15.0.0", "react": "19.0.0" } }' > "$RUNNER_TEMP/test-project/package.json"
           cd "$RUNNER_TEMP/test-project"
-          node "$GITHUB_WORKSPACE/packages/autoskills/index.mjs" --dry-run -y
+          node "$GITHUB_WORKSPACE/packages/autoskills/index.mjs" -y --verbose
