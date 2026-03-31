@@ -13,19 +13,40 @@ const CHANGELOG_PATH = resolve(ROOT, 'CHANGELOG.md')
 
 const VALID_BUMPS = ['patch', 'minor', 'major']
 
+/**
+ * Executes a shell command synchronously and returns its trimmed stdout.
+ * @param {string} cmd - Command to run.
+ * @param {import('node:child_process').ExecSyncOptions} [opts]
+ * @returns {string} Trimmed stdout output.
+ */
 function run(cmd, opts = {}) {
   return execSync(cmd, { encoding: 'utf-8', cwd: ROOT, stdio: 'pipe', ...opts }).trim()
 }
 
+/**
+ * Executes a shell command with inherited stdio so output is visible to the user.
+ * @param {string} cmd - Command to run.
+ * @param {import('node:child_process').ExecSyncOptions} [opts]
+ */
 function runVisible(cmd, opts = {}) {
   execSync(cmd, { cwd: ROOT, stdio: 'inherit', ...opts })
 }
 
+/**
+ * Prints an error message and exits the process with code 1.
+ * @param {string} msg - Error description.
+ */
 function fail(msg) {
   console.error(`\n❌ ${msg}`)
   process.exit(1)
 }
 
+/**
+ * Increments a semver version string by the given bump type.
+ * @param {string} version - Current version (e.g. `"1.2.3"`).
+ * @param {"major"|"minor"|"patch"} type - Which segment to bump.
+ * @returns {string} The new version string.
+ */
 function bumpVersion(version, type) {
   const [major, minor, patch] = version.split('.').map(Number)
   switch (type) {
@@ -35,6 +56,10 @@ function bumpVersion(version, type) {
   }
 }
 
+/**
+ * Returns the most recent git tag reachable from HEAD, or `null` if none exists.
+ * @returns {string|null}
+ */
 function getLastTag() {
   try {
     return run('git describe --tags --abbrev=0', { cwd: REPO_ROOT })
@@ -43,6 +68,11 @@ function getLastTag() {
   }
 }
 
+/**
+ * Collects commits affecting `packages/autoskills/` since the given tag.
+ * @param {string|null} tag - Starting tag (all commits if `null`).
+ * @returns {{ message: string, hash: string }[]}
+ */
 function getCommitsSinceTag(tag) {
   const range = tag ? `${tag}..HEAD` : 'HEAD'
   const log = run(
@@ -56,6 +86,12 @@ function getCommitsSinceTag(tag) {
   })
 }
 
+/**
+ * Sorts commits into changelog categories: breaking, feat, fix, and other.
+ * Uses prefix/keyword heuristics on the commit message.
+ * @param {{ message: string, hash: string }[]} commits
+ * @returns {{ breaking: object[], feat: object[], fix: object[], other: object[] }}
+ */
 function categorizeCommits(commits) {
   const categories = {
     breaking: [],

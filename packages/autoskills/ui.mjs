@@ -1,5 +1,11 @@
 import { bold, dim, green, yellow, cyan, gray, white, HIDE_CURSOR, SHOW_CURSOR } from "./colors.mjs";
 
+/**
+ * Formats a duration in milliseconds into a human-readable string.
+ * Returns `"42ms"`, `"3.2s"`, or `"2m 15s"` depending on magnitude.
+ * @param {number} ms - Duration in milliseconds.
+ * @returns {string}
+ */
 export function formatTime(ms) {
   if (ms < 1000) return `${ms}ms`;
 
@@ -10,6 +16,10 @@ export function formatTime(ms) {
   return `${m}m ${Math.round(s % 60)}s`;
 }
 
+/**
+ * Prints the autoskills ASCII banner with version number to stdout.
+ * @param {string} version - Current package version (without the `v` prefix).
+ */
 export function printBanner(version) {
   const ver = `v${version}`;
   const title = "   autoskills";

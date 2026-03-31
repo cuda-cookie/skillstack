@@ -551,6 +551,12 @@ const GRADLE_SCAN_ROOT_FILES = [
   "gradle/libs.versions.toml",
 ];
 
+/**
+ * Builds a list of Gradle build file paths to scan for technology markers.
+ * Includes root-level Gradle files and `build.gradle(.kts)` inside immediate subdirectories.
+ * @param {string} projectDir - Absolute path to the project root.
+ * @returns {string[]} Candidate file paths.
+ */
 function gradleLayoutCandidatePaths(projectDir) {
   const candidates = [];
   for (const f of GRADLE_SCAN_ROOT_FILES) {
@@ -571,6 +577,14 @@ function gradleLayoutCandidatePaths(projectDir) {
   return candidates;
 }
 
+/**
+ * Resolves the file paths that should be read when checking `configFileContent` detection rules.
+ * Delegates to the Gradle scanner when `scanGradleLayout` is set, otherwise maps `config.files`
+ * relative to the given directory.
+ * @param {string} projectDir - Directory to resolve paths against.
+ * @param {object} config - The `configFileContent` block from a SKILLS_MAP entry.
+ * @returns {string[]} Absolute file paths to check.
+ */
 function resolveConfigFileContentPaths(projectDir, config) {
   if (config.scanGradleLayout) {
     return gradleLayoutCandidatePaths(projectDir);
@@ -578,6 +592,14 @@ function resolveConfigFileContentPaths(projectDir, config) {
   return (config.files || []).map((f) => join(projectDir, f));
 }
 
+/**
+ * Recursively checks whether the project contains files with web-frontend extensions
+ * (e.g. `.html`, `.css`, `.vue`, `.blade.php`).
+ * Skips common non-source directories like `node_modules` and `.git`.
+ * @param {string} projectDir - Root directory to scan.
+ * @param {number} [maxDepth=3] - Maximum directory nesting depth to traverse.
+ * @returns {boolean} `true` if at least one frontend-related file is found.
+ */
 export function hasWebFrontendFiles(projectDir, maxDepth = 3) {
   function scan(dir, depth) {
     let entries;
@@ -607,6 +629,12 @@ export function hasWebFrontendFiles(projectDir, maxDepth = 3) {
 
 // ── Workspace Resolution ──────────────────────────────────────
 
+/**
+ * Zero-dependency parser for `pnpm-workspace.yaml`.
+ * Extracts the `packages:` list entries (supports quoted and unquoted values).
+ * @param {string} content - Raw file content of pnpm-workspace.yaml.
+ * @returns {string[]} Workspace glob patterns (e.g. `["packages/*", "apps/*"]`).
+ */
 function parsePnpmWorkspaceYaml(content) {
   const lines = content.split("\n");
   const patterns = [];
@@ -630,6 +658,13 @@ function parsePnpmWorkspaceYaml(content) {
   return patterns;
 }
 
+/**
+ * Expands workspace glob patterns (e.g. `packages/*`) into actual directory paths
+ * that contain a `package.json`. Non-glob patterns are treated as exact directory references.
+ * @param {string} projectDir - Absolute path to the monorepo root.
+ * @param {string[]} patterns - Workspace patterns to resolve.
+ * @returns {string[]} Absolute paths to workspace directories.
+ */
 function expandWorkspacePatterns(projectDir, patterns) {
   const dirs = [];
 
@@ -660,6 +695,13 @@ function expandWorkspacePatterns(projectDir, patterns) {
   return dirs;
 }
 
+/**
+ * Discovers workspace directories in a monorepo.
+ * Checks `pnpm-workspace.yaml` first (higher priority), then falls back to
+ * the `workspaces` field in `package.json` (npm/yarn format).
+ * @param {string} projectDir - Absolute path to the project root.
+ * @returns {string[]} Absolute paths to workspace subdirectories (excludes the root itself).
+ */
 export function resolveWorkspaces(projectDir) {
   const pnpmPath = join(projectDir, "pnpm-workspace.yaml");
   if (existsSync(pnpmPath)) {
@@ -690,21 +732,39 @@ export function resolveWorkspaces(projectDir) {
 
 // ── Detection ─────────────────────────────────────────────────
 
+/**
+ * Reads and parses the package.json from the given directory.
+ * Returns the parsed object, or null if the file is missing or malformed.
+ */
 export function readPackageJson(dir) {
   const pkgPath = join(dir, "package.json");
   if (!existsSync(pkgPath)) return null;
+
   try {
     return JSON.parse(readFileSync(pkgPath, "utf-8"));
   } catch {
+    // Malformed JSON — treat as absent
     return null;
   }
 }
 
+/**
+ * Extracts all package names from the given package.json object.
+ * Returns an array of package names from both dependencies and devDependencies.
+ */
 export function getAllPackageNames(pkg) {
   if (!pkg) return [];
+
   return [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.devDependencies || {})];
 }
 
+/**
+ * Scans a single directory for known technologies by checking packages, package patterns,
+ * config files, and config file content against the SKILLS_MAP.
+ * Also determines whether the directory looks like a frontend project.
+ * @param {string} dir - Directory to scan.
+ * @returns {{ detected: object[], isFrontendByPackages: boolean, isFrontendByFiles: boolean }}
+ */
 function detectTechnologiesInDir(dir) {
   const pkg = readPackageJson(dir);
   const allPackages = getAllPackageNames(pkg);
@@ -754,6 +814,12 @@ function detectTechnologiesInDir(dir) {
   return { detected, isFrontendByPackages, isFrontendByFiles };
 }
 
+/**
+ * Main detection entry point. Scans the project root and all workspace subdirectories,
+ * merges and deduplicates detected technologies, and resolves cross-technology combos.
+ * @param {string} projectDir - Absolute path to the project root.
+ * @returns {{ detected: object[], isFrontend: boolean, combos: object[] }}
+ */
 export function detectTechnologies(projectDir) {
   const root = detectTechnologiesInDir(projectDir);
   const seenIds = new Map(root.detected.map((t) => [t.id, t]));
@@ -779,12 +845,23 @@ export function detectTechnologies(projectDir) {
   return { detected, isFrontend, combos };
 }
 
+/**
+ * Finds combo skills whose requirements are fully satisfied by the detected technology IDs.
+ * @param {string[]} detectedIds - Array of technology IDs found in the project.
+ * @returns {object[]} Matching entries from COMBO_SKILLS_MAP.
+ */
 export function detectCombos(detectedIds) {
   return COMBO_SKILLS_MAP.filter((combo) => combo.requires.every((id) => detectedIds.includes(id)));
 }
 
 // ── Helpers ──────────────────────────────────────────────────
 
+/**
+ * Splits a skill identifier (e.g. `"owner/repo/skill-name"`) into its repo and skill components.
+ * Full URLs are returned as-is in the `repo` field.
+ * @param {string} skill - Skill path string.
+ * @returns {{ repo: string, skillName: string, full: string }}
+ */
 export function parseSkillPath(skill) {
   if (skill.startsWith("http")) {
     return { repo: skill, skillName: "", full: skill };
@@ -799,6 +876,15 @@ export function parseSkillPath(skill) {
 
 // ── Skill Collection ─────────────────────────────────────────
 
+/**
+ * Aggregates the final list of skills to install from detected technologies,
+ * combo matches, and frontend bonus skills. Deduplicates by skill path and
+ * tracks which sources contributed each skill.
+ * @param {object[]} detected - Technologies found in the project.
+ * @param {boolean} isFrontend - Whether the project has a web frontend.
+ * @param {object[]} [combos=[]] - Matched combo skill entries.
+ * @returns {{ skill: string, sources: string[] }[]} Deduplicated skill list.
+ */
 export function collectSkills(detected, isFrontend, combos = []) {
   const seen = new Set();
   const skills = [];

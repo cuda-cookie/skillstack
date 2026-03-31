@@ -2,10 +2,22 @@ import { spawn } from "node:child_process";
 import { parseSkillPath } from "./lib.mjs";
 import { dim, green, cyan, red, HIDE_CURSOR, SHOW_CURSOR, SPINNER } from "./colors.mjs";
 
+/**
+ * Returns the platform-appropriate npx executable name.
+ * On Windows, Node requires `npx.cmd` to locate the batch wrapper.
+ * @param {string} [platform=process.platform]
+ * @returns {string} `"npx.cmd"` on win32, `"npx"` elsewhere.
+ */
 export function getNpxCommand(platform = process.platform) {
   return platform === "win32" ? "npx.cmd" : "npx";
 }
 
+/**
+ * Builds platform-aware options for `child_process.spawn()`.
+ * Enables `shell: true` on Windows so `.cmd` executables resolve correctly.
+ * @param {string} [platform=process.platform]
+ * @returns {{ stdio: string[], shell: boolean }}
+ */
 export function getNpxSpawnOptions(platform = process.platform) {
   return {
     stdio: ["pipe", "pipe", "pipe"],
@@ -13,6 +25,12 @@ export function getNpxSpawnOptions(platform = process.platform) {
   };
 }
 
+/**
+ * Constructs the argument array for `npx skills add ...`.
+ * @param {string} skillPath - Skill identifier (e.g. `"owner/repo/skill-name"`).
+ * @param {string[]} [agents=[]] - Optional list of target IDEs (e.g. `["cursor"]`).
+ * @returns {string[]} The full args array ready for `spawn`.
+ */
 export function buildInstallArgs(skillPath, agents = []) {
   const { repo, skillName } = parseSkillPath(skillPath);
   const args = ["-y", "skills", "add", repo];
@@ -22,6 +40,12 @@ export function buildInstallArgs(skillPath, agents = []) {
   return args;
 }
 
+/**
+ * Spawns a child process to install a single skill via `npx skills add`.
+ * @param {string} skillPath - Skill identifier to install.
+ * @param {string[]} [agents=[]] - Optional list of target IDEs.
+ * @returns {Promise<{ success: boolean, output: string }>}
+ */
 export function installSkill(skillPath, agents = []) {
   const args = buildInstallArgs(skillPath, agents);
   return new Promise((resolve) => {
@@ -134,6 +158,13 @@ export async function installAll(skills, agents = []) {
   return { installed, failed, errors };
 }
 
+/**
+ * Sequential fallback installer for non-TTY environments (CI, piped output).
+ * Prints results line-by-line without animated spinners.
+ * @param {{ skill: string }[]} skills - Skills to install.
+ * @param {string[]} [agents=[]] - Optional list of target IDEs.
+ * @returns {Promise<{ installed: number, failed: number, errors: { name: string, output: string }[] }>}
+ */
 async function installAllSimple(skills, agents = []) {
   let installed = 0;
   let failed = 0;

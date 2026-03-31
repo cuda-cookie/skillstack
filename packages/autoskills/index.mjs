@@ -18,6 +18,10 @@ process.on("SIGINT", () => {
 
 // ── CLI ──────────────────────────────────────────────────────
 
+/**
+ * Parses CLI arguments from `process.argv`.
+ * @returns {{ autoYes: boolean, dryRun: boolean, verbose: boolean, help: boolean, agents: string[] }}
+ */
 function parseArgs() {
   const args = process.argv.slice(2);
   const agents = [];
@@ -37,6 +41,7 @@ function parseArgs() {
   };
 }
 
+/** Prints usage information and available flags to stdout. */
 function showHelp() {
   console.log(`
   ${bold("autoskills")} — Auto-install the best AI skills for your project
@@ -58,6 +63,13 @@ function showHelp() {
 
 // ── Display ──────────────────────────────────────────────────
 
+/**
+ * Displays the detected technologies and combo matches in a formatted grid.
+ * Technologies with available skills are highlighted; those without are dimmed.
+ * @param {object[]} detected - Technologies found in the project.
+ * @param {object[]} combos - Matched combo skill entries.
+ * @param {boolean} isFrontend - Whether the project has a web frontend.
+ */
 function printDetected(detected, combos, isFrontend) {
   if (detected.length > 0) {
     const withSkills = detected.filter((t) => t.skills.length > 0);
@@ -104,6 +116,10 @@ function printDetected(detected, combos, isFrontend) {
   }
 }
 
+/**
+ * Prints a numbered list of skills with their source technologies.
+ * @param {{ skill: string, sources: string[] }[]} skills
+ */
 function printSkillsList(skills) {
   const maxLen = Math.max(...skills.map((s) => s.skill.length));
   console.log(cyan("   ▸ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
@@ -119,6 +135,10 @@ function printSkillsList(skills) {
   console.log();
 }
 
+/**
+ * Prints the final installation summary: success/failure counts, errors, and elapsed time.
+ * @param {{ installed: number, failed: number, errors: { name: string, output: string }[], elapsed: number, verbose: boolean }} opts
+ */
 function printSummary({ installed, failed, errors, elapsed, verbose }) {
   console.log();
   if (failed === 0) {
@@ -160,6 +180,13 @@ function printSummary({ installed, failed, errors, elapsed, verbose }) {
 
 // ── Skill Selection ──────────────────────────────────────────
 
+/**
+ * Prompts the user to select which skills to install via an interactive multi-select.
+ * When `autoYes` is true, all skills are selected automatically without prompting.
+ * @param {{ skill: string, sources: string[] }[]} skills - Available skills.
+ * @param {boolean} autoYes - Skip confirmation and select all.
+ * @returns {Promise<{ skill: string, sources: string[] }[]>} Selected skills.
+ */
 async function selectSkills(skills, autoYes) {
   const maxLen = Math.max(...skills.map((s) => s.skill.length));
 
@@ -191,6 +218,7 @@ async function selectSkills(skills, autoYes) {
 
 // ── Main ─────────────────────────────────────────────────────
 
+/** CLI entry point: detects technologies, prompts for selection, and installs skills. */
 async function main() {
   const { autoYes, dryRun, verbose, help, agents } = parseArgs();
 
