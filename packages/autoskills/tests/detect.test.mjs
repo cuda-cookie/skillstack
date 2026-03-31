@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, afterEach } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { getAllPackageNames, readPackageJson, detectTechnologies, detectCombos } from "../lib.mjs";
@@ -242,6 +242,59 @@ describe("detectTechnologies", () => {
     const { combos } = detectTechnologies(tmpDir);
     const comboIds = combos.map((c) => c.id);
     assert.ok(!comboIds.includes("expo-tailwind"));
+  });
+
+  it("detects Kotlin Multiplatform from root build.gradle.kts", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    writeFileSync(
+      join(tmpDir, "build.gradle.kts"),
+      'plugins { kotlin("multiplatform") version "2.0.0" }',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "kotlin-multiplatform"));
+  });
+
+  it("detects Kotlin Multiplatform from nested module build.gradle.kts", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    const mod = join(tmpDir, "composeApp");
+    mkdirSync(mod, { recursive: true });
+    writeFileSync(
+      join(mod, "build.gradle.kts"),
+      'plugins { id("org.jetbrains.kotlin.multiplatform") }',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "kotlin-multiplatform"));
+  });
+
+  it("detects Android from nested app build.gradle.kts", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    const app = join(tmpDir, "app");
+    mkdirSync(app, { recursive: true });
+    writeFileSync(
+      join(app, "build.gradle.kts"),
+      'plugins { id("com.android.application") }',
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    assert.ok(detected.some((t) => t.id === "android"));
+  });
+
+  it("detects KMP and Android together for typical mobile KMP layout", () => {
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
+    const mod = join(tmpDir, "composeApp");
+    mkdirSync(mod, { recursive: true });
+    writeFileSync(
+      join(mod, "build.gradle.kts"),
+      `
+plugins {
+  kotlin("multiplatform")
+  id("com.android.application")
+}
+`,
+    );
+    const { detected } = detectTechnologies(tmpDir);
+    const ids = detected.map((t) => t.id);
+    assert.ok(ids.includes("kotlin-multiplatform"));
+    assert.ok(ids.includes("android"));
   });
 });
 
