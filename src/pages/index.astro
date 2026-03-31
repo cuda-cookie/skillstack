@@ -74,7 +74,55 @@ try {
 }
 
 const { SKILLS_MAP } = await import('../../packages/autoskills/skills-map.mjs');
-const skillsMap = SKILLS_MAP;
+
+const popularityOrder = [
+  'typescript',
+  'react',
+  'nextjs',
+  'node',
+  'tailwind',
+  'vue',
+  'angular',
+  'vite',
+  'astro',
+  'nuxt',
+  'svelte',
+  'expo',
+  'react-native',
+  'bun',
+  'deno',
+  'supabase',
+  'cloudflare',
+  'cloudflare-agents',
+  'cloudflare-durable-objects',
+  'cloudflare-ai',
+  'vercel-deploy',
+  'vercel-ai',
+  'shadcn',
+  'playwright',
+  'turborepo',
+  'better-auth',
+  'pinia',
+  'neon',
+  'remotion',
+  'gsap',
+  'oxlint',
+  'express',
+  'swiftui',
+  'azure',
+  'aws',
+  'elevenlabs',
+  'kotlin-multiplatform',
+  'android',
+  'java',
+  'springboot',
+];
+
+const skillsMap = [...SKILLS_MAP].sort((a: any, b: any) => {
+  const ai = popularityOrder.indexOf(a.id);
+  const bi = popularityOrder.indexOf(b.id);
+  return (ai === -1 ? Infinity : ai) - (bi === -1 ? Infinity : bi);
+});
 
 ---
 
