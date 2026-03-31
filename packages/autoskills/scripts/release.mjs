@@ -116,6 +116,13 @@ function categorizeCommits(commits) {
   return categories
 }
 
+/**
+ * Generates a Markdown changelog section for a release.
+ * @param {string} version - New version string.
+ * @param {{ breaking: object[], feat: object[], fix: object[], other: object[] }} categories
+ * @param {string} repoUrl - GitHub repo URL used for commit/release links.
+ * @returns {string} Markdown-formatted changelog entry.
+ */
 function buildChangelog(version, categories, repoUrl) {
   const date = new Date().toISOString().split('T')[0]
   let md = `## [${version}](${repoUrl}/releases/tag/v${version}) (${date})\n\n`
@@ -155,6 +162,11 @@ function buildChangelog(version, categories, repoUrl) {
   return md
 }
 
+/**
+ * Prepends a new release entry to CHANGELOG.md.
+ * Creates the file with a default header if it doesn't exist.
+ * @param {string} newEntry - Markdown section to insert.
+ */
 function updateChangelog(newEntry) {
   if (existsSync(CHANGELOG_PATH)) {
     const existing = readFileSync(CHANGELOG_PATH, 'utf-8')
