@@ -6,11 +6,17 @@ export function getNpxCommand(platform = process.platform) {
   return platform === "win32" ? "npx.cmd" : "npx";
 }
 
-export function installSkill(skillPath) {
+export function buildInstallArgs(skillPath, agents = []) {
   const { repo, skillName } = parseSkillPath(skillPath);
   const args = ["-y", "skills", "add", repo];
   if (skillName) args.push("--skill", skillName);
   args.push("-y");
+  if (agents.length > 0) args.push("-a", ...agents);
+  return args;
+}
+
+export function installSkill(skillPath, agents = []) {
+  const args = buildInstallArgs(skillPath, agents);
   return new Promise((resolve) => {
     const child = spawn(getNpxCommand(), args, {
       stdio: ["pipe", "pipe", "pipe"],
@@ -38,8 +44,8 @@ export function installSkill(skillPath) {
  * Parallel installer with animated spinners and live status.
  * Falls back to sequential output for non-TTY environments.
  */
-export async function installAll(skills) {
-  if (!process.stdout.isTTY) return installAllSimple(skills);
+export async function installAll(skills, agents = []) {
+  if (!process.stdout.isTTY) return installAllSimple(skills, agents);
 
   const CONCURRENCY = 3;
   const total = skills.length;
@@ -98,7 +104,7 @@ export async function installAll(skills) {
       state.status = "installing";
       render();
 
-      const result = await installSkill(state.skill);
+      const result = await installSkill(state.skill, agents);
 
       if (result.success) {
         state.status = "success";
@@ -123,13 +129,13 @@ export async function installAll(skills) {
   return { installed, failed, errors };
 }
 
-async function installAllSimple(skills) {
+async function installAllSimple(skills, agents = []) {
   let installed = 0;
   let failed = 0;
   const errors = [];
 
   for (const { skill } of skills) {
-    const result = await installSkill(skill);
+    const result = await installSkill(skill, agents);
 
     if (result.success) {
       console.log(green(`   ✔ ${skill}`));
