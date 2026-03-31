@@ -593,7 +593,7 @@ const skillsMap = [...SKILLS_MAP].sort((a: any, b: any) => {
         }
 
         const line = document.createElement('p')
-        line.innerHTML = html
+        line.innerHTML = html || '&nbsp;'
         if ((step as any).class) line.className = (step as any).class
         body.appendChild(line)
         body.scrollTop = body.scrollHeight
