@@ -3,8 +3,9 @@
 import { resolve, dirname, join } from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+
 import { detectTechnologies, collectSkills } from "./lib.mjs";
-import { bold, dim, green, yellow, cyan, magenta, red, gray, white, pink, SHOW_CURSOR } from "./colors.mjs";
+import { bold, dim, green, yellow, cyan, magenta, red, pink, SHOW_CURSOR } from "./colors.mjs";
 import { printBanner, multiSelect, formatTime } from "./ui.mjs";
 import { installAll } from "./installer.mjs";
 
@@ -80,23 +81,18 @@ function printDetected(detected, combos, isFrontend) {
     console.log();
 
     const COLS = 3;
-    const maxNameLen = Math.max(...allTech.map((t) => t.name.length));
-    const colWidth = maxNameLen + 3;
-    const rows = Math.ceil(allTech.length / COLS);
+    const colWidth = Math.max(...allTech.map((t) => t.name.length)) + 3;
 
-    for (let r = 0; r < rows; r++) {
-      let line = "     ";
-      for (let c = 0; c < COLS; c++) {
-        const idx = r * COLS + c;
-        if (idx < allTech.length) {
-          const tech = allTech[idx];
-          const hasSkills = tech.skills.length > 0;
-          const icon = hasSkills ? green("✔") : dim("●");
-          const padded = tech.name.padEnd(colWidth);
-          line += `${icon} ${hasSkills ? padded : dim(padded)}`;
-        }
-      }
-      console.log(line);
+    const formatTech = (tech) => {
+      const hasSkills = tech.skills.length > 0;
+      const icon = hasSkills ? green("✔") : dim("●");
+      const name = tech.name.padEnd(colWidth);
+      return `${icon} ${hasSkills ? name : dim(name)}`;
+    };
+
+    for (let i = 0; i < allTech.length; i += COLS) {
+      const row = allTech.slice(i, i + COLS).map(formatTech).join("");
+      console.log(`     ${row}`);
     }
 
     if (combos.length > 0) {
@@ -126,11 +122,11 @@ function printSkillsList(skills) {
   console.log();
   for (let i = 0; i < skills.length; i++) {
     const { skill, sources } = skills[i];
+    const techSources = sources.filter((s) => !s.includes(" + "));
     const pad = " ".repeat(maxLen - skill.length);
     const num = String(i + 1).padStart(2, " ");
-    console.log(
-      dim(`   ${num}.`) + ` ${cyan(skill)}${pad}  ${dim(`← ${sources.join(", ")}`)}`,
-    );
+    const suffix = techSources.length > 0 ? `  ${dim(`← ${techSources.join(", ")}`)}` : "";
+    console.log(dim(`   ${num}.`) + ` ${cyan(skill)}${pad}${suffix}`);
   }
   console.log();
 }
@@ -202,7 +198,10 @@ async function selectSkills(skills, autoYes) {
 
   const selected = await multiSelect(skills, {
     labelFn: (s) => s.skill + " ".repeat(maxLen - s.skill.length),
-    hintFn: (s) => (s.sources.length > 1 ? `← ${s.sources.join(", ")}` : ""),
+    hintFn: (s) => {
+      const techSources = s.sources.filter((src) => !src.includes(" + "));
+      return techSources.length > 1 ? `← ${techSources.join(", ")}` : "";
+    },
     groupFn: (s) => s.sources[0],
   });
 
