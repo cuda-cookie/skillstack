@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.2.0](https://github.com/midudev/autoskills/releases/tag/v0.2.0) (2026-03-31)
+
+### ✨ Features
+
+- feat: add Java/Spring Boot detection and extract skills map to dedicated file [`90bd791`](https://github.com/midudev/autoskills/commit/90bd791)
+- feat: add monorepo workspace detection support [`85e14cd`](https://github.com/midudev/autoskills/commit/85e14cd)
+- feat(autoskills): detect Kotlin Multiplatform and Android via Gradle [`4efd5c9`](https://github.com/midudev/autoskills/commit/4efd5c9)
+- Update autoskills package to version 0.1.6 and add release script [`92216ec`](https://github.com/midudev/autoskills/commit/92216ec)
+- Add CHANGELOG.md for autoskills package [`03127c4`](https://github.com/midudev/autoskills/commit/03127c4)
+
+### 🐛 Bug Fixes
+
+- fix: hide combo source labels from skill list display [`138a895`](https://github.com/midudev/autoskills/commit/138a895)
+- fix: Windows installer by making the npx spawn options platform-aware. [`b661b88`](https://github.com/midudev/autoskills/commit/b661b88)
+
+### 📦 Other Changes
+
+- Enhance release script documentation with JSDoc comments. Added detailed descriptions for changelog generation and update functions to improve clarity and maintainability. [`dbab11d`](https://github.com/midudev/autoskills/commit/dbab11d)
+- Enhance documentation with JSDoc comments across multiple files. Added detailed descriptions for functions in index.mjs, installer.mjs, lib.mjs, ui.mjs, and release.mjs to improve code clarity and maintainability. [`595bfa0`](https://github.com/midudev/autoskills/commit/595bfa0)
+- merge: resolve conflicts with main branch [`97c4cef`](https://github.com/midudev/autoskills/commit/97c4cef)
+- merge: resolve conflicts with main branch [`9505993`](https://github.com/midudev/autoskills/commit/9505993)
+- Merge pull request #10 from dieguedev/main [`31d4727`](https://github.com/midudev/autoskills/commit/31d4727)
+- Merge pull request #6 from sebastiansandoval27/main [`70ca7fb`](https://github.com/midudev/autoskills/commit/70ca7fb)
+- Merge pull request #3 from AlvaroMinarro/feat/kmp-android-detection [`2381250`](https://github.com/midudev/autoskills/commit/2381250)
+- refactor(lib.mjs): Replace outdated tailwind-v4-shadcn SKILL [`d7e01a8`](https://github.com/midudev/autoskills/commit/d7e01a8)
+- Enhance agent installation support in autoskills CLI [`0f90d9b`](https://github.com/midudev/autoskills/commit/0f90d9b)
+
 ## [0.1.6](https://github.com/midudev/autoskills/releases/tag/v0.1.6) (2026-03-30)
 
 ### 🐛 Bug Fixes
