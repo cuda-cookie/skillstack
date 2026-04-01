@@ -103,8 +103,8 @@ npx autoskills --dry-run
 
 ### Authentication
 
-| Technology | Detected from                                                                                                          |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Technology | Detected from                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- |
 | Clerk      | `@clerk/nextjs`, `@clerk/react`, `@clerk/expo`, `@clerk/astro`, `@clerk/remix`, `@clerk/vue`, or any `@clerk/*` scope |
 
 ### Cloud & Deploy
