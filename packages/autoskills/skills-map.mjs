@@ -62,7 +62,10 @@ export const SKILLS_MAP = [
       packages: ["svelte", "@sveltejs/kit"],
       configFiles: ["svelte.config.js"],
     },
-    skills: [],
+    skills: [
+      "ejirocodes/agent-skills/svelte5-best-practices",
+      "sveltejs/ai-tools/svelte-code-writer"
+    ],
   },
   {
     id: "angular",
