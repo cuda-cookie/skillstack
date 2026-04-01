@@ -640,6 +640,7 @@ export const COMBO_SKILLS_MAP = [
     skills: [
       "clerk/skills/clerk-nextjs-patterns",
       "clerk/skills/clerk-setup",
+      "clerk/skills/clerk",
     ],
   },
 ];
