@@ -77,7 +77,7 @@ function printDetected(detected, combos, isFrontend) {
     const withoutSkills = detected.filter((t) => t.skills.length === 0);
     const allTech = [...withSkills, ...withoutSkills];
 
-    console.log(cyan("   ▸ ") + bold("Detected technologies:"));
+    console.log(cyan("   ◆ ") + bold("Detected technologies:"));
     console.log();
 
     const COLS = 3;
@@ -100,7 +100,7 @@ function printDetected(detected, combos, isFrontend) {
 
     if (combos.length > 0) {
       console.log();
-      console.log(magenta("   ▸ ") + bold("Detected combos:"));
+      console.log(magenta("   ◆ ") + bold("Detected combos:"));
       console.log();
       for (const combo of combos) {
         console.log(magenta(`     ⚡ `) + combo.name);
@@ -110,7 +110,7 @@ function printDetected(detected, combos, isFrontend) {
   }
 
   if (isFrontend && detected.length === 0) {
-    console.log(cyan("   ▸ ") + bold("Web frontend detected ") + dim("(from project files)"));
+    console.log(cyan("   ◆ ") + bold("Web frontend detected ") + dim("(from project files)"));
     console.log();
   }
 }
@@ -149,7 +149,7 @@ function formatSkillLabel(skill, { styled = false } = {}) {
 function printSkillsList(skills) {
   const visibleLabels = skills.map((s) => formatSkillLabel(s.skill));
   const maxLen = Math.max(...visibleLabels.map((label) => label.length));
-  console.log(cyan("   ▸ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
+  console.log(cyan("   ◆ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
   console.log();
   for (let i = 0; i < skills.length; i++) {
     const { skill, sources } = skills[i];
@@ -227,7 +227,7 @@ async function selectSkills(skills, autoYes) {
     return skills;
   }
 
-  console.log(cyan("   ▸ ") + bold(`Select skills to install `) + dim(`(${skills.length} found)`));
+  console.log(cyan("   ◆ ") + bold(`Select skills to install `) + dim(`(${skills.length} found)`));
   console.log();
 
   const selected = await multiSelect(skills, {
@@ -308,7 +308,7 @@ async function main() {
     console.log();
   }
 
-  console.log(cyan("   ▸ ") + bold("Installing skills..."));
+  console.log(cyan("   ◆ ") + bold("Installing skills..."));
   console.log(dim(`   Agents: ${resolvedAgents.join(", ")}`));
   console.log();
 
@@ -319,7 +319,7 @@ async function main() {
   if (process.stdout.isTTY) {
     const up = selectedSkills.length + 2;
     process.stdout.write(`\x1b[${up}A\r\x1b[K`);
-    console.log(green("   ▸ ") + bold("Done!"));
+    console.log(green("   ◆ ") + bold("Done!"));
     process.stdout.write(`\x1b[${selectedSkills.length + 1}B`);
   }
 
