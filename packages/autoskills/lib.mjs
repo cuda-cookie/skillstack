@@ -269,6 +269,30 @@ export function resolveWorkspaces(projectDir, preloaded) {
 // ── Detection ─────────────────────────────────────────────────
 
 /**
+ * Reads a Gemfile and extracts gem names.
+ * Returns an array of gem name strings, or an empty array if the file is missing or malformed.
+ * @param {string} dir - Directory containing the Gemfile.
+ * @returns {string[]}
+ */
+export function readGemfile(dir) {
+  const gemfilePath = join(dir, "Gemfile");
+  if (!existsSync(gemfilePath)) return [];
+
+  try {
+    const content = readFileSync(gemfilePath, "utf-8");
+    const gems = [];
+    const gemRegex = /^\s*gem\s+['"]([^'"]+)['"]/gm;
+    let match;
+    while ((match = gemRegex.exec(content)) !== null) {
+      gems.push(match[1]);
+    }
+    return gems;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Reads and parses the package.json from the given directory.
  * Returns the parsed object, or null if the file is missing or malformed.
  */
@@ -344,6 +368,7 @@ function detectTechnologiesInDir(
   const allDepsSet =
     denoImports.length > 0 ? new Set([...allPackages, ...denoImports]) : new Set(allPackages);
   const allDepsArray = denoImports.length > 0 ? [...allDepsSet] : allPackages;
+  const gemNames = readGemfile(dir);
   const detected = [];
   const fileContentCache = new Map();
   const existsCache = new Map();
@@ -377,6 +402,10 @@ function detectTechnologiesInDir(
       found = tech.detect.packagePatterns.some((pattern) =>
         allDepsArray.some((p) => pattern.test(p)),
       );
+    }
+
+    if (!found && tech.detect.gems) {
+      found = tech.detect.gems.some((g) => gemNames.includes(g));
     }
 
     if (!found && tech.detect.configFiles) {
