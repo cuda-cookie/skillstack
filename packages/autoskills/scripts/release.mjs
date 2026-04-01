@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { execSync } from "node:child_process";
-import { readFileSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, rmSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -203,12 +203,70 @@ const repoUrl =
   pkg.repository?.url?.replace(/\.git$/, "") || "https://github.com/midudev/autoskills";
 const currentVersion = pkg.version;
 const newVersion = bumpVersion(currentVersion, bump);
+const originalPkgContent = readFileSync(PKG_PATH, "utf-8");
+const originalChangelogContent = existsSync(CHANGELOG_PATH)
+  ? readFileSync(CHANGELOG_PATH, "utf-8")
+  : null;
+const releaseStartHead = run("git rev-parse HEAD", { cwd: REPO_ROOT });
+
+let commitCreated = false;
+let tagCreated = false;
+
+/**
+ * Restores local repository/files to the state before the release attempt.
+ * This keeps failed releases from leaving bumped versions, tags or commits behind.
+ */
+function rollbackRelease() {
+  console.log("\n↩️  Revirtiendo cambios locales de la release fallida...");
+
+  if (tagCreated) {
+    try {
+      run(`git tag -d v${newVersion}`, { cwd: REPO_ROOT });
+      console.log(`✅ Tag v${newVersion} eliminado`);
+    } catch {
+      console.warn(`⚠️  No se pudo eliminar el tag v${newVersion}`);
+    }
+  }
+
+  if (commitCreated) {
+    try {
+      run(`git reset --hard ${releaseStartHead}`, { cwd: REPO_ROOT });
+      console.log("✅ Commit de release revertido");
+      return;
+    } catch {
+      console.warn("⚠️  No se pudo revertir el commit de release automáticamente");
+    }
+  }
+
+  // If no release commit was created, restore touched files directly.
+  try {
+    writeFileSync(PKG_PATH, originalPkgContent);
+
+    if (originalChangelogContent === null) {
+      if (existsSync(CHANGELOG_PATH)) {
+        rmSync(CHANGELOG_PATH);
+      }
+    } else {
+      writeFileSync(CHANGELOG_PATH, originalChangelogContent);
+    }
+
+    run("git restore --staged package.json CHANGELOG.md", { cwd: ROOT });
+    console.log("✅ package.json y CHANGELOG.md restaurados");
+  } catch {
+    console.warn("⚠️  No se pudieron restaurar todos los archivos automáticamente");
+  }
+}
 
 console.log(`\n📦 ${pkg.name} ${currentVersion} → ${newVersion} (${bump})\n`);
 
-// 1. Ensure working directory is clean (except package.json which may have been bumped manually)
+// 1. Ensure release is run only on main and from a fully clean working tree.
+const currentBranch = run("git branch --show-current", { cwd: REPO_ROOT });
+if (currentBranch !== "main") {
+  fail(`La release solo se puede ejecutar en main. Rama actual: ${currentBranch}`);
+}
+
 const status = run("git status --porcelain -- .", { cwd: REPO_ROOT });
-const dirtyFiles = status.split("\n").filter((f) => f.trim() && !f.includes("package.json"));
+const dirtyFiles = status.split("\n").filter((f) => f.trim());
 if (dirtyFiles.length) {
   fail(`Hay cambios sin commitear:\n${dirtyFiles.join("\n")}`);
 }
@@ -235,29 +293,37 @@ const changelogEntry = buildChangelog(newVersion, categories, repoUrl);
 
 console.log(changelogEntry);
 
-// 4. Update version in package.json
-pkg.version = newVersion;
-writeFileSync(PKG_PATH, JSON.stringify(pkg, null, 2) + "\n");
-console.log(`✅ package.json actualizado a ${newVersion}`);
+try {
+  // 4. Update version in package.json
+  pkg.version = newVersion;
+  writeFileSync(PKG_PATH, JSON.stringify(pkg, null, 2) + "\n");
+  console.log(`✅ package.json actualizado a ${newVersion}`);
 
-// 5. Update CHANGELOG.md
-updateChangelog(changelogEntry);
-console.log("✅ CHANGELOG.md actualizado");
+  // 5. Update CHANGELOG.md
+  updateChangelog(changelogEntry);
+  console.log("✅ CHANGELOG.md actualizado");
 
-// 6. Git commit + tag
-console.log("\n🔖 Creando commit y tag...");
-run(`git add package.json CHANGELOG.md`, { cwd: ROOT });
-run(`git commit -m "release: v${newVersion}"`, { cwd: REPO_ROOT });
-run(`git tag -a v${newVersion} -m "v${newVersion}"`, { cwd: REPO_ROOT });
+  // 6. Git commit + tag
+  console.log("\n🔖 Creando commit y tag...");
+  run(`git add package.json CHANGELOG.md`, { cwd: ROOT });
+  run(`git commit -m "release: v${newVersion}"`, { cwd: REPO_ROOT });
+  commitCreated = true;
+  run(`git tag -a v${newVersion} -m "v${newVersion}"`, { cwd: REPO_ROOT });
+  tagCreated = true;
 
-// 7. Publish to npm
-console.log("\n🚀 Publicando en npm...");
-runVisible("npm publish --access public");
+  // 7. Publish to npm
+  console.log("\n🚀 Publicando en npm...");
+  runVisible("npm publish --access public");
 
-// 8. Push to GitHub
-console.log("\n📤 Pusheando a GitHub...");
-run("git push", { cwd: REPO_ROOT });
-run("git push --tags", { cwd: REPO_ROOT });
+  // 8. Push to GitHub
+  console.log("\n📤 Pusheando a GitHub...");
+  run("git push", { cwd: REPO_ROOT });
+  run("git push --tags", { cwd: REPO_ROOT });
+} catch (error) {
+  rollbackRelease();
+  const message = error instanceof Error ? error.message : String(error);
+  fail(`La release falló y se revirtieron los cambios locales.\n${message}`);
+}
 
 // 9. Create GitHub release
 console.log("\n🏷️  Creando GitHub Release...");
