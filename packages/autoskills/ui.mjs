@@ -72,9 +72,11 @@ export function multiSelect(items, { labelFn, hintFn, groupFn }) {
       }
     }
 
+    const separatorCount = groupCount > 1 ? groupCount - 1 : 0;
+
     function render() {
       if (rendered) {
-        process.stdout.write(`\x1b[${items.length + groupCount + 1}A\r`);
+        process.stdout.write(`\x1b[${items.length + groupCount + separatorCount + 1}A\r`);
       }
       rendered = true;
       process.stdout.write("\x1b[J");
@@ -84,13 +86,16 @@ export function multiSelect(items, { labelFn, hintFn, groupFn }) {
     function draw() {
       const count = selected.filter(Boolean).length;
       let lastGroup = null;
+      let isFirstGroup = true;
 
       for (let i = 0; i < items.length; i++) {
         if (groupFn) {
           const group = groupFn(items[i]);
           if (group !== lastGroup) {
+            if (!isFirstGroup) process.stdout.write("\n");
+            isFirstGroup = false;
             lastGroup = group;
-            process.stdout.write(`   ${dim(group)}\n`);
+            process.stdout.write(`   ${bold(yellow(group))}\n`);
           }
         }
         const pointer = i === cursor ? cyan("❯") : " ";
@@ -98,7 +103,7 @@ export function multiSelect(items, { labelFn, hintFn, groupFn }) {
         const label = labelFn(items[i], i);
         const hint = hintFn ? hintFn(items[i], i) : "";
         const line = selected[i] ? label : dim(label);
-        process.stdout.write(`   ${pointer} ${check} ${line}${hint ? "  " + dim(hint) : ""}\n`);
+        process.stdout.write(`     ${pointer} ${check} ${line}${hint ? "  " + dim(hint) : ""}\n`);
       }
       process.stdout.write("\n");
       process.stdout.write(
