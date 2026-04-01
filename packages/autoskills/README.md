@@ -46,7 +46,7 @@ npx autoskills --dry-run
 
 ## Supported Technologies
 
-`autoskills` detects **39+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
+`autoskills` detects **46+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
 
 ### Frameworks & Libraries
 
@@ -66,6 +66,8 @@ npx autoskills --dry-run
 | Remotion | `remotion`, `@remotion/cli` |
 | GSAP | `gsap` package |
 | Express | `express` package |
+| Hono | `hono` package |
+| NestJS | `@nestjs/core` package |
 
 ### Styling & UI
 
@@ -84,6 +86,7 @@ npx autoskills --dry-run
 | Deno | `deno.json`, `deno.jsonc`, `deno.lock` |
 | Vite | `vite` package or `vite.config.*` |
 | Turborepo | `turbo` package or `turbo.json` |
+| Vitest | `vitest` package or `vitest.config.*` |
 | oxlint | `oxlint` package or `.oxlintrc.json` |
 
 ### Backend & Data
@@ -92,6 +95,9 @@ npx autoskills --dry-run
 |---|---|
 | Supabase | `@supabase/supabase-js`, `@supabase/ssr` |
 | Neon Postgres | `@neondatabase/serverless` |
+| Prisma | `prisma`, `@prisma/client` |
+| Drizzle ORM | `drizzle-orm`, `drizzle-kit` |
+| Stripe | `stripe`, `@stripe/stripe-js`, `@stripe/react-stripe-js` |
 | Better Auth | `better-auth` package |
 
 ### Cloud & Deploy
@@ -120,6 +126,7 @@ npx autoskills --dry-run
 | Playwright | `@playwright/test`, `playwright` or `playwright.config.*` |
 | SwiftUI | `Package.swift` |
 | WordPress | `wp-config.php`, `@wordpress/*`, `composer.json` with wpackagist, theme `style.css` |
+| Tauri | `@tauri-apps/api`, `@tauri-apps/cli` or `src-tauri/tauri.conf.json` |
 
 ### Web Frontend Detection
 

@@ -490,6 +490,82 @@ export const SKILLS_MAP = [
       "github/awesome-copilot/java-springboot",
     ],
   },
+  {
+    id: "prisma",
+    name: "Prisma",
+    detect: {
+      packages: ["prisma", "@prisma/client"],
+    },
+    skills: [
+      "prisma/skills/prisma-database-setup",
+      "prisma/skills/prisma-client-api",
+      "prisma/skills/prisma-cli",
+      "prisma/skills/prisma-postgres",
+    ],
+  },
+  {
+    id: "stripe",
+    name: "Stripe",
+    detect: {
+      packages: ["stripe", "@stripe/stripe-js", "@stripe/react-stripe-js"],
+    },
+    skills: [
+      "stripe/ai/stripe-best-practices",
+      "stripe/ai/upgrade-stripe",
+    ],
+  },
+  {
+    id: "hono",
+    name: "Hono",
+    detect: {
+      packages: ["hono"],
+    },
+    skills: [
+      "yusukebe/hono-skill/hono",
+    ],
+  },
+  {
+    id: "vitest",
+    name: "Vitest",
+    detect: {
+      packages: ["vitest"],
+      configFiles: ["vitest.config.ts", "vitest.config.js", "vitest.config.mts"],
+    },
+    skills: [
+      "antfu/skills/vitest",
+    ],
+  },
+  {
+    id: "drizzle",
+    name: "Drizzle ORM",
+    detect: {
+      packages: ["drizzle-orm", "drizzle-kit"],
+    },
+    skills: [
+      "bobmatnyc/claude-mpm-skills/drizzle-orm",
+    ],
+  },
+  {
+    id: "nestjs",
+    name: "NestJS",
+    detect: {
+      packages: ["@nestjs/core"],
+    },
+    skills: [
+      "kadajett/agent-nestjs-skills/nestjs-best-practices",
+    ],
+  },
+  {
+    id: "tauri",
+    name: "Tauri",
+    detect: {
+      packages: ["@tauri-apps/api", "@tauri-apps/cli"],
+      configFiles: ["src-tauri/tauri.conf.json"],
+    },
+    skills: [
+      "nodnarbnitram/claude-code-extensions/tauri-v2",
+    ],
+  },
 ];
 
 // ── Combo Skills Map (cross-technology) ──────────────────────
