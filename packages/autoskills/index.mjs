@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { detectTechnologies, collectSkills, detectAgents } from "./lib.mjs";
-import { bold, dim, green, yellow, cyan, magenta, red, pink, SHOW_CURSOR } from "./colors.mjs";
+import { bold, dim, green, yellow, cyan, magenta, red, pink, gray, SHOW_CURSOR } from "./colors.mjs";
 import { printBanner, multiSelect, formatTime } from "./ui.mjs";
 import { installAll } from "./installer.mjs";
 
@@ -116,20 +116,50 @@ function printDetected(detected, combos, isFrontend) {
 }
 
 /**
+ * Builds a cleaner, human-readable skill label for CLI output.
+ * - URLs are kept as-is.
+ * - 3-segment paths (`author/group/skill`) are rendered as `author › skill`.
+ * - Any other format is kept as-is.
+ * @param {string} skill
+ * @param {{ styled?: boolean }} [opts]
+ * @returns {string}
+ */
+function formatSkillLabel(skill, { styled = false } = {}) {
+  if (/^https?:\/\//i.test(skill)) {
+    return styled ? cyan(skill) : skill;
+  }
+
+  const parts = skill.split("/");
+  if (parts.length !== 3) {
+    return styled ? cyan(skill) : skill;
+  }
+
+  const [author, , skillName] = parts;
+  if (!styled) {
+    return `${author} › ${skillName}`;
+  }
+
+  return `${gray(author)} ${gray("›")} ${cyan(bold(skillName))}`;
+}
+
+/**
  * Prints a numbered list of skills with their source technologies.
  * @param {{ skill: string, sources: string[] }[]} skills
  */
 function printSkillsList(skills) {
-  const maxLen = Math.max(...skills.map((s) => s.skill.length));
+  const visibleLabels = skills.map((s) => formatSkillLabel(s.skill));
+  const maxLen = Math.max(...visibleLabels.map((label) => label.length));
   console.log(cyan("   ▸ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
   console.log();
   for (let i = 0; i < skills.length; i++) {
     const { skill, sources } = skills[i];
+    const label = formatSkillLabel(skill);
+    const styledLabel = formatSkillLabel(skill, { styled: true });
     const techSources = sources.filter((s) => !s.includes(" + "));
-    const pad = " ".repeat(maxLen - skill.length);
+    const pad = " ".repeat(maxLen - label.length);
     const num = String(i + 1).padStart(2, " ");
     const suffix = techSources.length > 0 ? `  ${dim(`← ${techSources.join(", ")}`)}` : "";
-    console.log(dim(`   ${num}.`) + ` ${cyan(skill)}${pad}${suffix}`);
+    console.log(dim(`   ${num}.`) + ` ${styledLabel}${pad}${suffix}`);
   }
   console.log();
 }
@@ -189,7 +219,8 @@ function printSummary({ installed, failed, errors, elapsed, verbose }) {
  * @returns {Promise<{ skill: string, sources: string[] }[]>} Selected skills.
  */
 async function selectSkills(skills, autoYes) {
-  const maxLen = Math.max(...skills.map((s) => s.skill.length));
+  const visibleLabels = skills.map((s) => formatSkillLabel(s.skill));
+  const maxLen = Math.max(...visibleLabels.map((label) => label.length));
 
   if (autoYes) {
     printSkillsList(skills);
@@ -200,7 +231,11 @@ async function selectSkills(skills, autoYes) {
   console.log();
 
   const selected = await multiSelect(skills, {
-    labelFn: (s) => s.skill + " ".repeat(maxLen - s.skill.length),
+    labelFn: (s) => {
+      const label = formatSkillLabel(s.skill);
+      const styledLabel = formatSkillLabel(s.skill, { styled: true });
+      return styledLabel + " ".repeat(maxLen - label.length);
+    },
     hintFn: (s) => {
       const techSources = s.sources.filter((src) => !src.includes(" + "));
       return techSources.length > 1 ? `← ${techSources.join(", ")}` : "";
