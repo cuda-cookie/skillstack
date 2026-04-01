@@ -368,7 +368,7 @@ function detectTechnologiesInDir(
   const allDepsSet =
     denoImports.length > 0 ? new Set([...allPackages, ...denoImports]) : new Set(allPackages);
   const allDepsArray = denoImports.length > 0 ? [...allDepsSet] : allPackages;
-  const gemNames = readGemfile(dir);
+  let gemNames;
   const detected = [];
   const fileContentCache = new Map();
   const existsCache = new Map();
@@ -404,12 +404,13 @@ function detectTechnologiesInDir(
       );
     }
 
-    if (!found && tech.detect.gems) {
-      found = tech.detect.gems.some((g) => gemNames.includes(g));
-    }
-
     if (!found && tech.detect.configFiles) {
       found = tech.detect.configFiles.some((f) => cachedExists(join(dir, f)));
+    }
+
+    if (!found && tech.detect.gems) {
+      if (gemNames === undefined) gemNames = readGemfile(dir);
+      found = tech.detect.gems.some((g) => gemNames.includes(g));
     }
 
     if (!found && tech.detect.configFileContent) {
