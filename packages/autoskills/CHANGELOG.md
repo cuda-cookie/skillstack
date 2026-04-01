@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.2](https://github.com/midudev/autoskills/releases/tag/v0.2.2) (2026-04-01)
+
+### ✨ Features
+
+- feat: simplificar la salida de detección de Cloudflare en pruebas de CLI [`cf190bd`](https://github.com/midudev/autoskills/commit/cf190bd)
+- feat: mejorar la visualización en multiSelect al agregar separación entre grupos [`b11997d`](https://github.com/midudev/autoskills/commit/b11997d)
+- feat: actualizar iconos en la salida de CLI para mejorar la legibilidad [`0c25238`](https://github.com/midudev/autoskills/commit/0c25238)
+- feat: mejorar la visualización de etiquetas de habilidades en la salida de CLI [`41b0d48`](https://github.com/midudev/autoskills/commit/41b0d48)
+- feat: implementar rollback en caso de fallos durante el proceso de release [`013702f`](https://github.com/midudev/autoskills/commit/013702f)
+
 ## [0.2.1](https://github.com/midudev/autoskills/releases/tag/v0.2.1) (2026-04-01)
 
 ### ✨ Features
