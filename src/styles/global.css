@@ -64,7 +64,9 @@
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.15s ease, translate 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    translate 0.15s ease;
 }
 
 .sponsor-avatar:hover .sponsor-tip {

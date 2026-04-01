@@ -270,10 +270,7 @@ describe("detectTechnologies", () => {
     writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
     const app = join(tmpDir, "app");
     mkdirSync(app, { recursive: true });
-    writeFileSync(
-      join(app, "build.gradle.kts"),
-      'plugins { id("com.android.application") }',
-    );
+    writeFileSync(join(app, "build.gradle.kts"), 'plugins { id("com.android.application") }');
     const { detected } = detectTechnologies(tmpDir);
     assert.ok(detected.some((t) => t.id === "android"));
   });
@@ -298,20 +295,14 @@ plugins {
   });
 
   it("detects Java from pom.xml (Maven project)", () => {
-    writeFileSync(
-      join(tmpDir, "pom.xml"),
-      '<project><groupId>com.example</groupId></project>',
-    );
+    writeFileSync(join(tmpDir, "pom.xml"), "<project><groupId>com.example</groupId></project>");
     const { detected } = detectTechnologies(tmpDir);
     assert.ok(detected.some((t) => t.id === "java"));
   });
 
   it("detects Java from root build.gradle.kts with sourceCompatibility", () => {
     writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
-    writeFileSync(
-      join(tmpDir, "build.gradle.kts"),
-      'sourceCompatibility = JavaVersion.VERSION_17',
-    );
+    writeFileSync(join(tmpDir, "build.gradle.kts"), "sourceCompatibility = JavaVersion.VERSION_17");
     const { detected } = detectTechnologies(tmpDir);
     assert.ok(detected.some((t) => t.id === "java"));
   });
@@ -320,20 +311,14 @@ plugins {
     writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
     const mod = join(tmpDir, "app");
     mkdirSync(mod, { recursive: true });
-    writeFileSync(
-      join(mod, "build.gradle"),
-      "apply plugin: 'java'\nsourceCompatibility = '17'",
-    );
+    writeFileSync(join(mod, "build.gradle"), "apply plugin: 'java'\nsourceCompatibility = '17'");
     const { detected } = detectTechnologies(tmpDir);
     assert.ok(detected.some((t) => t.id === "java"));
   });
 
-  it("detects Java from build.gradle.kts with id(\"java-library\")", () => {
+  it('detects Java from build.gradle.kts with id("java-library")', () => {
     writeFileSync(join(tmpDir, "package.json"), JSON.stringify({}));
-    writeFileSync(
-      join(tmpDir, "build.gradle.kts"),
-      'plugins { id("java-library") }',
-    );
+    writeFileSync(join(tmpDir, "build.gradle.kts"), 'plugins { id("java-library") }');
     const { detected } = detectTechnologies(tmpDir);
     assert.ok(detected.some((t) => t.id === "java"));
   });
@@ -392,10 +377,7 @@ plugins {
   });
 
   it("detects Java but not Spring Boot for a plain Maven project", () => {
-    writeFileSync(
-      join(tmpDir, "pom.xml"),
-      '<project><groupId>com.example</groupId></project>',
-    );
+    writeFileSync(join(tmpDir, "pom.xml"), "<project><groupId>com.example</groupId></project>");
     const { detected } = detectTechnologies(tmpDir);
     const ids = detected.map((t) => t.id);
     assert.ok(ids.includes("java"));
@@ -403,10 +385,7 @@ plugins {
   });
 
   it("returns correct skills for Java detection", () => {
-    writeFileSync(
-      join(tmpDir, "pom.xml"),
-      '<project><groupId>com.example</groupId></project>',
-    );
+    writeFileSync(join(tmpDir, "pom.xml"), "<project><groupId>com.example</groupId></project>");
     const { detected } = detectTechnologies(tmpDir);
     const java = detected.find((t) => t.id === "java");
     assert.ok(java);
@@ -536,10 +515,7 @@ describe("detectTechnologies (monorepo)", () => {
   });
 
   it("detects technologies from workspace subpackages", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["packages/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
     mkdirSync(join(tmpDir, "packages", "web"), { recursive: true });
     writeFileSync(
       join(tmpDir, "packages", "web", "package.json"),
@@ -574,10 +550,7 @@ describe("detectTechnologies (monorepo)", () => {
   });
 
   it("deduplicates technologies across workspaces", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["packages/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
     mkdirSync(join(tmpDir, "packages", "ui"), { recursive: true });
     writeFileSync(
       join(tmpDir, "packages", "ui", "package.json"),
@@ -595,10 +568,7 @@ describe("detectTechnologies (monorepo)", () => {
   });
 
   it("detects config files in workspace directories", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["apps/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["apps/*"] }));
     mkdirSync(join(tmpDir, "apps", "web"), { recursive: true });
     writeFileSync(join(tmpDir, "apps", "web", "package.json"), "{}");
     writeFileSync(join(tmpDir, "apps", "web", "next.config.mjs"), "export default {}");
@@ -660,10 +630,7 @@ describe("detectTechnologies (monorepo)", () => {
   });
 
   it("detects config file content in workspaces", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["workers/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["workers/*"] }));
     mkdirSync(join(tmpDir, "workers", "do-worker"), { recursive: true });
     writeFileSync(join(tmpDir, "workers", "do-worker", "package.json"), "{}");
     writeFileSync(

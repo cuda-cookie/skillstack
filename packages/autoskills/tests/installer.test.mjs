@@ -40,17 +40,48 @@ describe("buildInstallArgs", () => {
 
   it("appends -a with a single agent", () => {
     const args = buildInstallArgs("owner/repo/my-skill", ["cursor"]);
-    assert.deepEqual(args, ["-y", "skills", "add", "owner/repo", "--skill", "my-skill", "-y", "-a", "cursor"]);
+    assert.deepEqual(args, [
+      "-y",
+      "skills",
+      "add",
+      "owner/repo",
+      "--skill",
+      "my-skill",
+      "-y",
+      "-a",
+      "cursor",
+    ]);
   });
 
   it("appends -a with multiple agents", () => {
     const args = buildInstallArgs("owner/repo/my-skill", ["cursor", "claude-code"]);
-    assert.deepEqual(args, ["-y", "skills", "add", "owner/repo", "--skill", "my-skill", "-y", "-a", "cursor", "claude-code"]);
+    assert.deepEqual(args, [
+      "-y",
+      "skills",
+      "add",
+      "owner/repo",
+      "--skill",
+      "my-skill",
+      "-y",
+      "-a",
+      "cursor",
+      "claude-code",
+    ]);
   });
 
   it("passes through wildcard agent", () => {
     const args = buildInstallArgs("owner/repo/my-skill", ["*"]);
-    assert.deepEqual(args, ["-y", "skills", "add", "owner/repo", "--skill", "my-skill", "-y", "-a", "*"]);
+    assert.deepEqual(args, [
+      "-y",
+      "skills",
+      "add",
+      "owner/repo",
+      "--skill",
+      "my-skill",
+      "-y",
+      "-a",
+      "*",
+    ]);
   });
 
   it("handles skill path without skill name", () => {

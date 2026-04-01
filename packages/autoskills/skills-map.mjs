@@ -64,7 +64,7 @@ export const SKILLS_MAP = [
     },
     skills: [
       "ejirocodes/agent-skills/svelte5-best-practices",
-      "sveltejs/ai-tools/svelte-code-writer"
+      "sveltejs/ai-tools/svelte-code-writer",
     ],
   },
   {
@@ -504,10 +504,7 @@ export const SKILLS_MAP = [
     detect: {
       packages: ["stripe", "@stripe/stripe-js", "@stripe/react-stripe-js"],
     },
-    skills: [
-      "stripe/ai/stripe-best-practices",
-      "stripe/ai/upgrade-stripe",
-    ],
+    skills: ["stripe/ai/stripe-best-practices", "stripe/ai/upgrade-stripe"],
   },
   {
     id: "hono",
@@ -515,9 +512,7 @@ export const SKILLS_MAP = [
     detect: {
       packages: ["hono"],
     },
-    skills: [
-      "yusukebe/hono-skill/hono",
-    ],
+    skills: ["yusukebe/hono-skill/hono"],
   },
   {
     id: "vitest",
@@ -526,9 +521,7 @@ export const SKILLS_MAP = [
       packages: ["vitest"],
       configFiles: ["vitest.config.ts", "vitest.config.js", "vitest.config.mts"],
     },
-    skills: [
-      "antfu/skills/vitest",
-    ],
+    skills: ["antfu/skills/vitest"],
   },
   {
     id: "drizzle",
@@ -536,9 +529,7 @@ export const SKILLS_MAP = [
     detect: {
       packages: ["drizzle-orm", "drizzle-kit"],
     },
-    skills: [
-      "bobmatnyc/claude-mpm-skills/drizzle-orm",
-    ],
+    skills: ["bobmatnyc/claude-mpm-skills/drizzle-orm"],
   },
   {
     id: "nestjs",
@@ -546,9 +537,7 @@ export const SKILLS_MAP = [
     detect: {
       packages: ["@nestjs/core"],
     },
-    skills: [
-      "kadajett/agent-nestjs-skills/nestjs-best-practices",
-    ],
+    skills: ["kadajett/agent-nestjs-skills/nestjs-best-practices"],
   },
   {
     id: "tauri",
@@ -557,9 +546,7 @@ export const SKILLS_MAP = [
       packages: ["@tauri-apps/api", "@tauri-apps/cli"],
       configFiles: ["src-tauri/tauri.conf.json"],
     },
-    skills: [
-      "nodnarbnitram/claude-code-extensions/tauri-v2",
-    ],
+    skills: ["nodnarbnitram/claude-code-extensions/tauri-v2"],
   },
 ];
 

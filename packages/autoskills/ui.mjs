@@ -1,4 +1,14 @@
-import { bold, dim, green, yellow, cyan, gray, white, HIDE_CURSOR, SHOW_CURSOR } from "./colors.mjs";
+import {
+  bold,
+  dim,
+  green,
+  yellow,
+  cyan,
+  gray,
+  white,
+  HIDE_CURSOR,
+  SHOW_CURSOR,
+} from "./colors.mjs";
 
 /**
  * Formats a duration in milliseconds into a human-readable string.

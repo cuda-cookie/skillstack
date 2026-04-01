@@ -26,10 +26,7 @@ describe("resolveWorkspaces", () => {
   });
 
   it("detects npm/yarn workspaces (array format)", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["packages/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
     mkdirSync(join(tmpDir, "packages", "app-a"), { recursive: true });
     writeFileSync(join(tmpDir, "packages", "app-a", "package.json"), "{}");
     mkdirSync(join(tmpDir, "packages", "app-b"), { recursive: true });
@@ -69,10 +66,7 @@ describe("resolveWorkspaces", () => {
   });
 
   it("pnpm-workspace.yaml takes precedence over package.json workspaces", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["other/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["other/*"] }));
     writeFileSync(join(tmpDir, "pnpm-workspace.yaml"), "packages:\n  - packages/*\n");
     mkdirSync(join(tmpDir, "packages", "core"), { recursive: true });
     writeFileSync(join(tmpDir, "packages", "core", "package.json"), "{}");
@@ -85,10 +79,7 @@ describe("resolveWorkspaces", () => {
   });
 
   it("skips directories without package.json", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["packages/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
     mkdirSync(join(tmpDir, "packages", "has-pkg"), { recursive: true });
     writeFileSync(join(tmpDir, "packages", "has-pkg", "package.json"), "{}");
     mkdirSync(join(tmpDir, "packages", "no-pkg"), { recursive: true });
@@ -99,10 +90,7 @@ describe("resolveWorkspaces", () => {
   });
 
   it("skips SCAN_SKIP_DIRS like node_modules", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: ["packages/*"] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: ["packages/*"] }));
     mkdirSync(join(tmpDir, "packages", "node_modules"), { recursive: true });
     writeFileSync(join(tmpDir, "packages", "node_modules", "package.json"), "{}");
     mkdirSync(join(tmpDir, "packages", "real-pkg"), { recursive: true });
@@ -142,7 +130,10 @@ describe("resolveWorkspaces", () => {
   });
 
   it("handles pnpm-workspace.yaml with quoted patterns", () => {
-    writeFileSync(join(tmpDir, "pnpm-workspace.yaml"), "packages:\n  - 'packages/*'\n  - \"apps/*\"\n");
+    writeFileSync(
+      join(tmpDir, "pnpm-workspace.yaml"),
+      "packages:\n  - 'packages/*'\n  - \"apps/*\"\n",
+    );
     mkdirSync(join(tmpDir, "packages", "a"), { recursive: true });
     writeFileSync(join(tmpDir, "packages", "a", "package.json"), "{}");
     mkdirSync(join(tmpDir, "apps", "b"), { recursive: true });
@@ -153,15 +144,15 @@ describe("resolveWorkspaces", () => {
   });
 
   it("returns empty for pnpm-workspace.yaml without packages key", () => {
-    writeFileSync(join(tmpDir, "pnpm-workspace.yaml"), "# empty config\nsome_other_key:\n  - foo\n");
+    writeFileSync(
+      join(tmpDir, "pnpm-workspace.yaml"),
+      "# empty config\nsome_other_key:\n  - foo\n",
+    );
     assert.deepStrictEqual(resolveWorkspaces(tmpDir), []);
   });
 
   it("returns empty for empty workspaces array", () => {
-    writeFileSync(
-      join(tmpDir, "package.json"),
-      JSON.stringify({ workspaces: [] }),
-    );
+    writeFileSync(join(tmpDir, "package.json"), JSON.stringify({ workspaces: [] }));
     assert.deepStrictEqual(resolveWorkspaces(tmpDir), []);
   });
 });
