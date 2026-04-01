@@ -211,8 +211,9 @@ describe("CLI", () => {
       const output = run(["--dry-run"], tmpDir);
 
       assert.ok(output.includes("Cloudflare"));
-      assert.ok(output.includes("cloudflare/skills/cloudflare"));
-      assert.ok(output.includes("cloudflare/skills/wrangler"));
+      assert.ok(output.includes("cloudflare"));
+      assert.ok(output.includes("wrangler"));
+      assert.ok(!output.includes("cloudflare/skills/cloudflare"));
       assert.ok(output.includes("workers-best-practices"));
     });
 
@@ -238,7 +239,8 @@ describe("CLI", () => {
       const output = run(["--dry-run"], tmpDir);
 
       assert.ok(output.includes("Durable Objects"));
-      assert.ok(output.includes("cloudflare/skills/durable-objects"));
+      assert.ok(output.includes("durable-objects"));
+      assert.ok(!output.includes("cloudflare/skills/durable-objects"));
     });
 
     it("detects Cloudflare AI from wrangler.json content", () => {
@@ -320,7 +322,8 @@ describe("CLI", () => {
       const output = run(["--dry-run"], tmpDir);
 
       assert.ok(output.includes("Cloudflare"));
-      assert.ok(output.includes("cloudflare/skills/cloudflare"));
+      assert.ok(output.includes("cloudflare"));
+      assert.ok(!output.includes("cloudflare/skills/cloudflare"));
       assert.ok(output.includes("workers-best-practices"));
     });
 
