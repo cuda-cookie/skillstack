@@ -701,6 +701,7 @@ export const AGENT_FOLDER_MAP = {
   ".supermaven": "supermaven",
   ".codebuddy": "codebuddy",
   ".continue": "continue",
+  ".kiro": "kiro",
 };
 
 export const WEB_FRONTEND_EXTENSIONS = new Set([
