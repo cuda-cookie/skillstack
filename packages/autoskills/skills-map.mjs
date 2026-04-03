@@ -386,7 +386,13 @@ export const SKILLS_MAP = [
     detect: {
       configFiles: ["Package.swift"],
     },
-    skills: ["avdlee/swiftui-agent-skill/swiftui-expert-skill"],
+    skills: [
+      "avdlee/swiftui-agent-skill/swiftui-expert-skill",
+      "avdlee/swift-concurrency-agent-skill",
+      "avdlee/xcode-build-optimization-agent-skill",
+      "avdlee/swift-testing-agent-skill",
+      "avdlee/core-data-agent-skill",
+    ],
   },
   {
     id: "oxlint",
