@@ -694,7 +694,7 @@ export const COMBO_SKILLS_MAP = [
 
 // ── Frontend Detection ────────────────────────────────────────
 
-export const FRONTEND_PACKAGES = [
+export const FRONTEND_PACKAGES = new Set([
   "react",
   "vue",
   "svelte",
@@ -706,7 +706,7 @@ export const FRONTEND_PACKAGES = [
   "preact",
   "nuxt",
   "@sveltejs/kit",
-];
+]);
 
 export const FRONTEND_BONUS_SKILLS = [
   "anthropics/skills/frontend-design",
