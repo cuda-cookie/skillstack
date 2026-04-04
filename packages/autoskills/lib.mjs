@@ -113,6 +113,7 @@ export function hasWebFrontendFiles(projectDir, maxDepth = 3) {
       if (entry.isFile()) {
         const name = entry.name;
         if (name.endsWith(".blade.php")) return true;
+
         const dot = name.lastIndexOf(".");
         if (dot !== -1 && WEB_FRONTEND_EXTENSIONS.has(name.slice(dot))) return true;
       } else if (entry.isDirectory() && depth < maxDepth) {

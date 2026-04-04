@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { parseSkillPath } from "./lib.mjs";
-import { dim, green, cyan, red, HIDE_CURSOR, SHOW_CURSOR, SPINNER } from "./colors.mjs";
+import { log, write, dim, green, cyan, red, HIDE_CURSOR, SHOW_CURSOR, SPINNER } from "./colors.mjs";
 
 /**
  * Returns the platform-appropriate npx executable name.
@@ -91,30 +91,30 @@ export async function installAll(skills, agents = []) {
 
   function render() {
     if (rendered) {
-      process.stdout.write(`\x1b[${total}A\r`);
+      write(`\x1b[${total}A\r`);
     }
     rendered = true;
-    process.stdout.write("\x1b[J");
+    write("\x1b[J");
 
     for (const state of states) {
       switch (state.status) {
         case "pending":
-          process.stdout.write(dim(`   ◌ ${state.name}`) + "\n");
+          write(dim(`   ◌ ${state.name}`) + "\n");
           break;
         case "installing":
-          process.stdout.write(cyan(`   ${SPINNER[frame]}`) + ` ${state.name}...\n`);
+          write(cyan(`   ${SPINNER[frame]}`) + ` ${state.name}...\n`);
           break;
         case "success":
-          process.stdout.write(green(`   ✔ ${state.name}`) + "\n");
+          write(green(`   ✔ ${state.name}`) + "\n");
           break;
         case "failed":
-          process.stdout.write(red(`   ✘ ${state.name}`) + dim(" — failed") + "\n");
+          write(red(`   ✘ ${state.name}`) + dim(" — failed") + "\n");
           break;
       }
     }
   }
 
-  process.stdout.write(HIDE_CURSOR);
+  write(HIDE_CURSOR);
 
   const timer = setInterval(() => {
     frame = (frame + 1) % SPINNER.length;
@@ -153,7 +153,7 @@ export async function installAll(skills, agents = []) {
 
   clearInterval(timer);
   render();
-  process.stdout.write(SHOW_CURSOR);
+  write(SHOW_CURSOR);
 
   return { installed, failed, errors };
 }
@@ -174,10 +174,10 @@ async function installAllSimple(skills, agents = []) {
     const result = await installSkill(skill, agents);
 
     if (result.success) {
-      console.log(green(`   ✔ ${skill}`));
+      log(green(`   ✔ ${skill}`));
       installed++;
     } else {
-      console.log(red(`   ✘ ${skill}`) + dim(" — failed"));
+      log(red(`   ✘ ${skill}`) + dim(" — failed"));
       errors.push({ name: skill, output: result.output });
       failed++;
     }
