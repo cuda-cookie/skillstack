@@ -195,13 +195,21 @@ function expandWorkspacePatterns(projectDir, patterns) {
         if (!entry.isDirectory() || SCAN_SKIP_DIRS.has(entry.name) || entry.name.startsWith("."))
           continue;
         const wsDir = join(parent, entry.name);
-        if (existsSync(join(wsDir, "package.json")) || existsSync(join(wsDir, "deno.json")) || existsSync(join(wsDir, "deno.jsonc"))) {
+        if (
+          existsSync(join(wsDir, "package.json")) ||
+          existsSync(join(wsDir, "deno.json")) ||
+          existsSync(join(wsDir, "deno.jsonc"))
+        ) {
           dirs.push(wsDir);
         }
       }
     } else {
       const wsDir = join(projectDir, pattern);
-      if (existsSync(join(wsDir, "package.json")) || existsSync(join(wsDir, "deno.json")) || existsSync(join(wsDir, "deno.jsonc"))) {
+      if (
+        existsSync(join(wsDir, "package.json")) ||
+        existsSync(join(wsDir, "deno.json")) ||
+        existsSync(join(wsDir, "deno.jsonc"))
+      ) {
         dirs.push(wsDir);
       }
     }
@@ -243,7 +251,8 @@ export function resolveWorkspaces(projectDir, preloaded) {
     }
   }
 
-  const denoJson = preloaded?.denoJson !== undefined ? preloaded.denoJson : readDenoJson(projectDir);
+  const denoJson =
+    preloaded?.denoJson !== undefined ? preloaded.denoJson : readDenoJson(projectDir);
   if (denoJson?.workspace) {
     const members = Array.isArray(denoJson.workspace) ? denoJson.workspace : [];
     if (members.length > 0) {
@@ -300,7 +309,7 @@ export function getDenoImportNames(denoJson) {
     .map((specifier) => {
       const bare = specifier.replace(/^(?:npm|jsr):/, "");
       if (bare.startsWith("@")) {
-        return bare.replace(/^(@[^\/]+\/[^@]+).*$/, "$1");
+        return bare.replace(/^(@[^/]+\/[^@]+).*$/, "$1");
       }
       return bare.replace(/@.*$/, "");
     });
@@ -323,14 +332,16 @@ export function getAllPackageNames(pkg) {
  * @param {string} dir - Directory to scan.
  * @returns {{ detected: object[], isFrontendByPackages: boolean, isFrontendByFiles: boolean }}
  */
-function detectTechnologiesInDir(dir, { skipFrontendFiles = false, pkg: preloadedPkg, denoJson: preloadedDeno } = {}) {
+function detectTechnologiesInDir(
+  dir,
+  { skipFrontendFiles = false, pkg: preloadedPkg, denoJson: preloadedDeno } = {},
+) {
   const pkg = preloadedPkg !== undefined ? preloadedPkg : readPackageJson(dir);
   const allPackages = getAllPackageNames(pkg);
   const deno = preloadedDeno !== undefined ? preloadedDeno : readDenoJson(dir);
   const denoImports = getDenoImportNames(deno);
-  const allDepsSet = denoImports.length > 0
-    ? new Set([...allPackages, ...denoImports])
-    : new Set(allPackages);
+  const allDepsSet =
+    denoImports.length > 0 ? new Set([...allPackages, ...denoImports]) : new Set(allPackages);
   const allDepsArray = denoImports.length > 0 ? [...allDepsSet] : allPackages;
   const detected = [];
   const fileContentCache = new Map();
@@ -391,9 +402,8 @@ function detectTechnologiesInDir(dir, { skipFrontendFiles = false, pkg: preloade
   }
 
   const isFrontendByPackages = allDepsArray.some((p) => FRONTEND_PACKAGES.has(p));
-  const isFrontendByFiles = isFrontendByPackages || skipFrontendFiles
-    ? false
-    : hasWebFrontendFiles(dir);
+  const isFrontendByFiles =
+    isFrontendByPackages || skipFrontendFiles ? false : hasWebFrontendFiles(dir);
 
   return { detected, isFrontendByPackages, isFrontendByFiles };
 }

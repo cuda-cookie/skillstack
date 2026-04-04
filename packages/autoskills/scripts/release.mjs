@@ -332,7 +332,7 @@ try {
     { cwd: ROOT },
   );
   console.log(`✅ Release v${newVersion} creada en GitHub`);
-} catch (e) {
+} catch {
   console.warn(`⚠️  No se pudo crear la release en GitHub (¿tienes gh instalado y autenticado?)`);
   console.warn(`   Puedes crearla manualmente: ${repoUrl}/releases/new?tag=v${newVersion}`);
 } finally {

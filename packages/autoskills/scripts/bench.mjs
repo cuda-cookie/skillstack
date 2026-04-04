@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { performance } from "node:perf_hooks";
-import { resolve, join } from "node:path";
+import { join } from "node:path";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import {
@@ -11,7 +11,6 @@ import {
   collectSkills,
   detectCombos,
   SKILLS_MAP,
-  COMBO_SKILLS_MAP,
 } from "../lib.mjs";
 
 const RUNS = Number(process.argv[2]) || 50;
@@ -98,7 +97,7 @@ function createJvmFixture() {
     ].join("\n"),
   );
   writeAt(root, "settings.gradle.kts", 'rootProject.name = "my-app"');
-  writeAt(root, "gradle/libs.versions.toml", "[versions]\nkotlin = \"2.1.0\"");
+  writeAt(root, "gradle/libs.versions.toml", '[versions]\nkotlin = "2.1.0"');
   writeAt(
     root,
     "pom.xml",

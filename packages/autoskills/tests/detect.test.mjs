@@ -1,8 +1,13 @@
 import { describe, it } from "node:test";
 import { ok, strictEqual, deepStrictEqual } from "node:assert/strict";
-import { mkdirSync } from "node:fs";
-import { join } from "node:path";
-import { getAllPackageNames, readPackageJson, readDenoJson, getDenoImportNames, detectTechnologies, detectCombos } from "../lib.mjs";
+import {
+  getAllPackageNames,
+  readPackageJson,
+  readDenoJson,
+  getDenoImportNames,
+  detectTechnologies,
+  detectCombos,
+} from "../lib.mjs";
 import { useTmpDir, writePackageJson, writeJson, writeFile, addWorkspace } from "./helpers.mjs";
 
 // ── getAllPackageNames ─────────────────────────────────────────
@@ -142,14 +147,18 @@ describe("detectTechnologies", () => {
   });
 
   it("keeps Three.js detection when React and React Three Fiber are present", () => {
-    writePackageJson(tmp.path, { dependencies: { three: "^0.173.0", react: "^19.0.0", "react-dom": "^19.0.0" } });
+    writePackageJson(tmp.path, {
+      dependencies: { three: "^0.173.0", react: "^19.0.0", "react-dom": "^19.0.0" },
+    });
     const { detected } = detectTechnologies(tmp.path);
     const ids = detected.map((t) => t.id);
     ok(ids.includes("threejs"));
   });
 
   it("detects React + React Three Fiber combo when Three.js is present", () => {
-    writePackageJson(tmp.path, { dependencies: { three: "^0.173.0", react: "^19.0.0", "@react-three/fiber": "^9.0.0" } });
+    writePackageJson(tmp.path, {
+      dependencies: { three: "^0.173.0", react: "^19.0.0", "@react-three/fiber": "^9.0.0" },
+    });
     const { combos } = detectTechnologies(tmp.path);
     const comboIds = combos.map((c) => c.id);
     ok(comboIds.includes("react-react-three-fiber"));
@@ -222,7 +231,11 @@ describe("detectTechnologies", () => {
 
   it("detects Kotlin Multiplatform from nested module build.gradle.kts", () => {
     writePackageJson(tmp.path);
-    writeFile(tmp.path, "composeApp/build.gradle.kts", 'plugins { id("org.jetbrains.kotlin.multiplatform") }');
+    writeFile(
+      tmp.path,
+      "composeApp/build.gradle.kts",
+      'plugins { id("org.jetbrains.kotlin.multiplatform") }',
+    );
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "kotlin-multiplatform"));
   });
@@ -453,7 +466,9 @@ plugins {
   });
 
   it("detects React from deno.json npm: import", () => {
-    writeJson(tmp.path, "deno.json", { imports: { react: "npm:react@^19", "react-dom": "npm:react-dom@^19" } });
+    writeJson(tmp.path, "deno.json", {
+      imports: { react: "npm:react@^19", "react-dom": "npm:react-dom@^19" },
+    });
     const { detected } = detectTechnologies(tmp.path);
     const ids = detected.map((t) => t.id);
     ok(ids.includes("react"));
@@ -466,7 +481,9 @@ plugins {
   });
 
   it("detects Supabase from deno.json npm: scoped import", () => {
-    writeJson(tmp.path, "deno.json", { imports: { "@supabase/supabase-js": "npm:@supabase/supabase-js@^2" } });
+    writeJson(tmp.path, "deno.json", {
+      imports: { "@supabase/supabase-js": "npm:@supabase/supabase-js@^2" },
+    });
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "supabase"));
   });
