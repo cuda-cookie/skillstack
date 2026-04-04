@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.2.3](https://github.com/midudev/autoskills/releases/tag/v0.2.3) (2026-04-04)
+
+### ✨ Features
+
+- refactor: add test helpers and reduce duplication across test files [`fdbb7af`](https://github.com/midudev/autoskills/commit/fdbb7af)
+- feat: add Three.js and @react-three/fiber. [`6d5ac16`](https://github.com/midudev/autoskills/commit/6d5ac16)
+- feat: add support for deno.json and deno.jsonc in workspace resolution and technology detection [`7d92dd1`](https://github.com/midudev/autoskills/commit/7d92dd1)
+- docs: add Clerk and Spring Boot to supported technologies [`d5998e0`](https://github.com/midudev/autoskills/commit/d5998e0)
+- feat: add Kiro agent support [`d5016c5`](https://github.com/midudev/autoskills/commit/d5016c5)
+- feat: add clerk router skill to nextjs-clerk combo [`bec0f69`](https://github.com/midudev/autoskills/commit/bec0f69)
+- feat: add Clerk authentication detection and skills [`abfd4e5`](https://github.com/midudev/autoskills/commit/abfd4e5)
+
+### 🐛 Bug Fixes
+
+- style: fix oxfmt formatting [`4566573`](https://github.com/midudev/autoskills/commit/4566573)
+
+### 📦 Other Changes
+
+- refactor: use if-return instead of switch in bumpVersion [`4ffb3d0`](https://github.com/midudev/autoskills/commit/4ffb3d0)
+- refactor: extract log/write aliases to replace console.log and process.stdout.write [`3a8961f`](https://github.com/midudev/autoskills/commit/3a8961f)
+- Merge pull request #30 from pedrocastellanos/feat-add-threejs-react-three [`9aa3b4d`](https://github.com/midudev/autoskills/commit/9aa3b4d)
+- Merge pull request #32 from John7bigo/feat/read-deno-json [`980e8f1`](https://github.com/midudev/autoskills/commit/980e8f1)
+- Merge pull request #27 from Railly/feat/add-icons-and-docs [`4f4e61d`](https://github.com/midudev/autoskills/commit/4f4e61d)
+- chore: lint and format before release [`e63bada`](https://github.com/midudev/autoskills/commit/e63bada)
+
 ## [0.2.2](https://github.com/midudev/autoskills/releases/tag/v0.2.2) (2026-04-01)
 
 ### ✨ Features
