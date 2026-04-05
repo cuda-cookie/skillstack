@@ -50,11 +50,13 @@ export function printBanner(version) {
  * Interactive multi-select with optional group headers.
  * All items are selected by default.
  */
-export function multiSelect(items, { labelFn, hintFn, groupFn }) {
+export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected }) {
   if (!process.stdin.isTTY) return Promise.resolve(items);
 
   return new Promise((resolve) => {
-    const selected = Array.from({ length: items.length }, () => true);
+    const selected = initialSelected
+      ? initialSelected.slice()
+      : Array.from({ length: items.length }, () => true);
     let cursor = 0;
     let rendered = false;
 
