@@ -201,7 +201,8 @@ function run() {
   const combos = detectCombos(allIds);
 
   console.log(`[synthetic] collectSkills (${largeDetected.length} techs, ${combos.length} combos)`);
-  bench("collectSkills()", () => collectSkills(largeDetected, true, combos));
+  bench("collectSkills()", () =>
+    collectSkills({ detected: largeDetected, isFrontend: true, combos }));
   console.log();
 
   console.log(`[synthetic] detectCombos (${allIds.length} IDs)`);

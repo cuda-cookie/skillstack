@@ -525,19 +525,24 @@ export function getInstalledSkillNames(projectDir) {
  * Aggregates the final list of skills to install from detected technologies,
  * combo matches, and frontend bonus skills. Deduplicates by skill path and
  * tracks which sources contributed each skill.
- * @param {object[]} detected - Technologies found in the project.
- * @param {boolean} isFrontend - Whether the project has a web frontend.
- * @param {object[]} [combos=[]] - Matched combo skill entries.
- * @returns {{ skill: string, sources: string[] }[]} Deduplicated skill list.
+ * @param {object} opts
+ * @param {object[]} opts.detected - Technologies found in the project.
+ * @param {boolean} opts.isFrontend - Whether the project has a web frontend.
+ * @param {object[]} [opts.combos=[]] - Matched combo skill entries.
+ * @param {Set<string>|null} [opts.installedNames=null] - Skill names already installed in the project.
+ * @returns {{ skill: string, sources: string[], installed: boolean }[]} Deduplicated skill list.
  */
-export function collectSkills(detected, isFrontend, combos = []) {
+export function collectSkills({ detected, isFrontend, combos = [], installedNames = null }) {
   const skillMap = new Map();
   const skills = [];
 
   function addSkill(skill, source) {
     const existing = skillMap.get(skill);
     if (!existing) {
-      const entry = { skill, sources: [source] };
+      const installed = installedNames
+        ? installedNames.has(parseSkillPath(skill).skillName)
+        : false;
+      const entry = { skill, sources: [source], installed };
       skillMap.set(skill, entry);
       skills.push(entry);
     } else if (!existing.sources.includes(source)) {

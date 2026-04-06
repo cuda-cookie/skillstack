@@ -49,8 +49,21 @@ export function printBanner(version) {
 /**
  * Interactive multi-select with optional group headers.
  * All items are selected by default.
+ * @param {any[]} items
+ * @param {object} opts
+ * @param {(item: any, i: number) => string} opts.labelFn
+ * @param {(item: any, i: number) => string} [opts.hintFn]
+ * @param {(item: any) => string} [opts.groupFn]
+ * @param {boolean[]} [opts.initialSelected] - Per-item initial selection state (must match items.length).
+ * @param {{ key: string, label: string, fn: (items: any[]) => boolean[] }[]} [opts.shortcuts] - Custom filter shortcuts.
  */
-export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected }) {
+export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected, shortcuts = [] }) {
+  if (initialSelected && initialSelected.length !== items.length) {
+    throw new Error(
+      `initialSelected length (${initialSelected.length}) must match items length (${items.length})`,
+    );
+  }
+
   if (!process.stdin.isTTY) return Promise.resolve(items);
 
   return new Promise((resolve) => {
@@ -106,6 +119,10 @@ export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected }
         write(`     ${pointer} ${check} ${line}${hint ? "  " + dim(hint) : ""}\n`);
       }
       write("\n");
+      const shortcutHints = shortcuts
+        .map((s) => white(bold(`[${s.key}]`)) + dim(` ${s.label}`))
+        .join(dim(" · "));
+      const shortcutPart = shortcuts.length > 0 ? shortcutHints + dim(" · ") : "";
       write(
         dim("   ") +
           white(bold("[↑↓]")) +
@@ -114,6 +131,7 @@ export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected }
           dim(" toggle · ") +
           white(bold("[a]")) +
           dim(" all · ") +
+          shortcutPart +
           white(bold("[enter]")) +
           dim(` confirm (${count}/${items.length})`),
       );
@@ -153,6 +171,15 @@ export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected }
         selected.fill(!allSelected);
         render();
         return;
+      }
+
+      for (const shortcut of shortcuts) {
+        if (key === shortcut.key) {
+          const result = shortcut.fn(items);
+          for (let i = 0; i < selected.length; i++) selected[i] = result[i];
+          render();
+          return;
+        }
       }
 
       if (key === "\x1b[A" || key === "k") {
