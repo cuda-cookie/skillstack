@@ -29,6 +29,7 @@ At this point, you're ready to make your changes! Feel free to ask for help on y
 ## 4. Get the style right
 
 Your patch should follow the same coding conventions and style as the rest of the project. Please ensure:
+
 - Your code is properly linted and formatted before pushing.
 - All new features and bug fixes include relevant tests.
 - Existing tests pass locally before committing.
