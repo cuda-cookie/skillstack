@@ -308,7 +308,19 @@ try {
 
   // 7. Publish to npm
   console.log("\n🚀 Publicando en npm...");
-  runVisible("npm publish --access public");
+  const cleanEnv = Object.fromEntries(
+    Object.entries(process.env).filter(
+      ([k]) =>
+        !k.startsWith("npm_config_") ||
+        k === "npm_config_registry" ||
+        k.startsWith("npm_config_//"),
+    ),
+  );
+  execSync("npm publish --access public", {
+    cwd: ROOT,
+    stdio: "inherit",
+    env: cleanEnv,
+  });
 
   // 8. Push to GitHub
   console.log("\n📤 Pusheando a GitHub...");
