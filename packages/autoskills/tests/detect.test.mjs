@@ -434,6 +434,20 @@ plugins {
     ok(detected.some((t) => t.id === "tauri"));
   });
 
+  it("detects Rust from Cargo.toml", () => {
+    writeFile(tmp.path, "Cargo.toml", '[package]\nname = "my-crate"\nversion = "0.1.0"');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "rust"));
+  });
+
+  it("returns correct skills for Rust detection", () => {
+    writeFile(tmp.path, "Cargo.toml", '[package]\nname = "my-crate"');
+    const { detected } = detectTechnologies(tmp.path);
+    const rust = detected.find((t) => t.id === "rust");
+    ok(rust);
+    ok(rust.skills.includes("apollographql/skills/rust-best-practices"));
+  });
+
   it("detects Clerk from @clerk/nextjs package", () => {
     writePackageJson(tmp.path, { dependencies: { "@clerk/nextjs": "^6.0.0" } });
     const { detected } = detectTechnologies(tmp.path);

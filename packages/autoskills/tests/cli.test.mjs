@@ -352,6 +352,15 @@ describe("CLI", () => {
       ok(output.includes("wp-block-themes"));
     });
 
+    it("detects Rust from Cargo.toml", () => {
+      writeFile(tmp.path, "Cargo.toml", '[package]\nname = "my-crate"\nversion = "0.1.0"');
+
+      const output = run(["--dry-run"], tmp.path);
+
+      ok(output.includes("Rust"));
+      ok(output.includes("rust-best-practices"));
+    });
+
     it("detects web frontend from .html files and installs web fundamentals", () => {
       writeFile(tmp.path, "public/index.html", "<html></html>");
 

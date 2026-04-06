@@ -612,6 +612,14 @@ export const SKILLS_MAP = [
     },
     skills: ["nodnarbnitram/claude-code-extensions/tauri-v2"],
   },
+  {
+    id: "rust",
+    name: "Rust",
+    detect: {
+      configFiles: ["Cargo.toml"],
+    },
+    skills: ["apollographql/skills/rust-best-practices"],
+  },
 ];
 
 // ── Combo Skills Map (cross-technology) ──────────────────────
