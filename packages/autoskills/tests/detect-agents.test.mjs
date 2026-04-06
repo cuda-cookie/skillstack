@@ -26,6 +26,12 @@ describe("detectAgents", () => {
     ok(agents.includes("cursor"));
   });
 
+  it("detects opencode from .opencode/skills", () => {
+    mkdirSync(join(tmp.path, ".opencode", "skills"), { recursive: true });
+    const agents = detectAgents(tmp.path);
+    ok(agents.includes("opencode"));
+  });
+
   it("detects kiro-cli from .kiro/skills", () => {
     mkdirSync(join(tmp.path, ".kiro", "skills"), { recursive: true });
     const agents = detectAgents(tmp.path);
