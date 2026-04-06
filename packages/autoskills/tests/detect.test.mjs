@@ -265,6 +265,64 @@ plugins {
     ok(ids.includes("android"));
   });
 
+  it("detects Java from nested Gradle module declared in settings.gradle.kts", () => {
+    writePackageJson(tmp.path);
+    writeFile(
+      tmp.path,
+      "settings.gradle.kts",
+      'rootProject.name = "my-app"\ninclude("adapters:web")',
+    );
+    writeFile(
+      tmp.path,
+      "adapters/web/build.gradle.kts",
+      "sourceCompatibility = JavaVersion.VERSION_17",
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("detects Kotlin Multiplatform from nested module declared in settings.gradle", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "settings.gradle", "include 'shared'");
+    writeFile(tmp.path, "shared/build.gradle.kts", 'plugins { kotlin("multiplatform") }');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "kotlin-multiplatform"));
+  });
+
+  it("detects Android from deeply nested module in Gradle multi-module project", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "settings.gradle.kts", 'include("feature:login")');
+    writeFile(
+      tmp.path,
+      "feature/login/build.gradle.kts",
+      'plugins { id("com.android.library") }',
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "android"));
+  });
+
+  it("handles settings.gradle with multiple includes on one line", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "settings.gradle", "include 'app', 'core', 'data'");
+    writeFile(
+      tmp.path,
+      "app/build.gradle.kts",
+      'plugins { id("java-library") }',
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "java"));
+  });
+
+  it("handles settings.gradle.kts with multi-line includes", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "settings.gradle.kts", 'include(\n  ":app",\n  ":core"\n)');
+    writeFile(tmp.path, "app/build.gradle.kts", 'plugins { id("java-library") }');
+    writeFile(tmp.path, "core/build.gradle.kts", 'plugins { kotlin("multiplatform") }');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "java"));
+    ok(detected.some((t) => t.id === "kotlin-multiplatform"));
+  });
+
   it("detects Java from pom.xml (Maven project)", () => {
     writeFile(tmp.path, "pom.xml", "<project><groupId>com.example</groupId></project>");
     const { detected } = detectTechnologies(tmp.path);

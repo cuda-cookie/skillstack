@@ -52,8 +52,32 @@ const GRADLE_SCAN_ROOT_FILES = [
 // ── Gradle Scanning ──────────────────────────────────────────
 
 /**
+ * Extracts module paths declared in a `settings.gradle(.kts)` file.
+ * Handles both Kotlin DSL (`include("mod:sub")`) and Groovy (`include 'mod:sub'`)
+ * syntaxes, including multiple modules on a single line.
+ * Colon-separated module names are converted to filesystem paths (`adapters:web` → `adapters/web`).
+ * @param {string} content - Raw file content of settings.gradle(.kts).
+ * @returns {string[]} Module directory paths relative to the project root.
+ */
+function parseSettingsGradleModules(content) {
+  const modules = [];
+  const includeRe = /include\s*\(?\s*([^)]+)/g;
+  const quotedRe = /['"]([^'"]+)['"]/g;
+  let includeMatch;
+  while ((includeMatch = includeRe.exec(content)) !== null) {
+    const args = includeMatch[1];
+    let quotedMatch;
+    while ((quotedMatch = quotedRe.exec(args)) !== null) {
+      modules.push(quotedMatch[1].replace(/:/g, "/"));
+    }
+  }
+  return modules;
+}
+
+/**
  * Builds a list of Gradle build file paths to scan for technology markers.
- * Includes root-level Gradle files and `build.gradle(.kts)` inside immediate subdirectories.
+ * Includes root-level Gradle files, `build.gradle(.kts)` inside immediate subdirectories,
+ * and modules declared in `settings.gradle(.kts)`.
  * @param {string} projectDir - Absolute path to the project root.
  * @returns {string[]} Candidate file paths.
  */
@@ -64,8 +88,17 @@ function gradleLayoutCandidatePaths(projectDir) {
   if (cached) return cached;
 
   const candidates = [];
+  const seen = new Set();
+
+  function add(filePath) {
+    if (!seen.has(filePath)) {
+      candidates.push(filePath);
+      seen.add(filePath);
+    }
+  }
+
   for (const f of GRADLE_SCAN_ROOT_FILES) {
-    candidates.push(join(projectDir, f));
+    add(join(projectDir, f));
   }
   let entries;
   try {
@@ -76,9 +109,27 @@ function gradleLayoutCandidatePaths(projectDir) {
   for (const e of entries) {
     if (!e.isDirectory() || e.name.startsWith(".") || SCAN_SKIP_DIRS.has(e.name)) continue;
     for (const g of ["build.gradle.kts", "build.gradle"]) {
-      candidates.push(join(projectDir, e.name, g));
+      add(join(projectDir, e.name, g));
     }
   }
+
+  // Parse settings.gradle(.kts) for declared modules (handles deep nesting)
+  for (const settingsFile of ["settings.gradle.kts", "settings.gradle"]) {
+    const settingsPath = join(projectDir, settingsFile);
+    let content;
+    try {
+      content = readFileSync(settingsPath, "utf-8");
+    } catch {
+      continue;
+    }
+    for (const modulePath of parseSettingsGradleModules(content)) {
+      for (const g of ["build.gradle.kts", "build.gradle"]) {
+        add(join(projectDir, modulePath, g));
+      }
+    }
+    break; // only use the first settings file found
+  }
+
   _gradleCache.set(projectDir, candidates);
   return candidates;
 }

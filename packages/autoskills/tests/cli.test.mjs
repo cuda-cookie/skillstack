@@ -437,6 +437,27 @@ describe("CLI", () => {
       ok(output.includes("Node.js"));
     });
 
+    it("detects technologies from Gradle multi-module project with --dry-run", () => {
+      writePackageJson(tmp.path);
+      writeFile(
+        tmp.path,
+        "settings.gradle.kts",
+        'rootProject.name = "my-app"\ninclude("adapters:web")',
+      );
+      writeFile(tmp.path, "build.gradle.kts", "sourceCompatibility = JavaVersion.VERSION_17");
+      writeFile(
+        tmp.path,
+        "adapters/web/build.gradle.kts",
+        'plugins { id("org.springframework.boot") }',
+      );
+      writeFile(tmp.path, "src/main/resources/application.properties", "server.port=8080");
+
+      const output = run(["--dry-run"], tmp.path);
+
+      ok(output.includes("Java"));
+      ok(output.includes("Spring Boot"));
+    });
+
     it("adds web fundamentals when npm frontend is detected too", () => {
       writePackageJson(tmp.path, { dependencies: { react: "^19", next: "^15" } });
 
