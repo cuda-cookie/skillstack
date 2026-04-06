@@ -46,7 +46,7 @@ npx autoskills --dry-run
 
 ## Supported Technologies
 
-`autoskills` detects **49+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
+`autoskills` detects **50+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
 
 ### Frameworks & Libraries
 
@@ -86,6 +86,7 @@ npx autoskills --dry-run
 | Node.js    | `package-lock.json`, `yarn.lock`, `pnpm-lock.yaml`, `.nvmrc` |
 | Bun        | `bun.lockb`, `bun.lock`, `bunfig.toml`                       |
 | Deno       | `deno.json`, `deno.jsonc`, `deno.lock`                       |
+| Go         | `go.mod`, `go.work`                                          |
 | Vite       | `vite` package or `vite.config.*`                            |
 | Turborepo  | `turbo` package or `turbo.json`                              |
 | Vitest     | `vitest` package or `vitest.config.*`                        |

@@ -139,6 +139,35 @@ describe("detectTechnologies", () => {
     ok(ids.includes("tailwind"));
   });
 
+  it("detects Go from go.mod", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "go.mod", "module example.com/test\n\ngo 1.24.0\n");
+
+    const { detected } = detectTechnologies(tmp.path);
+    const ids = detected.map((t) => t.id);
+
+    ok(ids.includes("go"));
+  });
+
+  it("detects Go from go.work", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "go.work", "go 1.24.0\n");
+
+    const { detected } = detectTechnologies(tmp.path);
+    const ids = detected.map((t) => t.id);
+
+    ok(ids.includes("go"));
+  });
+
+  it("does not detect Go without go.mod or go.work", () => {
+    writePackageJson(tmp.path);
+
+    const { detected } = detectTechnologies(tmp.path);
+    const ids = detected.map((t) => t.id);
+
+    ok(!ids.includes("go"));
+  });
+
   it("detects Three.js from dependencies", () => {
     writePackageJson(tmp.path, { dependencies: { three: "^0.173.0" } });
     const { detected } = detectTechnologies(tmp.path);

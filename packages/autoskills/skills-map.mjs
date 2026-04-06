@@ -474,6 +474,14 @@ export const SKILLS_MAP = [
     skills: [],
   },
   {
+    id: "go",
+    name: "Go",
+    detect: {
+      configFiles: ["go.mod", "go.work"],
+    },
+    skills: [],
+  },
+  {
     id: "deno",
     name: "Deno",
     detect: {
