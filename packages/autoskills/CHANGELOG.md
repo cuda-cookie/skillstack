@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.2.4](git+https://github.com/midudev/autoskills/releases/tag/v0.2.4) (2026-04-06)
+
+### ✨ Features
+
+- feat(agents): add OpenCode detection [`4b0e23f`](git+https://github.com/midudev/autoskills/commit/4b0e23f)
+- feat: pre-uncheck already installed skills in multi-select [`365e707`](git+https://github.com/midudev/autoskills/commit/365e707)
+- chore: add benchmark script for performance measurement [`ab1c879`](git+https://github.com/midudev/autoskills/commit/ab1c879)
+- feat: add Swift concurrency, Xcode build optimization, Swift Testing and Core Data skills [`1efdc8f`](git+https://github.com/midudev/autoskills/commit/1efdc8f)
+
+### 🐛 Bug Fixes
+
+- fix: resolve npm publish warnings that stripped bin entry [`c76623b`](git+https://github.com/midudev/autoskills/commit/c76623b)
+- fix(agents): map .kiro folder to kiro-cli identifier [`36da4d8`](git+https://github.com/midudev/autoskills/commit/36da4d8)
+- fix: resolve eslint warnings (unused imports, catch param, regex escape) [`db69e54`](git+https://github.com/midudev/autoskills/commit/db69e54)
+- fix: changelog markdown link formatting [`b36f24f`](git+https://github.com/midudev/autoskills/commit/b36f24f)
+
+### 📦 Other Changes
+
+- chore: track pnpm-lock.yaml for deterministic installs [`0c94654`](git+https://github.com/midudev/autoskills/commit/0c94654)
+- refactor: accept options object in collectSkills and improve multiSelect UX [`ba9028a`](git+https://github.com/midudev/autoskills/commit/ba9028a)
+- Merge pull request #38 from Mo3oDev/fix/kiro-cli-agent-id [`8b06245`](git+https://github.com/midudev/autoskills/commit/8b06245)
+- Merge pull request #33 from pol-cova/feat/ios-dev-skills [`9af064f`](git+https://github.com/midudev/autoskills/commit/9af064f)
+- style: format code with consistent line wrapping and whitespace [`3b60dcc`](git+https://github.com/midudev/autoskills/commit/3b60dcc)
+- perf: optimize installation phase with bin pre-warm, concurrency and repo sorting [`76c3ede`](git+https://github.com/midudev/autoskills/commit/76c3ede)
+- perf: optimize detection phase with cached reads, Set lookups and reduced syscalls [`de3e835`](git+https://github.com/midudev/autoskills/commit/de3e835)
+
 ## [0.2.3](https://github.com/midudev/autoskills/releases/tag/v0.2.3) (2026-04-04)
 
 ### ✨ Features
