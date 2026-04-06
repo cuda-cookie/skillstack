@@ -495,6 +495,30 @@ export function parseSkillPath(skill) {
   };
 }
 
+// ── Installed Skills Detection ───────────────────────────────
+
+/**
+ * Returns the names of skills already installed in the project.
+ * Reads `skills-lock.json` first; falls back to directory listing of `.agents/skills/`.
+ * @param {string} projectDir - Absolute path to the project root.
+ * @returns {Set<string>} Skill names (e.g. `"playwright-best-practices"`).
+ */
+export function getInstalledSkillNames(projectDir) {
+  try {
+    const lock = JSON.parse(readFileSync(join(projectDir, "skills-lock.json"), "utf-8"));
+    if (lock?.skills && typeof lock.skills === "object") {
+      return new Set(Object.keys(lock.skills));
+    }
+  } catch {}
+
+  try {
+    const entries = readdirSync(join(projectDir, ".agents", "skills"), { withFileTypes: true });
+    return new Set(entries.filter((e) => e.isDirectory()).map((e) => e.name));
+  } catch {}
+
+  return new Set();
+}
+
 // ── Skill Collection ─────────────────────────────────────────
 
 /**

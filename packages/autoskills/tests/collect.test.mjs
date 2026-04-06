@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import { ok, strictEqual, deepStrictEqual } from "node:assert/strict";
-import { collectSkills } from "../lib.mjs";
+import { collectSkills, getInstalledSkillNames } from "../lib.mjs";
+import { useTmpDir, writeJson, writeFile } from "./helpers.mjs";
 
 describe("collectSkills", () => {
   it("returns empty array when no technologies detected", () => {
@@ -211,5 +212,55 @@ describe("collectSkills", () => {
 
     strictEqual(skills.length, 1);
     strictEqual(skills[0].skill, "vercel-labs/agent-skills/vercel-react-best-practices");
+  });
+
+});
+
+describe("getInstalledSkillNames", () => {
+  const tmp = useTmpDir();
+
+  it("returns empty set when no lockfile and no .agents dir", () => {
+    const result = getInstalledSkillNames(tmp.path);
+    strictEqual(result.size, 0);
+  });
+
+  it("reads skill names from skills-lock.json", () => {
+    writeJson(tmp.path, "skills-lock.json", {
+      version: 1,
+      skills: {
+        "playwright-best-practices": { source: "currents-dev/playwright-best-practices-skill" },
+        "neon-postgres": { source: "neondatabase/agent-skills" },
+      },
+    });
+    const result = getInstalledSkillNames(tmp.path);
+    strictEqual(result.size, 2);
+    ok(result.has("playwright-best-practices"));
+    ok(result.has("neon-postgres"));
+  });
+
+  it("falls back to .agents/skills/ directory when no lockfile", () => {
+    writeFile(tmp.path, ".agents/skills/next-best-practices/.keep");
+    writeFile(tmp.path, ".agents/skills/shadcn/.keep");
+    const result = getInstalledSkillNames(tmp.path);
+    strictEqual(result.size, 2);
+    ok(result.has("next-best-practices"));
+    ok(result.has("shadcn"));
+  });
+
+  it("prefers lockfile over directory listing", () => {
+    writeJson(tmp.path, "skills-lock.json", {
+      version: 1,
+      skills: { "from-lock": { source: "test/repo" } },
+    });
+    writeFile(tmp.path, ".agents/skills/from-dir/.keep");
+    const result = getInstalledSkillNames(tmp.path);
+    strictEqual(result.size, 1);
+    ok(result.has("from-lock"));
+  });
+
+  it("returns empty set for invalid lockfile JSON", () => {
+    writeFile(tmp.path, "skills-lock.json", "not json{{{");
+    const result = getInstalledSkillNames(tmp.path);
+    strictEqual(result.size, 0);
   });
 });

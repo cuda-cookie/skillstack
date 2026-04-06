@@ -4,7 +4,7 @@ import { resolve, dirname, join } from "node:path";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { detectTechnologies, collectSkills, detectAgents } from "./lib.mjs";
+import { detectTechnologies, collectSkills, detectAgents, getInstalledSkillNames, parseSkillPath } from "./lib.mjs";
 import {
   log,
   write,
@@ -166,15 +166,21 @@ function printSkillsList(skills) {
     styledLabel: formatSkillLabel(s.skill, { styled: true }),
   }));
   const maxLen = Math.max(...entries.map((e) => e.label.length));
-  log(cyan("   ◆ ") + bold(`Skills to install `) + dim(`(${skills.length})`));
+  const newCount = skills.filter((s) => !s.installed).length;
+  const installedCount = skills.length - newCount;
+  const countLabel = installedCount > 0
+    ? `(${skills.length}, ${installedCount} already installed)`
+    : `(${skills.length})`;
+  log(cyan("   ◆ ") + bold(`Skills to install `) + dim(countLabel));
   log();
   for (let i = 0; i < entries.length; i++) {
-    const { label, styledLabel, sources } = entries[i];
+    const { label, styledLabel, sources, installed } = entries[i];
     const techSources = sources.filter((s) => !s.includes(" + "));
     const pad = " ".repeat(maxLen - label.length);
     const num = String(i + 1).padStart(2, " ");
-    const suffix = techSources.length > 0 ? `  ${dim(`← ${techSources.join(", ")}`)}` : "";
-    log(dim(`   ${num}.`) + ` ${styledLabel}${pad}${suffix}`);
+    const sourceSuffix = techSources.length > 0 ? `  ${dim(`← ${techSources.join(", ")}`)}` : "";
+    const installedTag = installed ? `  ${dim("(installed)")}` : "";
+    log(dim(`   ${num}.`) + ` ${styledLabel}${pad}${sourceSuffix}${installedTag}`);
   }
   log();
 }
@@ -248,19 +254,26 @@ async function selectSkills(skills, autoYes) {
   }
   const maxLen = Math.max(...[...labelCache.values()].map((v) => v.label.length));
 
-  log(cyan("   ◆ ") + bold(`Select skills to install `) + dim(`(${skills.length} found)`));
+  const newCount = skills.filter((s) => !s.installed).length;
+  const installedCount = skills.length - newCount;
+  const countLabel = installedCount > 0
+    ? `${skills.length} found, ${installedCount} already installed`
+    : `${skills.length} found`;
+  log(cyan("   ◆ ") + bold(`Select skills to install `) + dim(`(${countLabel})`));
   log();
 
   const selected = await multiSelect(skills, {
     labelFn: (s) => {
       const { label, styledLabel } = labelCache.get(s.skill);
-      return styledLabel + " ".repeat(maxLen - label.length);
+      const tag = s.installed ? " " + dim("(installed)") : "";
+      return styledLabel + " ".repeat(maxLen - label.length) + tag;
     },
     hintFn: (s) => {
       const techSources = s.sources.filter((src) => !src.includes(" + "));
       return techSources.length > 1 ? `← ${techSources.join(", ")}` : "";
     },
     groupFn: (s) => s.sources[0],
+    initialSelected: skills.map((s) => !s.installed),
   });
 
   if (selected.length === 0) {
@@ -302,6 +315,10 @@ async function main() {
   printDetected(detected, combos, isFrontend);
 
   const skills = collectSkills(detected, isFrontend, combos);
+  const installedNames = getInstalledSkillNames(projectDir);
+  for (const s of skills) {
+    s.installed = installedNames.has(parseSkillPath(s.skill).skillName);
+  }
   const resolvedAgents = agents.length > 0 ? agents : detectAgents();
 
   if (skills.length === 0) {
