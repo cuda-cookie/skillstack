@@ -745,6 +745,56 @@ plugins {
     ok(!detected.some((t) => t.id === "php"));
   });
 
+  it("detects Laravel from artisan file", () => {
+    writeFile(tmp.path, "artisan", "#!/usr/bin/env php\n<?php\ndefine('LARAVEL_START', microtime(true));");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "laravel"));
+  });
+
+  it("detects Laravel from bootstrap/app.php", () => {
+    writeFile(tmp.path, "bootstrap/app.php", "return $app;");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "laravel"));
+  });
+
+  it("detects Laravel from composer.json with laravel/framework", () => {
+    writeFile(
+      tmp.path,
+      "composer.json",
+      JSON.stringify({ require: { "laravel/framework": "^11.0" } }),
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "laravel"));
+  });
+
+  it("detects Laravel from composer.json with illuminate packages", () => {
+    writeFile(
+      tmp.path,
+      "composer.json",
+      JSON.stringify({ require: { "illuminate/support": "^11.0" } }),
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "laravel"));
+  });
+
+  it("returns correct skills for Laravel detection", () => {
+    writeFile(
+      tmp.path,
+      "composer.json",
+      JSON.stringify({ require: { "laravel/framework": "^11.0" } }),
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    const laravel = detected.find((t) => t.id === "laravel");
+    ok(laravel);
+    ok(laravel.skills.includes("jpcaparas/superpowers-laravel"));
+  });
+
+  it("does not detect Laravel without Laravel files or packages", () => {
+    writePackageJson(tmp.path, { dependencies: { express: "^4.0.0" } });
+    const { detected } = detectTechnologies(tmp.path);
+    ok(!detected.some((t) => t.id === "laravel"));
+  });
+
   it("detects Chrome Extension from manifest.json with manifest_version", () => {
     writeFile(
       tmp.path,

@@ -825,6 +825,18 @@ export const SKILLS_MAP = [
     skills: [],
   },
   {
+    id: "laravel",
+    name: "Laravel",
+    detect: {
+      configFiles: ["artisan", "bootstrap/app.php"],
+      configFileContent: {
+        files: ["composer.json"],
+        patterns: ["laravel/framework", "illuminate/"],
+      },
+    },
+    skills: ["jpcaparas/superpowers-laravel"],
+  },
+  {
     id: "fastapi",
     name: "FastAPI",
     detect: {
