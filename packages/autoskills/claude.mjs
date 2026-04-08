@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 
 /**
@@ -26,12 +26,15 @@ function collectMarkdownFiles(dir) {
   const files = [];
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
-    if (entry.isDirectory()) {
+
+    const isDir = entry.isDirectory() || (entry.isSymbolicLink() && statSync(fullPath).isDirectory());
+    if (isDir) {
       files.push(...collectMarkdownFiles(fullPath));
       continue;
     }
 
-    if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) {
+    const isFile = entry.isFile() || entry.isSymbolicLink();
+    if (isFile && entry.name.toLowerCase().endsWith(".md")) {
       files.push(fullPath);
     }
   }
@@ -40,13 +43,47 @@ function collectMarkdownFiles(dir) {
 }
 
 /**
+ * Strips YAML frontmatter and extracts `name` and `description` fields.
+ * @param {string} markdown
+ * @returns {{ body: string, fmName: string|null, fmDescription: string|null }}
+ */
+function parseFrontmatter(markdown) {
+  if (!markdown.startsWith("---")) {
+    return { body: markdown, fmName: null, fmDescription: null };
+  }
+
+  const endIdx = markdown.indexOf("\n---", 3);
+  if (endIdx === -1) {
+    return { body: markdown, fmName: null, fmDescription: null };
+  }
+
+  const block = markdown.slice(3, endIdx);
+  const body = markdown.slice(endIdx + 4).replace(/^\n+/, "");
+
+  let fmName = null;
+  let fmDescription = null;
+
+  for (const line of block.split(/\r?\n/)) {
+    const nameMatch = line.match(/^name:\s*["']?(.+?)["']?\s*$/);
+    if (nameMatch) fmName = nameMatch[1];
+
+    const descMatch = line.match(/^description:\s*["']?(.+?)["']?\s*$/);
+    if (descMatch) fmDescription = descMatch[1];
+  }
+
+  return { body, fmName, fmDescription };
+}
+
+/**
  * Extracts a compact summary from a markdown document.
- * Uses the first heading as title and the first paragraph outside code fences as summary.
+ * Strips YAML frontmatter and uses its `description` when available.
  * @param {string} markdown
  * @returns {{ title: string|null, summary: string|null }}
  */
 export function summarizeMarkdown(markdown) {
-  const lines = markdown.split(/\r?\n/);
+  const { body, fmName, fmDescription } = parseFrontmatter(markdown);
+
+  const lines = body.split(/\r?\n/);
   let title = null;
   let summary = null;
   let inCodeFence = false;
@@ -67,6 +104,8 @@ export function summarizeMarkdown(markdown) {
       continue;
     }
 
+    if (fmDescription) continue;
+
     if (!line) {
       if (paragraph.length > 0) {
         summary = paragraph.join(" ").trim();
@@ -76,6 +115,7 @@ export function summarizeMarkdown(markdown) {
     }
 
     if (/^#{1,6}\s/.test(line)) continue;
+    if (/^[-*_]{3,}$/.test(line)) continue;
     if (/^[-*]\s+/.test(line) && paragraph.length === 0) continue;
     if (/^\d+\.\s+/.test(line) && paragraph.length === 0) continue;
     if (/^[>|`]/.test(line)) continue;
@@ -83,14 +123,18 @@ export function summarizeMarkdown(markdown) {
     paragraph.push(line);
   }
 
-  if (!summary && paragraph.length > 0) {
+  if (fmDescription) {
+    summary = fmDescription;
+  } else if (!summary && paragraph.length > 0) {
     summary = paragraph.join(" ").trim();
   }
 
+  if (!title) title = fmName;
+
   if (summary) {
     summary = summary.replace(/\s+/g, " ");
-    if (summary.length > 220) {
-      summary = `${summary.slice(0, 217).trimEnd()}...`;
+    if (summary.length > 300) {
+      summary = `${summary.slice(0, 297).trimEnd()}...`;
     }
   }
 
@@ -108,46 +152,58 @@ const SECTION_END = "<!-- autoskills:end -->";
  * @returns {string}
  */
 function buildSection(projectDir, skillsDir, markdownFiles) {
-  const sections = [];
+  const entries = [];
   for (const filePath of markdownFiles) {
     const relativePath = relative(projectDir, filePath).replaceAll("\\", "/");
-    const skillName = relative(skillsDir, filePath).split(/[/\\]/)[0] || "unknown-skill";
+    const innerPath = relative(skillsDir, filePath).replaceAll("\\", "/");
+    const skillName = innerPath.split("/")[0] || "unknown-skill";
+    const fileName = innerPath.split("/").slice(1).join("/") || innerPath;
     const markdown = readFileSync(filePath, "utf-8");
     const { title, summary } = summarizeMarkdown(markdown);
-    sections.push({
-      skillName,
-      relativePath,
-      title: title || skillName,
-      summary: summary || "No inline summary found. Review the source markdown for details.",
-    });
+    entries.push({ skillName, relativePath, fileName, title, summary });
   }
 
   const grouped = new Map();
-  for (const section of sections) {
-    if (!grouped.has(section.skillName)) {
-      grouped.set(section.skillName, []);
+  for (const entry of entries) {
+    if (!grouped.has(entry.skillName)) {
+      grouped.set(entry.skillName, []);
     }
-    grouped.get(section.skillName).push(section);
+    grouped.get(entry.skillName).push(entry);
   }
 
   const lines = [
     SECTION_START,
     "",
-    "Summary generated by `autoskills` from the markdown files installed for Claude Code.",
-    "Use it as a quick reference before checking the full files inside `.claude/skills`.",
+    "Summary generated by `autoskills`. Check the full files inside `.claude/skills`.",
     "",
   ];
 
-  for (const [skillName, entries] of grouped) {
-    lines.push(`## ${skillName}`);
+  for (const [, skillEntries] of grouped) {
+    const main = skillEntries.find((e) => /^SKILL\.md$/i.test(e.fileName));
+    const refs = skillEntries.filter((e) => e !== main);
+
+    const heading = main?.title || refs[0]?.title || skillEntries[0].skillName;
+    const description = main?.summary;
+
+    lines.push(`## ${heading}`);
     lines.push("");
-    for (const entry of entries) {
-      lines.push(`### ${entry.title}`);
-      lines.push("");
-      lines.push(`- Source: \`${entry.relativePath}\``);
-      lines.push(`- Summary: ${entry.summary}`);
+
+    if (description) {
+      lines.push(description);
       lines.push("");
     }
+
+    if (main) {
+      lines.push(`- \`${main.relativePath}\``);
+    }
+
+    for (const ref of refs) {
+      const label = ref.title || ref.fileName;
+      const desc = ref.summary ? `: ${ref.summary}` : "";
+      lines.push(`- \`${ref.relativePath}\`${desc}`);
+    }
+
+    lines.push("");
   }
 
   lines.push(SECTION_END);

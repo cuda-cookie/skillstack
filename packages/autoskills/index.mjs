@@ -379,7 +379,7 @@ async function main() {
   const elapsed = Date.now() - startTime;
   let claudeSummary = null;
 
-  if (shouldGenerateClaudeMd(resolvedAgents) && installed > 0) {
+  if (shouldGenerateClaudeMd(resolvedAgents)) {
     claudeSummary = generateClaudeMd(projectDir);
   }
 
