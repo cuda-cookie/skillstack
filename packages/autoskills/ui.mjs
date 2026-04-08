@@ -145,7 +145,26 @@ export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected, 
     stdin.resume();
     stdin.setEncoding("utf-8");
 
-    function onData(key) {
+    let settled = false;
+
+    function onData(data) {
+      if (settled) return;
+
+      // Escape sequences (arrows) must be matched as a whole unit
+      if (data.startsWith("\x1b")) {
+        processKey(data);
+        return;
+      }
+
+      // Some terminals (especially on Windows) send \r\n for Enter
+      // or batch multiple characters in a single data event.
+      for (const ch of data.replace(/\r\n/g, "\r")) {
+        if (settled) return;
+        processKey(ch);
+      }
+    }
+
+    function processKey(key) {
       if (key === "\x03") {
         cleanup();
         write(SHOW_CURSOR + "\n");
@@ -153,6 +172,7 @@ export function multiSelect(items, { labelFn, hintFn, groupFn, initialSelected, 
       }
 
       if (key === "\r" || key === "\n") {
+        settled = true;
         cleanup();
         write("\x1b[1A\r\x1b[J");
         write(SHOW_CURSOR);
