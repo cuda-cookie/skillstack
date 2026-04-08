@@ -27,7 +27,8 @@ function collectMarkdownFiles(dir) {
   for (const entry of entries) {
     const fullPath = join(dir, entry.name);
 
-    const isDir = entry.isDirectory() || (entry.isSymbolicLink() && statSync(fullPath).isDirectory());
+    const isDir =
+      entry.isDirectory() || (entry.isSymbolicLink() && statSync(fullPath).isDirectory());
     if (isDir) {
       files.push(...collectMarkdownFiles(fullPath));
       continue;

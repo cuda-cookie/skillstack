@@ -224,10 +224,14 @@ Practical patterns for common accessibility requirements.
 
   it("follows symlinked skill directories", () => {
     const realDir = join(tmp.path, ".agents", "skills", "react-basics");
-    writeFile(tmp.path, ".agents/skills/react-basics/SKILL.md", `# React Basics
+    writeFile(
+      tmp.path,
+      ".agents/skills/react-basics/SKILL.md",
+      `# React Basics
 
 Keep components small and composable.
-`);
+`,
+    );
 
     const skillsDir = join(tmp.path, ".claude", "skills");
     mkdirSync(skillsDir, { recursive: true });
