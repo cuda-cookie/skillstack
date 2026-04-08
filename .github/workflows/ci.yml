@@ -7,8 +7,6 @@ on:
       - "packages/autoskills/**"
   pull_request:
     branches: [main]
-    paths:
-      - "packages/autoskills/**"
 
 permissions:
   contents: read

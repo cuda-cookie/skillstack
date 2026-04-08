@@ -223,6 +223,33 @@ export const SKILLS_MAP = [
     skills: ["remotion-dev/skills/remotion-best-practices"],
   },
   {
+    id: "react-router",
+    name: "React Router",
+    detect: {
+      packages: ["react-router", "@react-router/node", "@react-router/dev", "@react-router/serve"],
+    },
+    skills: [],
+  },
+  {
+    id: "tanstack-start",
+    name: "TanStack Start",
+    detect: {
+      packages: ["@tanstack/react-start", "@tanstack/start"],
+    },
+    skills: ["tanstack-skills/tanstack-skills/tanstack-start"],
+  },
+  {
+    id: "chrome-extension",
+    name: "Chrome Extension",
+    detect: {
+      configFileContent: {
+        files: ["manifest.json"],
+        patterns: ["manifest_version"],
+      },
+    },
+    skills: ["mindrally/skills/chrome-extension-development"],
+  },
+  {
     id: "clerk",
     name: "Clerk",
     detect: {
@@ -242,12 +269,22 @@ export const SKILLS_MAP = [
         "@clerk/backend",
       ],
       packagePatterns: [/^@clerk\//],
+      configFileContent: [
+        {
+          files: ["Package.swift"],
+          patterns: ["clerk/clerk-ios", "ClerkSDK"],
+        },
+        {
+          scanGradleLayout: true,
+          patterns: ["com.clerk"],
+        },
+      ],
     },
     skills: [
       "clerk/skills/clerk",
       "clerk/skills/clerk-setup",
       "clerk/skills/clerk-custom-ui",
-      "clerk/skills/clerk-nextjs-patterns",
+      "clerk/skills/clerk-backend-api",
       "clerk/skills/clerk-orgs",
       "clerk/skills/clerk-webhooks",
       "clerk/skills/clerk-testing",
@@ -371,6 +408,25 @@ export const SKILLS_MAP = [
       },
     },
     skills: ["cloudflare/skills/building-ai-agent-on-cloudflare"],
+  },
+  {
+    id: "terraform",
+    name: "Terraform",
+    detect: {
+      configFiles: [
+        ".terraform.lock.hcl",
+        "terraform.tfvars",
+        "main.tf",
+        "variables.tf",
+        "outputs.tf",
+      ],
+    },
+    skills: [
+      "hashicorp/agent-skills/terraform-style-guide",
+      "hashicorp/agent-skills/refactor-module",
+      "hashicorp/agent-skills/terraform-stacks",
+      "wshobson/agents/terraform-module-library",
+    ],
   },
   {
     id: "aws",
@@ -623,6 +679,64 @@ export const SKILLS_MAP = [
     },
     skills: ["nodnarbnitram/claude-code-extensions/tauri-v2"],
   },
+  {
+    id: "rust",
+    name: "Rust",
+    detect: {
+      configFiles: ["Cargo.toml"],
+    },
+    skills: ["apollographql/skills/rust-best-practices"],
+  },
+  {
+    id: "python",
+    name: "Python",
+    detect: {
+      configFiles: ["pyproject.toml", "requirements.txt", "setup.py", "setup.cfg", "Pipfile"],
+    },
+    skills: [],
+  },
+  {
+    id: "django",
+    name: "Django",
+    detect: {
+      configFiles: ["manage.py"],
+      configFileContent: {
+        files: ["pyproject.toml", "requirements.txt", "setup.py", "setup.cfg", "Pipfile"],
+        patterns: ["django", "Django"],
+      },
+    },
+    skills: [],
+  },
+  {
+    id: "fastapi",
+    name: "FastAPI",
+    detect: {
+      configFileContent: {
+        files: ["pyproject.toml", "requirements.txt", "setup.py", "setup.cfg", "Pipfile"],
+        patterns: ["fastapi", "FastAPI"],
+      },
+    },
+    skills: [],
+  },
+  {
+    id: "php",
+    name: "PHP",
+    detect: {
+      configFiles: ["composer.json", "composer.lock"],
+    },
+    skills: ["jeffallan/claude-skills/php-pro"],
+  },
+  {
+    id: "flask",
+    name: "Flask",
+    detect: {
+      configFileContent: {
+        files: ["pyproject.toml", "requirements.txt", "setup.py", "setup.cfg", "Pipfile"],
+        patterns: ["flask", "Flask"],
+      },
+    },
+    skills: [],
+  },
 ];
 
 // ── Combo Skills Map (cross-technology) ──────────────────────
@@ -695,17 +809,85 @@ export const COMBO_SKILLS_MAP = [
     id: "nextjs-clerk",
     name: "Next.js + Clerk",
     requires: ["nextjs", "clerk"],
-    skills: [
-      "clerk/skills/clerk-nextjs-patterns",
-      "clerk/skills/clerk-setup",
-      "clerk/skills/clerk",
-    ],
+    skills: ["clerk/skills/clerk-nextjs-patterns"],
+  },
+  {
+    id: "nuxt-clerk",
+    name: "Nuxt + Clerk",
+    requires: ["nuxt", "clerk"],
+    skills: ["clerk/skills/clerk-nuxt-patterns"],
+  },
+  {
+    id: "vue-clerk",
+    name: "Vue + Clerk",
+    requires: ["vue", "clerk"],
+    skills: ["clerk/skills/clerk-vue-patterns"],
+  },
+  {
+    id: "react-clerk",
+    name: "React + Clerk",
+    requires: ["react", "clerk"],
+    skills: ["clerk/skills/clerk-react-patterns"],
+  },
+  {
+    id: "astro-clerk",
+    name: "Astro + Clerk",
+    requires: ["astro", "clerk"],
+    skills: ["clerk/skills/clerk-astro-patterns"],
+  },
+  {
+    id: "expo-clerk",
+    name: "Expo + Clerk",
+    requires: ["expo", "clerk"],
+    skills: ["clerk/skills/clerk-expo-patterns"],
   },
   {
     id: "react-react-three-fiber",
     name: "React + React Three Fiber",
     requires: ["threejs", "react", "@react-three/fiber"],
     skills: ["vercel-labs/json-render/react-three-fiber"],
+  },
+  {
+    id: "react-router-clerk",
+    name: "React Router + Clerk",
+    requires: ["react-router", "clerk"],
+    skills: [
+      "clerk/skills/clerk-react-router-patterns",
+      "clerk/skills/clerk-setup",
+      "clerk/skills/clerk",
+    ],
+  },
+  {
+    id: "tanstack-clerk",
+    name: "TanStack Start + Clerk",
+    requires: ["tanstack-start", "clerk"],
+    skills: [
+      "clerk/skills/clerk-tanstack-patterns",
+      "clerk/skills/clerk-setup",
+      "clerk/skills/clerk",
+    ],
+  },
+  {
+    id: "chrome-extension-clerk",
+    name: "Chrome Extension + Clerk",
+    requires: ["chrome-extension", "clerk"],
+    skills: [
+      "clerk/skills/clerk-chrome-extension-patterns",
+      "clerk/skills/clerk-setup",
+      "clerk/skills/clerk",
+    ],
+  },
+  {
+    id: "swiftui-clerk",
+    name: "SwiftUI + Clerk",
+    requires: ["swiftui", "clerk"],
+    skills: ["clerk/skills/clerk-swift", "clerk/skills/clerk-setup", "clerk/skills/clerk"],
+  },
+  {
+    id: "android-clerk",
+    name: "Android + Clerk",
+    requires: ["android", "clerk"],
+    skills: ["clerk/skills/clerk-android", "clerk/skills/clerk-setup", "clerk/skills/clerk"],
   },
 ];
 
