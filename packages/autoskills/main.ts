@@ -1,5 +1,5 @@
 import { resolve, dirname, join } from "node:path";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { detectTechnologies, collectSkills, detectAgents, getInstalledSkillNames } from "./lib.ts";
@@ -23,7 +23,17 @@ import { installAll, resolveSkillsBin } from "./installer.ts";
 import { shouldGenerateClaudeMd, generateClaudeMd } from "./claude.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const VERSION: string = JSON.parse(readFileSync(join(__dirname, "package.json"), "utf-8")).version;
+const VERSION: string = (() => {
+  for (const base of [__dirname, resolve(__dirname, "..")]) {
+    const p = join(base, "package.json");
+    if (!existsSync(p)) continue;
+    try {
+      const pkg = JSON.parse(readFileSync(p, "utf-8"));
+      if (pkg.name === "autoskills") return pkg.version;
+    } catch {}
+  }
+  return "0.0.0";
+})();
 
 process.on("SIGINT", () => {
   write(SHOW_CURSOR + "\n");

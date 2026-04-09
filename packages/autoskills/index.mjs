@@ -1,23 +1,32 @@
 #!/usr/bin/env node
 
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 const [major, minor] = process.versions.node.split(".").map(Number);
 
 if (major < 22 || (major === 22 && minor < 6)) {
   console.error(
-    `\n  ⚠ autoskills requires Node.js >= 22.6.0 for native TypeScript support.` +
+    `\n  ⚠ autoskills requires Node.js >= 22.6.0.` +
       `\n  Current version: ${process.version}` +
       `\n  Please upgrade → https://nodejs.org\n`,
   );
   process.exit(1);
 }
 
-try {
-  await import("./main.ts");
-} catch (err) {
-  if (err.code === "ERR_UNKNOWN_FILE_EXTENSION") {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+if (existsSync(join(__dirname, "dist", "main.js"))) {
+  await import("./dist/main.js");
+} else {
+  try {
+    await import("./main.ts");
+  } catch (err) {
+    if (err.code !== "ERR_UNKNOWN_FILE_EXTENSION") throw err;
+
     const { spawn } = await import("node:child_process");
-    const { fileURLToPath } = await import("node:url");
-    const mainPath = fileURLToPath(new URL("./main.ts", import.meta.url));
+    const mainPath = join(__dirname, "main.ts");
     const child = spawn(
       process.execPath,
       [
@@ -32,7 +41,5 @@ try {
       if (signal) process.kill(process.pid, signal);
       else process.exit(code ?? 1);
     });
-  } else {
-    throw err;
   }
 }
