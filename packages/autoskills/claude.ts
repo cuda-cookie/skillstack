@@ -188,7 +188,6 @@ function buildSection(projectDir: string, skillsDir: string, markdownFiles: stri
     }
 
     for (const ref of refs) {
-      const label = ref.title || ref.fileName;
       const desc = ref.summary ? `: ${ref.summary}` : "";
       lines.push(`- \`${ref.relativePath}\`${desc}`);
     }
