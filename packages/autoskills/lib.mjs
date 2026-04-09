@@ -60,16 +60,16 @@ const GRADLE_SCAN_ROOT_FILES = [
  * @param {string} content - Raw file content of settings.gradle(.kts).
  * @returns {string[]} Module directory paths relative to the project root.
  */
-function parseSettingsGradleModules(content) {
+export function parseSettingsGradleModules(content) {
   const modules = [];
   const includeRe = /include\s*\(?\s*([^)]+)/g;
-  const quotedRe = /['"]([^'"]+)['"]/g;
   let includeMatch;
   while ((includeMatch = includeRe.exec(content)) !== null) {
     const args = includeMatch[1];
+    const quotedRe = /['"]([^'"]+)['"]/g;
     let quotedMatch;
     while ((quotedMatch = quotedRe.exec(args)) !== null) {
-      modules.push(quotedMatch[1].replace(/:/g, "/"));
+      modules.push(quotedMatch[1].replace(/^:/, "").replace(/:/g, "/"));
     }
   }
   return modules;

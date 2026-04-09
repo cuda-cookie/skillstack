@@ -8,6 +8,7 @@ import {
   getDenoImportNames,
   detectTechnologies,
   detectCombos,
+  parseSettingsGradleModules,
 } from "../lib.mjs";
 import { useTmpDir, writePackageJson, writeJson, writeFile, addWorkspace } from "./helpers.mjs";
 
@@ -92,6 +93,72 @@ describe("readGemfile", () => {
   it("handles indented gems (inside groups)", () => {
     writeFile(tmp.path, "Gemfile", "group :development do\n  gem 'rspec'\nend\n");
     deepStrictEqual(readGemfile(tmp.path), ["rspec"]);
+  });
+});
+
+// ── parseSettingsGradleModules ─────────────────────────────────
+
+describe("parseSettingsGradleModules", () => {
+  it("extracts module from Kotlin DSL include", () => {
+    const modules = parseSettingsGradleModules('include("app")');
+    deepStrictEqual(modules, ["app"]);
+  });
+
+  it("extracts module from Groovy include", () => {
+    const modules = parseSettingsGradleModules("include 'app'");
+    deepStrictEqual(modules, ["app"]);
+  });
+
+  it("strips leading colon from module paths", () => {
+    const modules = parseSettingsGradleModules('include(":app")');
+    deepStrictEqual(modules, ["app"]);
+  });
+
+  it("converts colon-separated paths to filesystem paths", () => {
+    const modules = parseSettingsGradleModules('include(":feature:login")');
+    deepStrictEqual(modules, ["feature/login"]);
+  });
+
+  it("handles multiple modules on one line (Groovy)", () => {
+    const modules = parseSettingsGradleModules("include 'app', 'core', 'data'");
+    deepStrictEqual(modules, ["app", "core", "data"]);
+  });
+
+  it("handles multiple modules on one line (Kotlin DSL)", () => {
+    const modules = parseSettingsGradleModules('include(":app", ":core", ":data")');
+    deepStrictEqual(modules, ["app", "core", "data"]);
+  });
+
+  it("handles multi-line include block", () => {
+    const content = `include(
+  ":app",
+  ":core",
+  ":shared:data"
+)`;
+    deepStrictEqual(parseSettingsGradleModules(content), ["app", "core", "shared/data"]);
+  });
+
+  it("handles multiple separate include statements", () => {
+    const content = 'include(":app")\ninclude(":core")';
+    deepStrictEqual(parseSettingsGradleModules(content), ["app", "core"]);
+  });
+
+  it("returns empty array when no includes are present", () => {
+    const content = 'rootProject.name = "my-app"\npluginManagement { }';
+    deepStrictEqual(parseSettingsGradleModules(content), []);
+  });
+
+  it("returns empty array for empty content", () => {
+    deepStrictEqual(parseSettingsGradleModules(""), []);
+  });
+
+  it("ignores non-include content around includes", () => {
+    const content = `rootProject.name = "my-app"
+pluginManagement {
+    repositories { google() }
+}
+include(":app")`;
+    deepStrictEqual(parseSettingsGradleModules(content), ["app"]);
   });
 });
 
@@ -381,6 +448,14 @@ plugins {
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "java"));
     ok(detected.some((t) => t.id === "kotlin-multiplatform"));
+  });
+
+  it("does not break when settings.gradle.kts has no include statements", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "settings.gradle.kts", 'rootProject.name = "my-app"');
+    writeFile(tmp.path, "build.gradle.kts", "sourceCompatibility = JavaVersion.VERSION_17");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "java"));
   });
 
   it("detects Java from pom.xml (Maven project)", () => {
@@ -786,7 +861,19 @@ plugins {
     const { detected } = detectTechnologies(tmp.path);
     const laravel = detected.find((t) => t.id === "laravel");
     ok(laravel);
-    ok(laravel.skills.includes("jpcaparas/superpowers-laravel"));
+    ok(laravel.skills.includes("jeffallan/claude-skills/laravel-specialist"));
+    ok(laravel.skills.includes("affaan-m/everything-claude-code/laravel-patterns"));
+  });
+
+  it("detects both PHP and Laravel from composer.json", () => {
+    writeFile(
+      tmp.path,
+      "composer.json",
+      JSON.stringify({ require: { "laravel/framework": "^11.0" } }),
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "laravel"));
+    ok(detected.some((t) => t.id === "php"));
   });
 
   it("does not detect Laravel without Laravel files or packages", () => {
