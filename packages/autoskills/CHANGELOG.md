@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.7](git+https://github.com/midudev/autoskills/releases/tag/v0.2.7) (2026-04-09)
+
+### ✨ Features
+
+- feat(autoskills): add TypeScript build step to compile .ts to dist/ [`7a0c570`](git+https://github.com/midudev/autoskills/commit/7a0c570)
+
+### 🐛 Bug Fixes
+
+- fix(autoskills): build before publish and fix test glob in release script [`4a324eb`](git+https://github.com/midudev/autoskills/commit/4a324eb)
+- fix(autoskills): prefer compiled dist/main.js, fallback to .ts in dev [`ab9aa59`](git+https://github.com/midudev/autoskills/commit/ab9aa59)
+
 ## [0.2.6](git+https://github.com/midudev/autoskills/releases/tag/v0.2.6) (2026-04-09)
 
 ### ✨ Features
