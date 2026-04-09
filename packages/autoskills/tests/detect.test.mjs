@@ -723,6 +723,52 @@ dependencies {
     ok(ids.includes("clerk"));
   });
 
+  it("detects Dart from pubspec.yaml without package.json", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: dart_app\ndescription: A Dart CLI tool\nenvironment:\n  sdk: '^3.2.0'");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "dart"));
+  });
+
+  it("returns correct skills for Dart detection", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: dart_app\ndescription: A Dart application");
+    const { detected } = detectTechnologies(tmp.path);
+    const dart = detected.find((t) => t.id === "dart");
+    ok(dart);
+    ok(dart.skills.includes("kevmoo/dash_skills/dart-best-practices"));
+  });
+
+  it("detects Flutter from pubspec.yaml with flutter: key", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: flutter_app\ndescription: A Flutter application\nflutter:\n  uses-material-design: true");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "flutter"));
+  });
+
+  it("returns correct skills for Flutter detection", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: flutter_app\nflutter:\n  uses-material-design: true");
+    const { detected } = detectTechnologies(tmp.path);
+    const flutter = detected.find((t) => t.id === "flutter");
+    ok(flutter);
+    ok(flutter.skills.includes("jeffallan/claude-skills/flutter-expert"));
+    ok(flutter.skills.includes("madteacher/mad-agents-skills/flutter-animations"));
+    ok(flutter.skills.includes("madteacher/mad-agents-skills/flutter-testing"));
+  });
+
+  it("detects both Dart and Flutter for Flutter projects", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: flutter_app\nenvironment:\n  sdk: '^3.2.0'\nflutter:\n  uses-material-design: true");
+    const { detected } = detectTechnologies(tmp.path);
+    const ids = detected.map((t) => t.id);
+    ok(ids.includes("dart"), "Dart should be detected (pubspec.yaml exists)");
+    ok(ids.includes("flutter"), "Flutter should be detected (flutter: key present)");
+  });
+
+  it("detects only Dart when pubspec.yaml has no flutter: key", () => {
+    writeFile(tmp.path, "pubspec.yaml", "name: dart_cli\ndescription: A Dart CLI tool\nenvironment:\n  sdk: '^3.2.0'\ndependencies:\n  args: ^2.4.0");
+    const { detected } = detectTechnologies(tmp.path);
+    const ids = detected.map((t) => t.id);
+    ok(ids.includes("dart"), "Dart should be detected");
+    ok(!ids.includes("flutter"), "Flutter should not be detected");
+  });
+
   it("detects React from deno.json npm: import", () => {
     writeJson(tmp.path, "deno.json", {
       imports: { react: "npm:react@^19", "react-dom": "npm:react-dom@^19" },
