@@ -76,9 +76,9 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 | Hono                 | `hono` package                                                                                                                                    |
 | NestJS               | `@nestjs/core` package                                                                                                                            |
 | Spring Boot          | Gradle with `spring-boot-starter` or `org.springframework.boot`                                                                                   |
-| ASP.NET Core         | `.csproj` file with `Microsoft.NET.Sdk.Web`                                                                         |
-| Blazor               | `.csproj` with `Microsoft.NET.Sdk.BlazorWebAssembly` or `Microsoft.AspNetCore.Components`                          |
-| ASP.NET Minimal API  | `.csproj` with `Microsoft.AspNetCore.OpenApi` or `Swashbuckle.AspNetCore`                                          |
+| ASP.NET Core         | `.csproj` file with `Microsoft.NET.Sdk.Web`                                                                                                       |
+| Blazor               | `.csproj` with `Microsoft.NET.Sdk.BlazorWebAssembly` or `Microsoft.AspNetCore.Components`                                                         |
+| ASP.NET Minimal API  | `.csproj` with `Microsoft.AspNetCore.OpenApi` or `Swashbuckle.AspNetCore`                                                                         |
 
 ### Styling & UI
 

@@ -774,7 +774,7 @@ export const SKILLS_MAP: Technology[] = [
       ],
       configFileContent: {
         scanDotNetLayout: true,
-        patterns: ["<Project Sdk=\"Microsoft.NET.Sdk"],
+        patterns: ['<Project Sdk="Microsoft.NET.Sdk'],
       },
     },
     skills: [
@@ -827,10 +827,7 @@ export const SKILLS_MAP: Technology[] = [
     detect: {
       configFileContent: {
         scanDotNetLayout: true,
-        patterns: [
-          "Microsoft.NET.Sdk.BlazorWebAssembly",
-          "Microsoft.AspNetCore.Components",
-        ],
+        patterns: ["Microsoft.NET.Sdk.BlazorWebAssembly", "Microsoft.AspNetCore.Components"],
       },
     },
     skills: [

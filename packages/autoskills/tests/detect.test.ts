@@ -660,7 +660,11 @@ plugins {
 
   it("detects Minimal API from .csproj package reference", () => {
     writePackageJson(tmp.path);
-    writeFile(tmp.path, "MyApi.csproj", '<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />');
+    writeFile(
+      tmp.path,
+      "MyApi.csproj",
+      '<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />',
+    );
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "aspnet-minimal-api"));
   });
