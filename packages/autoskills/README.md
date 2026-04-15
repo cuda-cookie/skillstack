@@ -101,15 +101,16 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 
 ### Backend & Data
 
-| Technology    | Detected from                                            |
-| ------------- | -------------------------------------------------------- |
-| Supabase      | `@supabase/supabase-js`, `@supabase/ssr`                 |
-| Zod           | `zod` package                                            |
-| Neon Postgres | `@neondatabase/serverless`                               |
-| Prisma        | `prisma`, `@prisma/client`                               |
-| Drizzle ORM   | `drizzle-orm`, `drizzle-kit`                             |
-| Stripe        | `stripe`, `@stripe/stripe-js`, `@stripe/react-stripe-js` |
-| Better Auth   | `better-auth` package                                    |
+| Technology      | Detected from                                            |
+| --------------- | -------------------------------------------------------- |
+| Supabase        | `@supabase/supabase-js`, `@supabase/ssr`                 |
+| Zod             | `zod` package                                            |
+| React Hook Form | `react-hook-form` package                                |
+| Neon Postgres   | `@neondatabase/serverless`                               |
+| Prisma          | `prisma`, `@prisma/client`                               |
+| Drizzle ORM     | `drizzle-orm`, `drizzle-kit`                             |
+| Stripe          | `stripe`, `@stripe/stripe-js`, `@stripe/react-stripe-js` |
+| Better Auth     | `better-auth` package                                    |
 
 ### Authentication
 
@@ -161,6 +162,7 @@ When multiple technologies are used together, `autoskills` detects **technology 
 - **Tailwind CSS + shadcn/ui** — Tailwind v4 + shadcn integration
 - **Expo + Tailwind CSS** — Tailwind setup for Expo
 - **React Native + Expo** — Native UI patterns
+- **React Hook Form + Zod** — Form validation patterns with Zod schemas
 - **GSAP + React** — GSAP animation patterns in React
 - **Cloudflare + Vite** — Vinext migration guide
 - **Node.js + Express** — Express server patterns

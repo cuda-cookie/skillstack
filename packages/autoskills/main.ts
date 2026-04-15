@@ -20,7 +20,7 @@ import {
 } from "./colors.ts";
 import { printBanner, multiSelect, formatTime } from "./ui.ts";
 import { installAll, resolveSkillsBin } from "./installer.ts";
-import { shouldGenerateClaudeMd, generateClaudeMd } from "./claude.ts";
+import { cleanupClaudeMd } from "./claude.ts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VERSION: string = (() => {
@@ -403,9 +403,6 @@ async function main(): Promise<void> {
   if (dryRun) {
     printSkillsList(skills);
     log(dim(`   Agents: ${resolvedAgents.join(", ")}`));
-    if (shouldGenerateClaudeMd(resolvedAgents)) {
-      log(dim("   Claude Code detected: `CLAUDE.md` will be generated after install."));
-    }
     log(dim("   --dry-run: nothing was installed."));
     log();
     process.exit(0);
@@ -427,11 +424,7 @@ async function main(): Promise<void> {
   const startTime = Date.now();
   const { installed, failed, errors } = await installAll(selectedSkills, resolvedAgents);
   const elapsed = Date.now() - startTime;
-  let claudeSummary: { generated: boolean; files: number } | null = null;
-
-  if (shouldGenerateClaudeMd(resolvedAgents)) {
-    claudeSummary = generateClaudeMd(projectDir);
-  }
+  const claudeCleanup = cleanupClaudeMd(projectDir);
 
   if (process.stdout.isTTY) {
     const up = selectedSkills.length + 2;
@@ -442,16 +435,13 @@ async function main(): Promise<void> {
 
   printSummary({ installed, failed, errors, elapsed, verbose });
 
-  if (shouldGenerateClaudeMd(resolvedAgents)) {
-    if (claudeSummary?.generated) {
-      log(
-        dim(`   Claude Code summary written to CLAUDE.md (${claudeSummary.files} markdown files).`),
-      );
-      log();
+  if (claudeCleanup.cleaned) {
+    if (claudeCleanup.deleted) {
+      log(dim("   Removed autoskills section from CLAUDE.md (file was empty, deleted)."));
     } else {
-      log(dim("   Claude Code detected, but no markdown files were found under .claude/skills."));
-      log();
+      log(dim("   Removed autoskills section from CLAUDE.md."));
     }
+    log();
   }
 }
 

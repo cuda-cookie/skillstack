@@ -149,6 +149,14 @@ export const SKILLS_MAP: Technology[] = [
     skills: ["wshobson/agents/typescript-advanced-types"],
   },
   {
+    id: "react-hook-form",
+    name: "React Hook Form",
+    detect: {
+      packages: ["react-hook-form"],
+    },
+    skills: ["pproenca/dot-skills/react-hook-form"],
+  },
+  {
     id: "zod",
     name: "Zod",
     detect: {
@@ -1092,6 +1100,12 @@ export const COMBO_SKILLS_MAP: ComboSkill[] = [
     name: "Expo + Tailwind CSS",
     requires: ["expo", "tailwind"],
     skills: ["expo/skills/expo-tailwind-setup"],
+  },
+  {
+    id: "react-hook-form-zod",
+    name: "React Hook Form + Zod",
+    requires: ["react-hook-form", "zod"],
+    skills: ["jezweb/claude-skills/react-hook-form-zod", "pproenca/dot-skills/zod"],
   },
   {
     id: "nextjs-supabase",
