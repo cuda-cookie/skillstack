@@ -788,9 +788,7 @@ export const SKILLS_MAP: Technology[] = [
     skills: [
       "github/awesome-copilot/dotnet-best-practices",
       "github/awesome-copilot/dotnet-design-pattern-review",
-      "github/awesome-copilot/dotnet-upgrade",
-      "wshobson/agents/dotnet-backend-patterns",
-      "getsentry/sentry-for-ai/sentry-dotnet-sdk",
+      "github/awesome-copilot/dotnet-upgrade"
     ],
   },
   {
@@ -806,8 +804,6 @@ export const SKILLS_MAP: Technology[] = [
       "github/awesome-copilot/csharp-xunit",
       "github/awesome-copilot/csharp-async",
       "github/awesome-copilot/csharp-docs",
-      "jeffallan/claude-skills/csharp-developer",
-      "aaronontheweb/dotnet-skills/csharp-concurrency-patterns",
       "github/awesome-copilot/csharp-nunit",
       "github/awesome-copilot/csharp-mstest",
       "github/awesome-copilot/csharp-tunit",
@@ -825,7 +821,6 @@ export const SKILLS_MAP: Technology[] = [
     },
     skills: [
       "github/awesome-copilot/containerize-aspnetcore",
-      "auth0/agent-skills/auth0-aspnetcore-api",
       "openai/skills/aspnet-core",
     ],
   },
@@ -839,10 +834,7 @@ export const SKILLS_MAP: Technology[] = [
       },
     },
     skills: [
-      "github/awesome-copilot/fluentui-blazor",
-      "markpitt/claude-skills/blazor-expert",
-      "mindrally/skills/blazor",
-      "stuartf303/sorcha/blazor",
+      "github/awesome-copilot/fluentui-blazor"
     ],
   },
   {
@@ -857,9 +849,7 @@ export const SKILLS_MAP: Technology[] = [
     },
     skills: [
       "github/awesome-copilot/aspnet-minimal-api-openapi",
-      "dotnet/skills/minimal-api-file-upload",
-      "stuartf303/sorcha/minimal-apis",
-      "claude-dev-suite/claude-dev-suite/aspnet-minimal-api",
+      "dotnet/skills/minimal-api-file-upload"
     ],
   },
   {
