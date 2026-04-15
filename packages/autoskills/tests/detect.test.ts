@@ -244,6 +244,22 @@ describe("detectTechnologies", () => {
     ok(ids.includes("zod"));
   });
 
+  it("detects React Hook Form from dependencies", () => {
+    writePackageJson(tmp.path, { dependencies: { "react-hook-form": "^7.58.0" } });
+    const { detected } = detectTechnologies(tmp.path);
+    const reactHookForm = detected.find((t) => t.id === "react-hook-form");
+    ok(reactHookForm);
+    ok(reactHookForm.skills.includes("pproenca/dot-skills/react-hook-form"));
+  });
+
+  it("detects React Hook Form + Zod combo when both are present", () => {
+    writePackageJson(tmp.path, {
+      dependencies: { "react-hook-form": "^7.58.0", zod: "^4.3.6" },
+    });
+    const { combos } = detectTechnologies(tmp.path);
+    ok(combos.some((c) => c.id === "react-hook-form-zod"));
+  });
+
   it("detects Go from go.mod", () => {
     writePackageJson(tmp.path);
     writeFile(tmp.path, "go.mod", "module example.com/test\n\ngo 1.24.0\n");
@@ -1432,6 +1448,15 @@ describe("detectCombos", () => {
     const ids = combos.map((c) => c.id);
     ok(ids.includes("nextjs-supabase"));
     ok(ids.includes("nextjs-playwright"));
+  });
+
+  it("detects react-hook-form-zod combo", () => {
+    const combo = detectCombos(["react-hook-form", "zod"]).find(
+      (c) => c.id === "react-hook-form-zod",
+    );
+    ok(combo);
+    ok(combo.skills.includes("jezweb/claude-skills/react-hook-form-zod"));
+    ok(combo.skills.includes("pproenca/dot-skills/zod"));
   });
 
   it("does not detect combo when only one requirement is met", () => {
