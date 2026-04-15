@@ -637,6 +637,68 @@ plugins {
     ok(detected.some((t) => t.id === "electron"));
   });
 
+  it("detects .NET from global.json", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "global.json", '{"sdk": {"version": "8.0.100"}}');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "dotnet"));
+  });
+
+  it("detects C# from .csproj in root", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "MyProject.csproj", '<Project Sdk="Microsoft.NET.Sdk">');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "csharp"));
+    ok(detected.some((t) => t.id === "dotnet"));
+  });
+
+  it("detects ASP.NET Core from .csproj with Web SDK", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "MyWebApp.csproj", '<Project Sdk="Microsoft.NET.Sdk.Web">');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "aspnetcore"));
+  });
+
+  it("detects .NET and C# from nested .csproj", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "src/Library/Library.csproj", '<Project Sdk="Microsoft.NET.Sdk">');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "dotnet"));
+    ok(detected.some((t) => t.id === "csharp"));
+  });
+
+  it("detects Blazor from .csproj", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "MyBlazor.csproj", '<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "aspnet-blazor"));
+  });
+
+  it("detects Minimal API from .csproj package reference", () => {
+    writePackageJson(tmp.path);
+    writeFile(
+      tmp.path,
+      "MyApi.csproj",
+      '<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />',
+    );
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "aspnet-minimal-api"));
+  });
+
+  it("detects ASP.NET Core from appsettings.json", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "appsettings.json", "{}");
+    const { detected } = detectTechnologies(tmp.path);
+    ok(detected.some((t) => t.id === "aspnetcore"));
+  });
+
+  it("skips bin and obj directories when scanning .NET projects", () => {
+    writePackageJson(tmp.path);
+    writeFile(tmp.path, "bin/Debug/net8.0/ExcludeMe.csproj", '<Project Sdk="Microsoft.NET.Sdk">');
+    const { detected } = detectTechnologies(tmp.path);
+    ok(!detected.some((t) => t.id === "csharp"));
+  });
+
   it("detects Rust from Cargo.toml", () => {
     writeFile(tmp.path, "Cargo.toml", '[package]\nname = "my-crate"\nversion = "0.1.0"');
     const { detected } = detectTechnologies(tmp.path);

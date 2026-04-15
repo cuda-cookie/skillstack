@@ -4,6 +4,7 @@ export interface ConfigFileContentBlock {
   files?: string[];
   patterns: string[];
   scanGradleLayout?: boolean;
+  scanDotNetLayout?: boolean;
 }
 
 export interface DetectConfig {
@@ -768,6 +769,98 @@ export const SKILLS_MAP: Technology[] = [
       ],
     },
     skills: ["vercel-labs/agent-skills/electron-best-practices"],
+  },
+  {
+    id: "dotnet",
+    name: ".NET",
+    detect: {
+      configFiles: [
+        "global.json",
+        "NuGet.Config",
+        "Directory.Build.props",
+        "Directory.Packages.props",
+      ],
+      configFileContent: {
+        scanDotNetLayout: true,
+        patterns: ['<Project Sdk="Microsoft.NET.Sdk'],
+      },
+    },
+    skills: [
+      "github/awesome-copilot/dotnet-best-practices",
+      "github/awesome-copilot/dotnet-design-pattern-review",
+      "github/awesome-copilot/dotnet-upgrade",
+      "wshobson/agents/dotnet-backend-patterns",
+      "getsentry/sentry-for-ai/sentry-dotnet-sdk",
+    ],
+  },
+  {
+    id: "csharp",
+    name: "C#",
+    detect: {
+      configFileContent: {
+        scanDotNetLayout: true,
+        patterns: ["<Project", "Microsoft.NET.Sdk"],
+      },
+    },
+    skills: [
+      "github/awesome-copilot/csharp-xunit",
+      "github/awesome-copilot/csharp-async",
+      "github/awesome-copilot/csharp-docs",
+      "jeffallan/claude-skills/csharp-developer",
+      "aaronontheweb/dotnet-skills/csharp-concurrency-patterns",
+      "github/awesome-copilot/csharp-nunit",
+      "github/awesome-copilot/csharp-mstest",
+      "github/awesome-copilot/csharp-tunit",
+    ],
+  },
+  {
+    id: "aspnetcore",
+    name: "ASP.NET Core",
+    detect: {
+      configFiles: ["appsettings.json", "appsettings.Development.json"],
+      configFileContent: {
+        scanDotNetLayout: true,
+        patterns: ["Microsoft.NET.Sdk.Web"],
+      },
+    },
+    skills: [
+      "github/awesome-copilot/containerize-aspnetcore",
+      "auth0/agent-skills/auth0-aspnetcore-api",
+      "openai/skills/aspnet-core",
+    ],
+  },
+  {
+    id: "aspnet-blazor",
+    name: "Blazor",
+    detect: {
+      configFileContent: {
+        scanDotNetLayout: true,
+        patterns: ["Microsoft.NET.Sdk.BlazorWebAssembly", "Microsoft.AspNetCore.Components"],
+      },
+    },
+    skills: [
+      "github/awesome-copilot/fluentui-blazor",
+      "markpitt/claude-skills/blazor-expert",
+      "mindrally/skills/blazor",
+      "stuartf303/sorcha/blazor",
+    ],
+  },
+  {
+    id: "aspnet-minimal-api",
+    name: "ASP.NET Minimal API",
+    detect: {
+      configFiles: ["appsettings.json"],
+      configFileContent: {
+        scanDotNetLayout: true,
+        patterns: ["Microsoft.AspNetCore.OpenApi", "Swashbuckle.AspNetCore"],
+      },
+    },
+    skills: [
+      "github/awesome-copilot/aspnet-minimal-api-openapi",
+      "dotnet/skills/minimal-api-file-upload",
+      "stuartf303/sorcha/minimal-apis",
+      "claude-dev-suite/claude-dev-suite/aspnet-minimal-api",
+    ],
   },
   {
     id: "rust",

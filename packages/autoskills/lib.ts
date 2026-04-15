@@ -44,6 +44,9 @@ const SCAN_SKIP_DIRS = new Set([
   ".turbo",
   ".terraform",
   "var",
+  "bin",
+  "obj",
+  ".vs",
 ]);
 
 const GRADLE_SCAN_ROOT_FILES = [
@@ -52,6 +55,13 @@ const GRADLE_SCAN_ROOT_FILES = [
   "settings.gradle.kts",
   "settings.gradle",
   "gradle/libs.versions.toml",
+];
+
+const DOTNET_SCAN_ROOT_FILES = [
+  "global.json",
+  "NuGet.Config",
+  "Directory.Build.props",
+  "Directory.Packages.props",
 ];
 
 // ── Gradle Scanning ──────────────────────────────────────────
@@ -123,12 +133,64 @@ function gradleLayoutCandidatePaths(projectDir: string): string[] {
   return candidates;
 }
 
+// ── .NET Scanning ────────────────────────────────────────────
+
+const _dotNetCache = new Map<string, string[]>();
+
+function dotNetLayoutCandidatePaths(projectDir: string): string[] {
+  const cached = _dotNetCache.get(projectDir);
+  if (cached) return cached;
+
+  const candidates: string[] = [];
+  const seen = new Set<string>();
+
+  function add(filePath: string): void {
+    if (!seen.has(filePath)) {
+      candidates.push(filePath);
+      seen.add(filePath);
+    }
+  }
+
+  for (const f of DOTNET_SCAN_ROOT_FILES) {
+    add(join(projectDir, f));
+  }
+
+  function scan(dir: string, depth: number): void {
+    if (depth > 2) return;
+    let entries: import("node:fs").Dirent[];
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+
+    for (const e of entries) {
+      if (e.isFile()) {
+        const lower = e.name.toLowerCase();
+        if (lower.endsWith(".sln") || lower.endsWith(".csproj") || lower.endsWith(".fsproj")) {
+          add(join(dir, e.name));
+        }
+      } else if (e.isDirectory() && !e.name.startsWith(".") && !SCAN_SKIP_DIRS.has(e.name)) {
+        scan(join(dir, e.name), depth + 1);
+      }
+    }
+  }
+
+  scan(projectDir, 0);
+
+  _dotNetCache.set(projectDir, candidates);
+  return candidates;
+}
+
 function resolveConfigFileContentPaths(
   projectDir: string,
   config: ConfigFileContentBlock,
 ): string[] {
   if (config.scanGradleLayout) {
     return gradleLayoutCandidatePaths(projectDir);
+  }
+  if (config.scanDotNetLayout) {
+    return dotNetLayoutCandidatePaths(projectDir);
   }
   return (config.files || []).map((f) => join(projectDir, f));
 }

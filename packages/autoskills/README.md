@@ -76,6 +76,9 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 | Hono                 | `hono` package                                                                                                                                    |
 | NestJS               | `@nestjs/core` package                                                                                                                            |
 | Spring Boot          | Gradle with `spring-boot-starter` or `org.springframework.boot`                                                                                   |
+| ASP.NET Core         | `.csproj` file with `Microsoft.NET.Sdk.Web`                                                                                                       |
+| Blazor               | `.csproj` with `Microsoft.NET.Sdk.BlazorWebAssembly` or `Microsoft.AspNetCore.Components`                                                         |
+| ASP.NET Minimal API  | `.csproj` with `Microsoft.AspNetCore.OpenApi` or `Swashbuckle.AspNetCore`                                                                         |
 
 ### Styling & UI
 
@@ -98,6 +101,8 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 | Turborepo  | `turbo` package or `turbo.json`                              |
 | Vitest     | `vitest` package or `vitest.config.*`                        |
 | oxlint     | `oxlint` package or `.oxlintrc.json`                         |
+| .NET       | `global.json`, `NuGet.Config`, `*.csproj`, `*.sln`           |
+| C#         | `*.csproj`, `*.sln`                                          |
 
 ### Backend & Data
 
