@@ -1,6 +1,6 @@
 import { describe, it } from "node:test";
 import { ok, equal, deepEqual } from "node:assert/strict";
-import { getNpxCommand, getNpxSpawnOptions, buildInstallArgs } from "../installer.ts";
+import { getNpxCommand, getNpxSpawnOptions, buildInstallArgs } from "../installer.js";
 
 describe("installer", () => {
   it("uses npx.cmd on Windows", () => {

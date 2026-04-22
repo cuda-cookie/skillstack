@@ -32,11 +32,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-        working-directory: packages/autoskills
+        working-directory: packages/skillstack
 
       - name: Run tests
         run: pnpm test
-        working-directory: packages/autoskills
+        working-directory: packages/skillstack
 
       - name: E2E — install skills in fake project
         shell: bash
@@ -44,4 +44,4 @@ jobs:
           mkdir -p "$RUNNER_TEMP/test-project"
           echo '{ "dependencies": { "next": "15.0.0", "react": "19.0.0" } }' > "$RUNNER_TEMP/test-project/package.json"
           cd "$RUNNER_TEMP/test-project"
-          node "$GITHUB_WORKSPACE/packages/autoskills/index.mjs" -y --verbose
+          node "$GITHUB_WORKSPACE/packages/skillstack/index.mjs" -y --verbose

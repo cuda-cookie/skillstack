@@ -1,7 +1,7 @@
 import { spawn, execFileSync } from "node:child_process";
-import { parseSkillPath } from "./lib.ts";
-import type { SkillEntry } from "./lib.ts";
-import { log, write, dim, green, cyan, red, HIDE_CURSOR, SHOW_CURSOR, SPINNER } from "./colors.ts";
+import { parseSkillPath } from "./lib.js";
+import type { SkillEntry } from "./lib.js";
+import { log, write, dim, green, cyan, red, HIDE_CURSOR, SHOW_CURSOR, SPINNER } from "./colors.js";
 
 export function getNpxCommand(platform: string = process.platform): string {
   return platform === "win32" ? "npx.cmd" : "npx";

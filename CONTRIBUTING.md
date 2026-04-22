@@ -1,6 +1,6 @@
-# Contributing to AutoSkills
+# Contributing to SkillStack
 
-First off, thank you for considering contributing to AutoSkills! It's people like you that make open source such a great community.
+First off, thank you for considering contributing to SkillStack! It's people like you that make open source such a great community.
 
 ## 1. Where do I go from here?
 
@@ -8,7 +8,7 @@ If you've noticed a bug or have a feature request, please [open an issue](../../
 
 ## 2. Fork & create a branch
 
-If this is something you think you can fix, then [fork AutoSkills](../../fork) and create a branch with a descriptive name.
+If this is something you think you can fix, then [fork SkillStack](../../fork) and create a branch with a descriptive name.
 
 A good branch name would be (where issue #325 is the ticket you're working on):
 
@@ -39,7 +39,7 @@ Your patch should follow the same coding conventions and style as the rest of th
 At this point, you should switch back to your master branch and make sure it's up to date with the main repository:
 
 ```sh
-git remote add upstream https://github.com/midudev/autoskills.git
+git remote add upstream https://github.com/midudev/skillstack.git
 git checkout main
 git pull upstream main
 ```

@@ -1,0 +1,214 @@
+# Changelog
+
+## [0.2.7](git+https://github.com/cookie-may/skillstack/releases/tag/v0.2.7) (2026-04-09)
+
+### ✨ Features
+
+- feat(skillstack): add TypeScript build step to compile .ts to dist/ [`7a0c570`](git+https://github.com/cookie-may/skillstack/commit/7a0c570)
+
+### 🐛 Bug Fixes
+
+- fix(skillstack): build before publish and fix test glob in release script [`4a324eb`](git+https://github.com/cookie-may/skillstack/commit/4a324eb)
+- fix(skillstack): prefer compiled dist/main.js, fallback to .ts in dev [`ab9aa59`](git+https://github.com/cookie-may/skillstack/commit/ab9aa59)
+
+## [0.2.6](git+https://github.com/cookie-may/skillstack/releases/tag/v0.2.6) (2026-04-09)
+
+### ✨ Features
+
+- feat: show structured error details in install summary [`64ed941`](git+https://github.com/cookie-may/skillstack/commit/64ed941)
+- feat: add Laravel detection with multi-signal approach [`cc4f7c2`](git+https://github.com/cookie-may/skillstack/commit/cc4f7c2)
+- feat(skillstack): add Python ecosystem technology detection (#17) [`323edbf`](git+https://github.com/cookie-may/skillstack/commit/323edbf)
+- feat: add Electron project detection (#74) [`1d5bd1f`](git+https://github.com/cookie-may/skillstack/commit/1d5bd1f)
+- feat: agregar detección de tecnologías y skills para proyectos Ruby on Rails [`0987c24`](git+https://github.com/cookie-may/skillstack/commit/0987c24)
+- feat(detect): add Dart and Flutter project detection (#70) [`7b5b2b3`](git+https://github.com/cookie-may/skillstack/commit/7b5b2b3)
+- feat: generate CLAUDE.md summary for Claude Code installs (#61) [`60e8db8`](git+https://github.com/cookie-may/skillstack/commit/60e8db8)
+- feat(detect): expand technology signals and combo mappings [`815f25f`](git+https://github.com/cookie-may/skillstack/commit/815f25f)
+- feat(clerk): add new skills and framework combos [`ae23db2`](git+https://github.com/cookie-may/skillstack/commit/ae23db2)
+- feat: add Rust technology detection from Cargo.toml [`0253ec4`](git+https://github.com/cookie-may/skillstack/commit/0253ec4)
+- feat: add Go curated skills [`2be15ab`](git+https://github.com/cookie-may/skillstack/commit/2be15ab)
+- feat: detect Go projects [`b7a43e8`](git+https://github.com/cookie-may/skillstack/commit/b7a43e8)
+
+### 🐛 Bug Fixes
+
+- fix: remove unused variable in claude.ts [`447b954`](git+https://github.com/cookie-may/skillstack/commit/447b954)
+- fix: improve Gradle module parsing and update Laravel detection [`ff792ee`](git+https://github.com/cookie-may/skillstack/commit/ff792ee)
+- fix: format code for better readability in collectMarkdownFiles and test cases [`7371088`](git+https://github.com/cookie-may/skillstack/commit/7371088)
+- fix: handle escape sequences and batched input in multiSelect [`2c4b7fd`](git+https://github.com/cookie-may/skillstack/commit/2c4b7fd)
+- fix: improve CLAUDE.md generation with symlink support and frontmatter parsing [`c661ed3`](git+https://github.com/cookie-may/skillstack/commit/c661ed3)
+- fix: use delimited sections in CLAUDE.md to preserve user content [`55d4d05`](git+https://github.com/cookie-may/skillstack/commit/55d4d05)
+- fix: detect technologies in Gradle multi-module projects via settings.gradle (#26) [`286494c`](git+https://github.com/cookie-may/skillstack/commit/286494c)
+
+### 📦 Other Changes
+
+- refactor: migrate skillstack package from .mjs to TypeScript [`1885540`](git+https://github.com/cookie-may/skillstack/commit/1885540)
+- Merge pull request #57 from oscaruiz/fix/26-gradle-multimodule-detection [`9f1330f`](git+https://github.com/cookie-may/skillstack/commit/9f1330f)
+- refactor: apply review improvements to Ruby/Rails detection [`027d3e9`](git+https://github.com/cookie-may/skillstack/commit/027d3e9)
+- chore: bump version to 0.2.5 [`c51559b`](git+https://github.com/cookie-may/skillstack/commit/c51559b)
+- chore: format (#66) [`4fc16a4`](git+https://github.com/cookie-may/skillstack/commit/4fc16a4)
+- Merge branch 'main' into feat/go-support [`c4b7526`](git+https://github.com/cookie-may/skillstack/commit/c4b7526)
+- terraform detection and skills added [`a49969a`](git+https://github.com/cookie-may/skillstack/commit/a49969a)
+- Merge branch 'main' of github.com:cookie-may/skillstack [`4b08c10`](git+https://github.com/cookie-may/skillstack/commit/4b08c10)
+- test(detect): cover new detections and Clerk combos [`3382bd7`](git+https://github.com/cookie-may/skillstack/commit/3382bd7)
+
+## [0.2.4](git+https://github.com/cookie-may/skillstack/releases/tag/v0.2.4) (2026-04-06)
+
+### ✨ Features
+
+- feat(agents): add OpenCode detection [`4b0e23f`](git+https://github.com/cookie-may/skillstack/commit/4b0e23f)
+- feat: pre-uncheck already installed skills in multi-select [`365e707`](git+https://github.com/cookie-may/skillstack/commit/365e707)
+- chore: add benchmark script for performance measurement [`ab1c879`](git+https://github.com/cookie-may/skillstack/commit/ab1c879)
+- feat: add Swift concurrency, Xcode build optimization, Swift Testing and Core Data skills [`1efdc8f`](git+https://github.com/cookie-may/skillstack/commit/1efdc8f)
+
+### 🐛 Bug Fixes
+
+- fix: resolve npm publish warnings that stripped bin entry [`c76623b`](git+https://github.com/cookie-may/skillstack/commit/c76623b)
+- fix(agents): map .kiro folder to kiro-cli identifier [`36da4d8`](git+https://github.com/cookie-may/skillstack/commit/36da4d8)
+- fix: resolve eslint warnings (unused imports, catch param, regex escape) [`db69e54`](git+https://github.com/cookie-may/skillstack/commit/db69e54)
+- fix: changelog markdown link formatting [`b36f24f`](git+https://github.com/cookie-may/skillstack/commit/b36f24f)
+
+### 📦 Other Changes
+
+- chore: track pnpm-lock.yaml for deterministic installs [`0c94654`](git+https://github.com/cookie-may/skillstack/commit/0c94654)
+- refactor: accept options object in collectSkills and improve multiSelect UX [`ba9028a`](git+https://github.com/cookie-may/skillstack/commit/ba9028a)
+- Merge pull request #38 from Mo3oDev/fix/kiro-cli-agent-id [`8b06245`](git+https://github.com/cookie-may/skillstack/commit/8b06245)
+- Merge pull request #33 from pol-cova/feat/ios-dev-skills [`9af064f`](git+https://github.com/cookie-may/skillstack/commit/9af064f)
+- style: format code with consistent line wrapping and whitespace [`3b60dcc`](git+https://github.com/cookie-may/skillstack/commit/3b60dcc)
+- perf: optimize installation phase with bin pre-warm, concurrency and repo sorting [`76c3ede`](git+https://github.com/cookie-may/skillstack/commit/76c3ede)
+- perf: optimize detection phase with cached reads, Set lookups and reduced syscalls [`de3e835`](git+https://github.com/cookie-may/skillstack/commit/de3e835)
+
+## [0.2.3](https://github.com/cookie-may/skillstack/releases/tag/v0.2.3) (2026-04-04)
+
+### ✨ Features
+
+- refactor: add test helpers and reduce duplication across test files `[fdbb7af](https://github.com/cookie-may/skillstack/commit/fdbb7af)`
+- feat: add Three.js and @react-three/fiber. `[6d5ac16](https://github.com/cookie-may/skillstack/commit/6d5ac16)`
+- feat: add support for deno.json and deno.jsonc in workspace resolution and technology detection `[7d92dd1](https://github.com/cookie-may/skillstack/commit/7d92dd1)`
+- docs: add Clerk and Spring Boot to supported technologies `[d5998e0](https://github.com/cookie-may/skillstack/commit/d5998e0)`
+- feat: add Kiro agent support `[d5016c5](https://github.com/cookie-may/skillstack/commit/d5016c5)`
+- feat: add clerk router skill to nextjs-clerk combo `[bec0f69](https://github.com/cookie-may/skillstack/commit/bec0f69)`
+- feat: add Clerk authentication detection and skills `[abfd4e5](https://github.com/cookie-may/skillstack/commit/abfd4e5)`
+
+### 🐛 Bug Fixes
+
+- style: fix oxfmt formatting `[4566573](https://github.com/cookie-may/skillstack/commit/4566573)`
+
+### 📦 Other Changes
+
+- refactor: use if-return instead of switch in bumpVersion `[4ffb3d0](https://github.com/cookie-may/skillstack/commit/4ffb3d0)`
+- refactor: extract log/write aliases to replace console.log and process.stdout.write `[3a8961f](https://github.com/cookie-may/skillstack/commit/3a8961f)`
+- Merge pull request #30 from pedrocastellanos/feat-add-threejs-react-three `[9aa3b4d](https://github.com/cookie-may/skillstack/commit/9aa3b4d)`
+- Merge pull request #32 from John7bigo/feat/read-deno-json `[980e8f1](https://github.com/cookie-may/skillstack/commit/980e8f1)`
+- Merge pull request #27 from Railly/feat/add-icons-and-docs `[4f4e61d](https://github.com/cookie-may/skillstack/commit/4f4e61d)`
+- chore: lint and format before release `[e63bada](https://github.com/cookie-may/skillstack/commit/e63bada)`
+
+## [0.2.2](https://github.com/cookie-may/skillstack/releases/tag/v0.2.2) (2026-04-01)
+
+### ✨ Features
+
+- feat: simplificar la salida de detección de Cloudflare en pruebas de CLI `[cf190bd](https://github.com/cookie-may/skillstack/commit/cf190bd)`
+- feat: mejorar la visualización en multiSelect al agregar separación entre grupos `[b11997d](https://github.com/cookie-may/skillstack/commit/b11997d)`
+- feat: actualizar iconos en la salida de CLI para mejorar la legibilidad `[0c25238](https://github.com/cookie-may/skillstack/commit/0c25238)`
+- feat: mejorar la visualización de etiquetas de habilidades en la salida de CLI `[41b0d48](https://github.com/cookie-may/skillstack/commit/41b0d48)`
+- feat: implementar rollback en caso de fallos durante el proceso de release `[013702f](https://github.com/cookie-may/skillstack/commit/013702f)`
+
+## [0.2.1](https://github.com/cookie-may/skillstack/releases/tag/v0.2.1) (2026-04-01)
+
+### ✨ Features
+
+- feat: auto-detect installed agents when no -a flag is provided `[0b6c88c](https://github.com/cookie-may/skillstack/commit/0b6c88c)`
+- feat: add Prisma, Stripe, Hono, Vitest, Drizzle, NestJS and Tauri to skills map `[ba11178](https://github.com/cookie-may/skillstack/commit/ba11178)`
+- Add Svelte skills to skills-map `[a212de1](https://github.com/cookie-may/skillstack/commit/a212de1)`
+- feat: update SKILLS_MAP to include new Angular skills `[d33c8db](https://github.com/cookie-may/skillstack/commit/d33c8db)`
+
+### 📦 Other Changes
+
+- Refactor transition properties in global.css for improved readability `[f1836fa](https://github.com/cookie-may/skillstack/commit/f1836fa)`
+- Merge pull request #15 from vgpastor/feat/auto-detect-agents `[4ad60cc](https://github.com/cookie-may/skillstack/commit/4ad60cc)`
+- Merge pull request #13 from PMFrancisco/feat/add-js-ecosystem-skills `[62a2879](https://github.com/cookie-may/skillstack/commit/62a2879)`
+
+## [0.2.0](https://github.com/cookie-may/skillstack/releases/tag/v0.2.0) (2026-03-31)
+
+### ✨ Features
+
+- feat: add Java/Spring Boot detection and extract skills map to dedicated file `[90bd791](https://github.com/cookie-may/skillstack/commit/90bd791)`
+- feat: add monorepo workspace detection support `[85e14cd](https://github.com/cookie-may/skillstack/commit/85e14cd)`
+- feat(skillstack): detect Kotlin Multiplatform and Android via Gradle `[4efd5c9](https://github.com/cookie-may/skillstack/commit/4efd5c9)`
+- Update skillstack package to version 0.1.6 and add release script `[92216ec](https://github.com/cookie-may/skillstack/commit/92216ec)`
+- Add CHANGELOG.md for skillstack package `[03127c4](https://github.com/cookie-may/skillstack/commit/03127c4)`
+
+### 🐛 Bug Fixes
+
+- fix: hide combo source labels from skill list display `[138a895](https://github.com/cookie-may/skillstack/commit/138a895)`
+- fix: Windows installer by making the npx spawn options platform-aware. `[b661b88](https://github.com/cookie-may/skillstack/commit/b661b88)`
+
+### 📦 Other Changes
+
+- Enhance release script documentation with JSDoc comments. Added detailed descriptions for changelog generation and update functions to improve clarity and maintainability. `[dbab11d](https://github.com/cookie-may/skillstack/commit/dbab11d)`
+- Enhance documentation with JSDoc comments across multiple files. Added detailed descriptions for functions in index.mjs, installer.mjs, lib.mjs, ui.mjs, and release.mjs to improve code clarity and maintainability. `[595bfa0](https://github.com/cookie-may/skillstack/commit/595bfa0)`
+- merge: resolve conflicts with main branch `[97c4cef](https://github.com/cookie-may/skillstack/commit/97c4cef)`
+- merge: resolve conflicts with main branch `[9505993](https://github.com/cookie-may/skillstack/commit/9505993)`
+- Merge pull request #10 from dieguedev/main `[31d4727](https://github.com/cookie-may/skillstack/commit/31d4727)`
+- Merge pull request #6 from sebastiansandoval27/main `[70ca7fb](https://github.com/cookie-may/skillstack/commit/70ca7fb)`
+- Merge pull request #3 from AlvaroMinarro/feat/kmp-android-detection `[2381250](https://github.com/cookie-may/skillstack/commit/2381250)`
+- refactor(lib.mjs): Replace outdated tailwind-v4-shadcn SKILL `[d7e01a8](https://github.com/cookie-may/skillstack/commit/d7e01a8)`
+- Enhance agent installation support in skillstack CLI `[0f90d9b](https://github.com/cookie-may/skillstack/commit/0f90d9b)`
+
+## [0.1.6](https://github.com/cookie-may/skillstack/releases/tag/v0.1.6) (2026-03-30)
+
+### 🐛 Bug Fixes
+
+- Fix Windows npx spawn in installer `[ec48abb](https://github.com/cookie-may/skillstack/commit/ec48abb)`
+
+## [0.1.5](https://github.com/cookie-may/skillstack/releases/tag/v0.1.5) (2026-03-30)
+
+### 🐛 Bug Fixes
+
+- Correct repository URL `[6f82a1a](https://github.com/cookie-may/skillstack/commit/6f82a1a)`
+
+## [0.1.4](https://github.com/cookie-may/skillstack/releases/tag/v0.1.4) (2026-03-30)
+
+### 📦 Other Changes
+
+- Add README.md for skillstack package `[0471cfb](https://github.com/cookie-may/skillstack/commit/0471cfb)`
+
+## [0.1.3](https://github.com/cookie-may/skillstack/releases/tag/v0.1.3) (2026-03-30)
+
+### ✨ Features
+
+- Add WordPress detection and enhance web frontend identification `[3804a8d](https://github.com/cookie-may/skillstack/commit/3804a8d)`
+- Add Node.js and Express detection with backend skills `[f68da3c](https://github.com/cookie-may/skillstack/commit/f68da3c)`
+- Add Deno detection with 6 skills `[393fc9e](https://github.com/cookie-may/skillstack/commit/393fc9e)`
+- Add Bun detection and support for URL-based skills `[ae69f8c](https://github.com/cookie-may/skillstack/commit/ae69f8c)`
+- Add GSAP, Pinia, Cloudflare smart detection and new skills `[0687302](https://github.com/cookie-may/skillstack/commit/0687302)`
+- Add Pinia, Astro and oxlint skills support `[747bfc8](https://github.com/cookie-may/skillstack/commit/747bfc8)`
+- Detect Vercel and Cloudflare from Astro adapters `[7d1be35](https://github.com/cookie-may/skillstack/commit/7d1be35)`
+- Add gray color support to skillstack CLI `[a0b26ce](https://github.com/cookie-may/skillstack/commit/a0b26ce)`
+- Add pink color support and sponsor message in CLI output `[6d21987](https://github.com/cookie-may/skillstack/commit/6d21987)`
+- Enhance skillstack CLI with version display and improved technology listing `[506ad14](https://github.com/cookie-may/skillstack/commit/506ad14)`
+- Enhance skillstack CLI with improved color handling and multi-select functionality `[b09044c](https://github.com/cookie-may/skillstack/commit/b09044c)`
+
+### 📦 Other Changes
+
+- Add LICENSE file and update project license to CC BY-NC 4.0 `[9301e31](https://github.com/cookie-may/skillstack/commit/9301e31)`
+- Replace Tailwind skill with tailwind-css-patterns `[beffb9d](https://github.com/cookie-may/skillstack/commit/beffb9d)`
+- Refactor CLI into modular files `[6a7c76c](https://github.com/cookie-may/skillstack/commit/6a7c76c)`
+- Update CLI banner formatting `[aee0b13](https://github.com/cookie-may/skillstack/commit/aee0b13)`
+- Apply oxlint fixes and oxfmt formatting across codebase `[54e69c3](https://github.com/cookie-may/skillstack/commit/54e69c3)`
+- Remove assertion for 'skills.sh' in CLI tests `[72c193a](https://github.com/cookie-may/skillstack/commit/72c193a)`
+
+## [0.1.1](https://github.com/cookie-may/skillstack/releases/tag/v0.1.1) (2026-03-29)
+
+### ✨ Features
+
+- Enhance skillstack CLI with new white color function and improved multi-select rendering `[e2c2891](https://github.com/cookie-may/skillstack/commit/e2c2891)`
+
+### 📦 Other Changes
+
+- Refactor repos to individual skills with combo detection `[52ba1bc](https://github.com/cookie-may/skillstack/commit/52ba1bc)`
+- Update tests for skills-based API and combo detection `[5a885f4](https://github.com/cookie-may/skillstack/commit/5a885f4)`
+
+## [0.1.0](https://github.com/cookie-may/skillstack/releases/tag/v0.1.0) (2026-03-25)
+
+### 🎉 Initial Release
+
+- Add skillstack CLI package `[336fc45](https://github.com/cookie-may/skillstack/commit/336fc45)`

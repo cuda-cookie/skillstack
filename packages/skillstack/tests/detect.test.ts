@@ -9,8 +9,8 @@ import {
   detectTechnologies,
   detectCombos,
   parseSettingsGradleModules,
-} from "../lib.ts";
-import { useTmpDir, writePackageJson, writeJson, writeFile, addWorkspace } from "./helpers.ts";
+} from "../lib.js";
+import { useTmpDir, writePackageJson, writeJson, writeFile, addWorkspace } from "./helpers.js";
 
 // ── getAllPackageNames ─────────────────────────────────────────
 
@@ -580,7 +580,7 @@ plugins {
 
   it("detects Vitest from config file", () => {
     writePackageJson(tmp.path);
-    writeFile(tmp.path, "vitest.config.ts", "export default {}");
+    writeFile(tmp.path, "vitest.config.js", "export default {}");
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "vitest"));
   });
@@ -632,7 +632,7 @@ plugins {
 
   it("detects Electron from electron-vite config file", () => {
     writePackageJson(tmp.path);
-    writeFile(tmp.path, "electron-vite.config.ts", "export default {}");
+    writeFile(tmp.path, "electron-vite.config.js", "export default {}");
     const { detected } = detectTechnologies(tmp.path);
     ok(detected.some((t) => t.id === "electron"));
   });
@@ -1296,8 +1296,8 @@ describe("getDenoImportNames", () => {
     const result = getDenoImportNames({
       imports: {
         react: "npm:react@^19",
-        local: "./local.ts",
-        remote: "https://deno.land/x/mod@v1/mod.ts",
+        local: "./local.js",
+        remote: "https://deno.land/x/mod@v1/mod.js",
       },
     });
     deepStrictEqual(result, ["react"]);

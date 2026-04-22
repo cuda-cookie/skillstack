@@ -43,7 +43,7 @@ assert.strictEqual(a, b);
 
 ## Output helpers
 
-- **Never use `console.log` or `process.stdout.write` directly** in the CLI package (`packages/autoskills`). Use the `log` and `write` helpers exported from `colors.mjs` instead.
+- **Never use `console.log` or `process.stdout.write` directly** in the CLI package (`packages/skillstack`). Use the `log` and `write` helpers exported from `colors.mjs` instead.
 
 ```js
 // ✅ Correct

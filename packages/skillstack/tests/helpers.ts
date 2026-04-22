@@ -3,7 +3,7 @@ import { join, dirname } from "node:path";
 import { tmpdir } from "node:os";
 import { beforeEach, afterEach } from "node:test";
 
-export function useTmpDir(prefix: string = "autoskills-"): { path: string } {
+export function useTmpDir(prefix: string = "skillstack-"): { path: string } {
   const ctx = { path: "" };
   beforeEach(() => {
     ctx.path = mkdtempSync(join(tmpdir(), prefix));

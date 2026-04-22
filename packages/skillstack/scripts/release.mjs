@@ -67,13 +67,13 @@ function getLastTag() {
 }
 
 /**
- * Collects commits affecting `packages/autoskills/` since the given tag.
+ * Collects commits affecting `packages/skillstack/` since the given tag.
  * @param {string|null} tag - Starting tag (all commits if `null`).
  * @returns {{ message: string, hash: string }[]}
  */
 function getCommitsSinceTag(tag) {
   const range = tag ? `${tag}..HEAD` : "HEAD";
-  const log = run(`git log ${range} --pretty=format:"%s|%h" -- packages/autoskills/`, {
+  const log = run(`git log ${range} --pretty=format:"%s|%h" -- packages/skillstack/`, {
     cwd: REPO_ROOT,
   });
   if (!log) return [];
@@ -195,7 +195,7 @@ if (!bump || !VALID_BUMPS.includes(bump)) {
 
 const pkg = JSON.parse(readFileSync(PKG_PATH, "utf-8"));
 const repoUrl =
-  pkg.repository?.url?.replace(/\.git$/, "") || "https://github.com/midudev/autoskills";
+  pkg.repository?.url?.replace(/\.git$/, "") || "https://github.com/cookie-may/skillstack";
 const currentVersion = pkg.version;
 const newVersion = bumpVersion(currentVersion, bump);
 const originalPkgContent = readFileSync(PKG_PATH, "utf-8");

@@ -1,6 +1,6 @@
 {
-  "name": "autoskills",
-  "version": "0.2.7",
+  "name": "skillstack",
+  "version": "0.2.8",
   "description": "Auto-detect and install the best AI agent skills for your project",
   "keywords": [
     "agent",
@@ -13,15 +13,15 @@
     "detect",
     "skills"
   ],
-  "homepage": "https://autoskills.sh",
+  "homepage": "https://skillstack.sh",
   "license": "CC-BY-NC-4.0",
   "author": "midudev",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/midudev/autoskills.git"
+    "url": "git+https://github.com/midudev/skillstack.git"
   },
   "bin": {
-    "autoskills": "index.mjs"
+    "skillstack": "index.mjs"
   },
   "files": [
     "index.mjs",
@@ -35,7 +35,7 @@
     "bench": "node scripts/bench.mjs"
   },
   "devDependencies": {
-    "@types/node": "22.15.3",
+    "@types/node": "^25.6.0",
     "typescript": "5.8.3"
   },
   "engines": {

@@ -1,26 +1,26 @@
 <div align="center">
 
-<a href="https://autoskills.sh">
-<img src="https://autoskills.sh/og.jpg" alt="autoskills" />
+<a href="https://skillstack.sh">
+<img src="https://skillstack.sh/og.jpg" alt="skillstack" />
 </a>
 
-# autoskills
+# skillstack
 
 **One command. Your entire AI skill stack. Installed.**
 
-[autoskills.sh](https://autoskills.sh)
+[skillstack.sh](https://skillstack.sh)
 
 </div>
 
 Scans your project, detects your tech stack, and installs the best AI agent skills from [skills.sh](https://skills.sh) automatically.
 
 ```bash
-npx autoskills
+npx skillstack
 ```
 
 ## How it works
 
-1. Run `npx autoskills` in your project root
+1. Run `npx skillstack` in your project root
 2. Your `package.json`, Gradle files, and config files are scanned to detect technologies
 3. The best matching AI agent skills are installed via [skills.sh](https://skills.sh)
 4. If Claude Code is targeted, a `CLAUDE.md` summary is generated from the installed markdown files in `.claude/skills`
@@ -29,7 +29,7 @@ That's it. No config needed.
 
 ## Claude Code summary
 
-If `claude-code` is auto-detected or passed with `-a`, `autoskills` also writes a `CLAUDE.md` file in your project root with a quick summary of the markdown files installed for Claude Code.
+If `claude-code` is auto-detected or passed with `-a`, `skillstack` also writes a `CLAUDE.md` file in your project root with a quick summary of the markdown files installed for Claude Code.
 
 ## Options
 

@@ -1,19 +1,19 @@
-# autoskills
+# skillstack
 
 Auto-detect and install the best AI agent skills for your project. One command, zero config.
 
 ```bash
-npx autoskills
+npx skillstack
 ```
 
-`autoskills` scans your project, detects the technologies you use, and installs curated [AI agent skills](https://skills.sh) that make Cursor, Claude Code, and other AI coding assistants actually understand your stack.
+`skillstack` scans your project, detects the technologies you use, and installs curated [AI agent skills](https://skills.sh) that make Cursor, Claude Code, and other AI coding assistants actually understand your stack.
 
 ## Quick Start
 
 Run it in your project root:
 
 ```bash
-npx autoskills
+npx skillstack
 ```
 
 That's it. It will:
@@ -27,18 +27,18 @@ That's it. It will:
 ### Skip the prompt
 
 ```bash
-npx autoskills -y
+npx skillstack -y
 ```
 
 ### Preview without installing
 
 ```bash
-npx autoskills --dry-run
+npx skillstack --dry-run
 ```
 
 ### Claude Code summary
 
-If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CLAUDE.md` file in your project root summarizing the markdown files installed under `.claude/skills`.
+If `claude-code` is auto-detected or passed with `-a`, `skillstack` writes a `CLAUDE.md` file in your project root summarizing the markdown files installed under `.claude/skills`.
 
 ## Options
 
@@ -51,7 +51,7 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 
 ## Supported Technologies
 
-`autoskills` detects **50+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
+`skillstack` detects **50+ technologies** from your `package.json`, lockfiles, Gradle files, and config files:
 
 ### Frameworks & Libraries
 
@@ -154,11 +154,11 @@ If `claude-code` is auto-detected or passed with `-a`, `autoskills` writes a `CL
 
 ### Web Frontend Detection
 
-Even without a framework, `autoskills` scans your file tree for web frontend signals (`.html`, `.css`, `.scss`, `.vue`, `.svelte`, `.jsx`, `.tsx`, `.twig`, `.blade.php`, etc.) and installs skills for frontend design, accessibility, and SEO.
+Even without a framework, `skillstack` scans your file tree for web frontend signals (`.html`, `.css`, `.scss`, `.vue`, `.svelte`, `.jsx`, `.tsx`, `.twig`, `.blade.php`, etc.) and installs skills for frontend design, accessibility, and SEO.
 
 ## Combo Detection
 
-When multiple technologies are used together, `autoskills` detects **technology combos** and adds specialized skills for the combination:
+When multiple technologies are used together, `skillstack` detects **technology combos** and adds specialized skills for the combination:
 
 - **Next.js + Supabase** — Supabase Postgres best practices for Next.js
 - **Next.js + Vercel AI SDK** — AI SDK patterns with Next.js
@@ -174,7 +174,7 @@ When multiple technologies are used together, `autoskills` detects **technology 
 
 ## How It Works
 
-`autoskills` uses [skills.sh](https://skills.sh) under the hood — the open skill registry for AI coding agents. Skills are markdown files that teach AI assistants how to work with specific technologies, following best practices and patterns from the official maintainers.
+`skillstack` uses [skills.sh](https://skills.sh) under the hood — the open skill registry for AI coding agents. Skills are markdown files that teach AI assistants how to work with specific technologies, following best practices and patterns from the official maintainers.
 
 The detection runs entirely locally with zero network requests until installation begins.
 

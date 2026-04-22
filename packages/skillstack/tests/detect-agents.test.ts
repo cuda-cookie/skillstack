@@ -2,8 +2,8 @@ import { describe, it } from "node:test";
 import { ok, equal, deepEqual } from "node:assert/strict";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { detectAgents, AGENT_FOLDER_MAP } from "../lib.ts";
-import { useTmpDir } from "./helpers.ts";
+import { detectAgents, AGENT_FOLDER_MAP } from "../lib.js";
+import { useTmpDir } from "./helpers.js";
 
 describe("detectAgents", () => {
   const tmp = useTmpDir();

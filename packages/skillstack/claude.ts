@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const SECTION_START = "<!-- autoskills:start -->";
-const SECTION_END = "<!-- autoskills:end -->";
+const SECTION_START = "<!-- skillstack:start -->";
+const SECTION_END = "<!-- skillstack:end -->";
 
 export interface CleanupResult {
   cleaned: boolean;

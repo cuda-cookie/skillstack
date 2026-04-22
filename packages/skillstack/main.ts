@@ -2,8 +2,8 @@ import { resolve, dirname, join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-import { detectTechnologies, collectSkills, detectAgents, getInstalledSkillNames } from "./lib.ts";
-import type { SkillEntry, Technology, ComboSkill } from "./lib.ts";
+import { detectTechnologies, collectSkills, detectAgents, getInstalledSkillNames } from "./lib.js";
+import type { SkillEntry, Technology, ComboSkill } from "./lib.js";
 import {
   log,
   write,
@@ -17,10 +17,10 @@ import {
   pink,
   gray,
   SHOW_CURSOR,
-} from "./colors.ts";
-import { printBanner, multiSelect, formatTime } from "./ui.ts";
-import { installAll, resolveSkillsBin } from "./installer.ts";
-import { cleanupClaudeMd } from "./claude.ts";
+} from "./colors.js";
+import { printBanner, multiSelect, formatTime } from "./ui.js";
+import { installAll, resolveSkillsBin } from "./installer.js";
+import { cleanupClaudeMd } from "./claude.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const VERSION: string = (() => {
@@ -29,7 +29,7 @@ const VERSION: string = (() => {
     if (!existsSync(p)) continue;
     try {
       const pkg = JSON.parse(readFileSync(p, "utf-8"));
-      if (pkg.name === "autoskills") return pkg.version;
+      if (pkg.name === "skillstack") return pkg.version;
     } catch {}
   }
   return "0.0.0";
@@ -71,13 +71,13 @@ function parseArgs(): CliArgs {
 
 function showHelp(): void {
   log(`
-  ${bold("autoskills")} — Auto-install the best AI skills for your project
+  ${bold("skillstack")} — Auto-install the best AI skills for your project
 
   ${bold("Usage:")}
-    npx autoskills                   Detect & install skills
-    npx autoskills ${dim("-y")}                   Skip confirmation
-    npx autoskills ${dim("--dry-run")}            Show what would be installed
-    npx autoskills ${dim("-a cursor claude-code")} Install for specific IDEs only
+    npx skillstack                   Detect & install skills
+    npx skillstack ${dim("-y")}                   Skip confirmation
+    npx skillstack ${dim("--dry-run")}            Show what would be installed
+    npx skillstack ${dim("-a cursor claude-code")} Install for specific IDEs only
 
   ${bold("Options:")}
     -y, --yes       Skip confirmation prompt
@@ -286,7 +286,7 @@ function printSummary({ installed, failed, errors, elapsed, verbose }: SummaryOp
   }
 
   log();
-  log(pink("   Enjoyed autoskills? Consider sponsoring → https://github.com/sponsors/midudev"));
+  log(pink("   Enjoyed skillstack? Consider sponsoring → https://github.com/sponsors/cookie-may"));
   log();
 }
 
@@ -437,9 +437,9 @@ async function main(): Promise<void> {
 
   if (claudeCleanup.cleaned) {
     if (claudeCleanup.deleted) {
-      log(dim("   Removed autoskills section from CLAUDE.md (file was empty, deleted)."));
+      log(dim("   Removed skillstack section from CLAUDE.md (file was empty, deleted)."));
     } else {
-      log(dim("   Removed autoskills section from CLAUDE.md."));
+      log(dim("   Removed skillstack section from CLAUDE.md."));
     }
     log();
   }

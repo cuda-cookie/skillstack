@@ -1,8 +1,8 @@
 import { describe, it } from "node:test";
 import { ok, strictEqual, deepStrictEqual, throws } from "node:assert/strict";
-import { collectSkills, detectTechnologies, getInstalledSkillNames } from "../lib.ts";
-import { multiSelect } from "../ui.ts";
-import { useTmpDir, writeJson, writeFile, writePackageJson } from "./helpers.ts";
+import { collectSkills, detectTechnologies, getInstalledSkillNames } from "../lib.js";
+import { multiSelect } from "../ui.js";
+import { useTmpDir, writeJson, writeFile, writePackageJson } from "./helpers.js";
 
 describe("collectSkills", () => {
   const tmp = useTmpDir();

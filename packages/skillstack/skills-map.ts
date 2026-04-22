@@ -74,7 +74,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Nuxt",
     detect: {
       packages: ["nuxt"],
-      configFiles: ["nuxt.config.js", "nuxt.config.ts"],
+      configFiles: ["nuxt.config.js", "nuxt.config.js"],
     },
     skills: ["antfu/skills/nuxt"],
   },
@@ -119,7 +119,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Astro",
     detect: {
       packages: ["astro"],
-      configFiles: ["astro.config.mjs", "astro.config.js", "astro.config.ts"],
+      configFiles: ["astro.config.mjs", "astro.config.js", "astro.config.js"],
     },
     skills: ["astrolicious/agent-skills/astro"],
   },
@@ -128,7 +128,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Tailwind CSS",
     detect: {
       packages: ["tailwindcss", "@tailwindcss/vite"],
-      configFiles: ["tailwind.config.js", "tailwind.config.ts", "tailwind.config.cjs"],
+      configFiles: ["tailwind.config.js", "tailwind.config.js", "tailwind.config.cjs"],
     },
     skills: ["giuseppe-trisciuoglio/developer-kit/tailwind-css-patterns"],
   },
@@ -186,7 +186,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Playwright",
     detect: {
       packages: ["@playwright/test", "playwright"],
-      configFiles: ["playwright.config.ts", "playwright.config.js"],
+      configFiles: ["playwright.config.js", "playwright.config.js"],
     },
     skills: ["currents-dev/playwright-best-practices-skill/playwright-best-practices"],
   },
@@ -387,7 +387,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Vite",
     detect: {
       packages: ["vite"],
-      configFiles: ["vite.config.js", "vite.config.ts", "vite.config.mjs"],
+      configFiles: ["vite.config.js", "vite.config.js", "vite.config.mjs"],
     },
     skills: ["antfu/skills/vite"],
   },
@@ -525,7 +525,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "oxlint",
     detect: {
       packages: ["oxlint"],
-      configFiles: [".oxlintrc.json", "oxlint.config.ts"],
+      configFiles: [".oxlintrc.json", "oxlint.config.js"],
     },
     skills: ["delexw/claude-code-misc/oxlint"],
   },
@@ -720,7 +720,7 @@ export const SKILLS_MAP: Technology[] = [
     name: "Vitest",
     detect: {
       packages: ["vitest"],
-      configFiles: ["vitest.config.ts", "vitest.config.js", "vitest.config.mts"],
+      configFiles: ["vitest.config.js", "vitest.config.js", "vitest.config.mts"],
     },
     skills: ["antfu/skills/vitest"],
   },
@@ -761,8 +761,8 @@ export const SKILLS_MAP: Technology[] = [
         "forge.config.js",
         "forge.config.cjs",
         "forge.config.mjs",
-        "forge.config.ts",
-        "electron-vite.config.ts",
+        "forge.config.js",
+        "electron-vite.config.js",
         "electron-vite.config.js",
         "electron-vite.config.mjs",
         "electron-vite.config.cjs",

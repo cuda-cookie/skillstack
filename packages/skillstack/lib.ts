@@ -2,7 +2,7 @@ import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { homedir } from "node:os";
 
-import type { Technology, ComboSkill, ConfigFileContentBlock } from "./skills-map.ts";
+import type { Technology, ComboSkill, ConfigFileContentBlock } from "./skills-map.js";
 
 export {
   SKILLS_MAP,
@@ -11,9 +11,9 @@ export {
   FRONTEND_BONUS_SKILLS,
   WEB_FRONTEND_EXTENSIONS,
   AGENT_FOLDER_MAP,
-} from "./skills-map.ts";
+} from "./skills-map.js";
 
-export type { Technology, ComboSkill, ConfigFileContentBlock } from "./skills-map.ts";
+export type { Technology, ComboSkill, ConfigFileContentBlock } from "./skills-map.js";
 
 import {
   SKILLS_MAP,
@@ -22,7 +22,7 @@ import {
   FRONTEND_BONUS_SKILLS,
   WEB_FRONTEND_EXTENSIONS,
   AGENT_FOLDER_MAP,
-} from "./skills-map.ts";
+} from "./skills-map.js";
 
 // ── Internal Constants ───────────────────────────────────────
 

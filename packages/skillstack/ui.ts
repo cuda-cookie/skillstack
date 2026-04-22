@@ -10,7 +10,7 @@ import {
   white,
   HIDE_CURSOR,
   SHOW_CURSOR,
-} from "./colors.ts";
+} from "./colors.js";
 
 export function formatTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -24,7 +24,7 @@ export function formatTime(ms: number): string {
 
 export function printBanner(version: string): void {
   const ver = `v${version}`;
-  const title = "   autoskills";
+  const title = "   skillstack";
   const gap = " ".repeat(39 - title.length - ver.length - 3);
 
   log();

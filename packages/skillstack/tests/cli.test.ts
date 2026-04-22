@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import { ok } from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
-import { useTmpDir, writePackageJson, writeFile, writeJson, addWorkspace } from "./helpers.ts";
+import { useTmpDir, writePackageJson, writeFile, writeJson, addWorkspace } from "./helpers.js";
 
 const CLI_PATH = resolve(import.meta.dirname!, "..", "index.mjs");
 
@@ -18,7 +18,7 @@ function run(args: string[] = [], cwd: string = process.cwd()): string {
 describe("CLI", () => {
   it("shows help with --help", () => {
     const output = run(["--help"]);
-    ok(output.includes("autoskills"));
+    ok(output.includes("skillstack"));
     ok(output.includes("--dry-run"));
     ok(output.includes("--yes"));
     ok(output.includes("--agent"));
@@ -26,7 +26,7 @@ describe("CLI", () => {
 
   it("shows help with -h", () => {
     const output = run(["-h"]);
-    ok(output.includes("autoskills"));
+    ok(output.includes("skillstack"));
   });
 
   describe("--dry-run", () => {

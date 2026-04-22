@@ -3,8 +3,8 @@ import { ok, strictEqual } from "node:assert/strict";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-import { useTmpDir } from "./helpers.ts";
-import { cleanupClaudeMd } from "../claude.ts";
+import { useTmpDir } from "./helpers.js";
+import { cleanupClaudeMd } from "../claude.js";
 
 describe("cleanupClaudeMd", () => {
   const tmp = useTmpDir();
@@ -15,7 +15,7 @@ describe("cleanupClaudeMd", () => {
     strictEqual(result.deleted, false);
   });
 
-  it("returns cleaned=false when CLAUDE.md has no autoskills markers", () => {
+  it("returns cleaned=false when CLAUDE.md has no skillstack markers", () => {
     writeFileSync(join(tmp.path, "CLAUDE.md"), "# CLAUDE.md\n\nMy custom instructions.\n");
     const result = cleanupClaudeMd(tmp.path);
     strictEqual(result.cleaned, false);
@@ -24,10 +24,10 @@ describe("cleanupClaudeMd", () => {
     strictEqual(output, "# CLAUDE.md\n\nMy custom instructions.\n");
   });
 
-  it("deletes CLAUDE.md when only the autoskills section remains", () => {
+  it("deletes CLAUDE.md when only the skillstack section remains", () => {
     writeFileSync(
       join(tmp.path, "CLAUDE.md"),
-      "# CLAUDE.md\n\n<!-- autoskills:start -->\n\nGenerated content.\n\n<!-- autoskills:end -->\n",
+      "# CLAUDE.md\n\n<!-- skillstack:start -->\n\nGenerated content.\n\n<!-- skillstack:end -->\n",
     );
     const result = cleanupClaudeMd(tmp.path);
     strictEqual(result.cleaned, true);
@@ -35,9 +35,9 @@ describe("cleanupClaudeMd", () => {
     ok(!existsSync(join(tmp.path, "CLAUDE.md")));
   });
 
-  it("removes autoskills section but preserves user content", () => {
+  it("removes skillstack section but preserves user content", () => {
     const content =
-      "# CLAUDE.md\n\nMy custom instructions.\n\n<!-- autoskills:start -->\n\nGenerated content.\n\n<!-- autoskills:end -->\n\n## My notes\n\nDo not touch this.\n";
+      "# CLAUDE.md\n\nMy custom instructions.\n\n<!-- skillstack:start -->\n\nGenerated content.\n\n<!-- skillstack:end -->\n\n## My notes\n\nDo not touch this.\n";
     writeFileSync(join(tmp.path, "CLAUDE.md"), content);
     const result = cleanupClaudeMd(tmp.path);
     strictEqual(result.cleaned, true);
@@ -45,13 +45,13 @@ describe("cleanupClaudeMd", () => {
     const output = readFileSync(join(tmp.path, "CLAUDE.md"), "utf-8");
     ok(output.includes("My custom instructions."));
     ok(output.includes("Do not touch this."));
-    ok(!output.includes("<!-- autoskills:start -->"));
+    ok(!output.includes("<!-- skillstack:start -->"));
     ok(!output.includes("Generated content."));
   });
 
   it("does not leave triple newlines after removing the section", () => {
     const content =
-      "# CLAUDE.md\n\nBefore.\n\n<!-- autoskills:start -->\nstuff\n<!-- autoskills:end -->\n\nAfter.\n";
+      "# CLAUDE.md\n\nBefore.\n\n<!-- skillstack:start -->\nstuff\n<!-- skillstack:end -->\n\nAfter.\n";
     writeFileSync(join(tmp.path, "CLAUDE.md"), content);
     cleanupClaudeMd(tmp.path);
     const output = readFileSync(join(tmp.path, "CLAUDE.md"), "utf-8");
@@ -61,7 +61,7 @@ describe("cleanupClaudeMd", () => {
   it("deletes file when heading is the only remaining content", () => {
     writeFileSync(
       join(tmp.path, "CLAUDE.md"),
-      "# CLAUDE.md\n\n<!-- autoskills:start -->\ngenerated\n<!-- autoskills:end -->\n",
+      "# CLAUDE.md\n\n<!-- skillstack:start -->\ngenerated\n<!-- skillstack:end -->\n",
     );
     const result = cleanupClaudeMd(tmp.path);
     strictEqual(result.cleaned, true);

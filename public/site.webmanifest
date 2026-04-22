@@ -1,6 +1,6 @@
 {
-  "name": "autoskills",
-  "short_name": "autoskills",
+  "name": "skillstack",
+  "short_name": "skillstack",
   "description": "Auto-install the best AI skills for your project",
   "start_url": "/",
   "display": "standalone",

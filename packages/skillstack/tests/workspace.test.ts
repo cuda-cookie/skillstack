@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import { ok, strictEqual, deepStrictEqual } from "node:assert/strict";
-import { resolveWorkspaces } from "../lib.ts";
-import { useTmpDir, writePackageJson, writeFile, writeJson, addWorkspace } from "./helpers.ts";
+import { resolveWorkspaces } from "../lib.js";
+import { useTmpDir, writePackageJson, writeFile, writeJson, addWorkspace } from "./helpers.js";
 
 describe("resolveWorkspaces", () => {
   const tmp = useTmpDir();

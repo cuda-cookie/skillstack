@@ -186,7 +186,7 @@ function cleanup() {
 }
 
 function run() {
-  console.log(`autoskills benchmark — ${RUNS} runs per test\n`);
+  console.log(`skillstack benchmark — ${RUNS} runs per test\n`);
 
   for (const { name, dir } of fixtures) {
     console.log(`[${name}] ${dir}`);
