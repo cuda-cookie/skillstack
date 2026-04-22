@@ -1,14 +1,14 @@
 <div align="center">
 
-<a href="https://skillstack.sh">
-<img src="https://skillstack.sh/og.jpg" alt="skillstack" />
-</a>
 
 # skillstack
 
 **One command. Your entire AI skill stack. Installed.**
 
 [skillstack.sh](https://skillstack.sh)
+<a href="https://skillstack.sh">
+<img src="assets\skillstack-border.png" alt="skillstack" />
+</a>
 
 </div>
 
