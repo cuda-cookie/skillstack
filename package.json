@@ -14,7 +14,7 @@
     "fmt:check": "oxfmt --check ."
   },
   "dependencies": {
-    "@tailwindcss/vite": "4.2.2",
+    "@tailwindcss/vite": "4.2.4",
     "astro": "6.1.5",
     "geist": "1.7.0",
     "tailwindcss": "4.2.2"
