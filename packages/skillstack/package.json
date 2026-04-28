@@ -1,6 +1,6 @@
 {
   "name": "skillstack",
-  "version": "0.2.10",
+  "version": "0.2.11",
   "description": "Auto-detect and install the best AI agent skills for your project",
   "keywords": [
     "agent",
