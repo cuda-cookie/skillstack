@@ -44,14 +44,14 @@ graph TD
     end
 
     subgraph Resources ["Resources (skills-map.ts)"]
-        G[(Skills Map)]
-        H[(Combo Map)]
+        G[("Skills Map")]
+        H[("Combo Map")]
     end
 
     subgraph Infrastructure ["Infrastructure"]
-        I[Installer (installer.ts)]
-        J[Claude Integration (claude.ts)]
-        K[UI/UX (ui.ts)]
+        I["Installer (installer.ts)"]
+        J["Claude Integration (claude.ts)"]
+        K["UI/UX (ui.ts)"]
     end
 
     A --> B
@@ -66,9 +66,9 @@ graph TD
     K -- Selection --> B
     B --> I
     B --> J
-    I -- write --> L[(.agents/skills)]
-    I -- update --> M[skills-lock.json]
-    J -- update --> N[CLAUDE.md]
+    I -- write --> L[(".agents/skills")]
+    I -- update --> M["skills-lock.json"]
+    J -- update --> N["CLAUDE.md"]
 ```
 
 ### Core Components
@@ -90,10 +90,10 @@ flowchart LR
     end
 
     subgraph Detectors ["Detection Methods"]
-        C[Manifests: package.json, deno.json, Gemfile]
-        D[Configs: next.config.js, tailwind.config.js]
-        E[Layouts: Gradle, .NET, Rust]
-        F[File Extensions: .jsx, .vue, .svelte]
+        C["Manifests: package.json, deno.json, Gemfile"]
+        D["Configs: next.config.js, tailwind.config.js"]
+        E["Layouts: Gradle, .NET, Rust"]
+        F["File Extensions: .jsx, .vue, .svelte"]
     end
 
     subgraph Registry ["Skills.sh Registry"]
