@@ -596,6 +596,11 @@ export function getInstalledSkillNames(projectDir: string): Set<string> {
     return new Set(entries.filter((e) => e.isDirectory()).map((e) => e.name));
   } catch {}
 
+  try {
+    const entries = readdirSync(join(projectDir, ".claude", "skills"), { withFileTypes: true });
+    return new Set(entries.filter((e) => e.isDirectory()).map((e) => e.name));
+  } catch {}
+
   return new Set();
 }
 

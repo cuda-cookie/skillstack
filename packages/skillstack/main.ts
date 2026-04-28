@@ -1,5 +1,5 @@
-import { resolve, dirname, join } from "node:path";
-import { existsSync, readFileSync } from "node:fs";
+import { resolve, dirname, join, basename } from "node:path";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 import { detectTechnologies, collectSkills, detectAgents, getInstalledSkillNames } from "./lib.js";
@@ -48,6 +48,8 @@ interface CliArgs {
   verbose: boolean;
   help: boolean;
   agents: string[];
+  update: boolean;
+  listCmd: boolean;
 }
 
 function parseArgs(): CliArgs {
@@ -65,6 +67,8 @@ function parseArgs(): CliArgs {
     dryRun: args.includes("--dry-run"),
     verbose: args.includes("--verbose") || args.includes("-v"),
     help: args.includes("--help") || args.includes("-h"),
+    update: args.includes("--update"),
+    listCmd: args[0] === "list",
     agents,
   };
 }
@@ -74,18 +78,96 @@ function showHelp(): void {
   ${bold("skillstack")} — Auto-install the best AI skills for your project
 
   ${bold("Usage:")}
-    npx skillstack                   Detect & install skills
-    npx skillstack ${dim("-y")}                   Skip confirmation
-    npx skillstack ${dim("--dry-run")}            Show what would be installed
-    npx skillstack ${dim("-a cursor claude-code")} Install for specific IDEs only
+    npx skillstack                      Detect & install skills
+    npx skillstack ${dim("list")}                   List installed skills
+    npx skillstack ${dim("-y")}                     Skip confirmation
+    npx skillstack ${dim("--dry-run")}              Show what would be installed
+    npx skillstack ${dim("-a cursor claude-code")}   Install for specific IDEs only
+    npx skillstack ${dim("--update")}               Re-fetch & overwrite existing skills
 
   ${bold("Options:")}
     -y, --yes       Skip confirmation prompt
     --dry-run       Show skills without installing
+    --update        Re-fetch and overwrite already-installed skills
     -v, --verbose   Show error details on failure
     -a, --agent     Install for specific IDEs only (e.g. cursor, claude-code)
     -h, --help      Show this help message
 `);
+}
+
+// ── List Command ────────────────────────────────────────────
+
+interface InstalledSkill {
+  name: string;
+  source?: string;
+  installed?: string;
+}
+
+function listInstalledSkills(projectDir: string): void {
+  const skillsDir = join(projectDir, ".claude", "skills");
+
+  if (!existsSync(skillsDir)) {
+    log();
+    log(cyan("   ◆ ") + bold("No skills installed yet"));
+    log(dim("   Run `npx skillstack` to detect and install skills for your project."));
+    log();
+    return;
+  }
+
+  let entries: string[];
+  try {
+    entries = readdirSync(skillsDir);
+  } catch {
+    log();
+    log(cyan("   ◆ ") + bold("Error reading skills directory"));
+    log();
+    return;
+  }
+
+  const skills: InstalledSkill[] = [];
+  for (const entry of entries) {
+    const skillPath = join(skillsDir, entry);
+    const stat = statSync(skillPath);
+    if (!stat.isDirectory()) continue;
+
+    const skillMdPath = join(skillPath, "SKILL.md");
+    let source: string | undefined;
+
+    try {
+      if (existsSync(skillMdPath)) {
+        const content = readFileSync(skillMdPath, "utf-8");
+        const authorMatch = content.match(/^##\s+([^\n]+)/m);
+        if (authorMatch) {
+          source = authorMatch[1].trim();
+        }
+      }
+    } catch {}
+
+    const installed = new Date(stat.birthtimeMs).toISOString().split("T")[0];
+    skills.push({ name: entry, source, installed });
+  }
+
+  if (skills.length === 0) {
+    log();
+    log(cyan("   ◆ ") + bold("No skills installed yet"));
+    log(dim("   Run `npx skillstack` to detect and install skills for your project."));
+    log();
+    return;
+  }
+
+  log();
+  log(cyan("   ◆ ") + bold(`Installed Skills (${skills.length})`));
+  log();
+
+  const maxNameLen = Math.max(...skills.map((s) => s.name.length));
+
+  for (const skill of skills) {
+    const name = skill.name.padEnd(maxNameLen);
+    const source = skill.source ? `  ${dim(`← ${skill.source}`)}` : "";
+    const date = skill.installed ? `  ${dim(`(${skill.installed})`)}` : "";
+    log(`   ${cyan("▸")} ${bold(name)}${source}${date}`);
+  }
+  log();
 }
 
 // ── Display ──────────────────────────────────────────────────
@@ -361,10 +443,16 @@ async function selectSkills(skills: SkillEntry[], autoYes: boolean): Promise<Ski
 // ── Main ─────────────────────────────────────────────────────
 
 async function main(): Promise<void> {
-  const { autoYes, dryRun, verbose, help, agents } = parseArgs();
+  const { autoYes, dryRun, verbose, help, agents, update, listCmd } = parseArgs();
 
   if (help) {
     showHelp();
+    process.exit(0);
+  }
+
+  if (listCmd) {
+    const projectDir = resolve(".");
+    listInstalledSkills(projectDir);
     process.exit(0);
   }
 
@@ -385,9 +473,18 @@ async function main(): Promise<void> {
 
   printDetected(detected, combos, isFrontend);
 
-  const installedNames = getInstalledSkillNames(projectDir);
+  const installedNames = update ? new Set<string>() : getInstalledSkillNames(projectDir);
   const skills = collectSkills({ detected, isFrontend, combos, installedNames });
-  const resolvedAgents = agents.length > 0 ? agents : detectAgents();
+
+  let resolvedAgents = agents.length > 0 ? agents : detectAgents();
+
+  if (agents.length === 0) {
+    const claudeDir = join(projectDir, ".claude");
+    const hasClaudeDir = existsSync(claudeDir);
+    if (hasClaudeDir && !resolvedAgents.includes("claude-code")) {
+      resolvedAgents = [...resolvedAgents, "claude-code"];
+    }
+  }
 
   if (skills.length === 0) {
     log(yellow("   No skills available for your stack yet."));

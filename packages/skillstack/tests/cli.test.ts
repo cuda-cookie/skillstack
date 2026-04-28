@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { resolve } from "node:path";
 import { useTmpDir, writePackageJson, writeFile, writeJson, addWorkspace } from "./helpers.js";
 
-const CLI_PATH = resolve(import.meta.dirname!, "..", "index.mjs");
+const CLI_PATH = resolve(import.meta.dirname!, "..", "..", "index.mjs");
 
 function run(args: string[] = [], cwd: string = process.cwd()): string {
   return execFileSync(process.execPath, [CLI_PATH, ...args], {
@@ -22,11 +22,59 @@ describe("CLI", () => {
     ok(output.includes("--dry-run"));
     ok(output.includes("--yes"));
     ok(output.includes("--agent"));
+    ok(output.includes("--update"));
+    ok(output.includes("list"));
   });
 
   it("shows help with -h", () => {
     const output = run(["-h"]);
     ok(output.includes("skillstack"));
+  });
+
+  describe("list subcommand", () => {
+    const tmp = useTmpDir();
+
+    it("shows empty state when no skills are installed", () => {
+      writePackageJson(tmp.path);
+      const output = run(["list"], tmp.path);
+      ok(output.includes("No skills installed yet"));
+      ok(output.includes("Run `npx skillstack`"));
+    });
+
+    it("lists installed skills from .claude/skills directory", () => {
+      writePackageJson(tmp.path);
+      writeFile(tmp.path, ".claude/skills/typescript-advanced-types/SKILL.md", "");
+      writeFile(tmp.path, ".claude/skills/accessibility/SKILL.md", "");
+
+      const output = run(["list"], tmp.path);
+      ok(output.includes("Installed Skills"));
+      ok(output.includes("typescript-advanced-types"));
+      ok(output.includes("accessibility"));
+      ok(output.includes("(2)"));
+    });
+
+    it("extracts source from SKILL.md header", () => {
+      writePackageJson(tmp.path);
+      writeFile(
+        tmp.path,
+        ".claude/skills/my-skill/SKILL.md",
+        "# My Skill\n\n## cookie-may\n\nDescription here"
+      );
+
+      const output = run(["list"], tmp.path);
+      ok(output.includes("my-skill"));
+      ok(output.includes("cookie-may"));
+    });
+
+    it("shows install dates for skills", () => {
+      writePackageJson(tmp.path);
+      writeFile(tmp.path, ".claude/skills/test-skill/SKILL.md", "");
+
+      const output = run(["list"], tmp.path);
+      ok(output.includes("test-skill"));
+      // Check for date format YYYY-MM-DD
+      ok(/\(\d{4}-\d{2}-\d{2}\)/.test(output));
+    });
   });
 
   describe("--dry-run", () => {
@@ -430,6 +478,60 @@ describe("CLI", () => {
       const output = run(["--dry-run", "-a", "cursor"], tmp.path);
       ok(output.includes("Agents: cursor"));
       ok(!output.includes("universal"));
+    });
+
+    it("auto-detects claude-code when .claude directory exists", () => {
+      writePackageJson(tmp.path, { dependencies: { react: "^19" } });
+      writeFile(tmp.path, ".claude/.gitkeep");
+      const output = run(["--dry-run"], tmp.path);
+      ok(output.includes("claude-code"));
+    });
+
+    it("respects explicit agent flags over auto-detected claude-code", () => {
+      writePackageJson(tmp.path, { dependencies: { react: "^19" } });
+      writeFile(tmp.path, ".claude/.gitkeep");
+      const output = run(["--dry-run", "-a", "cursor"], tmp.path);
+      ok(output.includes("Agents: cursor"));
+      ok(!output.includes("claude-code"));
+      ok(!output.includes("universal"));
+    });
+  });
+
+  describe("--update flag", () => {
+    const tmp = useTmpDir();
+
+    it("treats installed skills as new with --update flag", () => {
+      writePackageJson(tmp.path, {
+        devDependencies: { typescript: "^5" },
+      });
+      writeFile(tmp.path, "tsconfig.json", "{}");
+      writeFile(tmp.path, ".claude/skills/typescript-advanced-types/SKILL.md", "");
+
+      const output = run(["--dry-run", "--update"], tmp.path);
+      ok(output.includes("typescript-advanced-types"));
+      // Should show skill even though it's marked as installed
+      ok(!output.includes("(installed)"));
+    });
+
+    it("marks skills as installed without --update flag", () => {
+      writePackageJson(tmp.path, {
+        devDependencies: { typescript: "^5" },
+      });
+      writeFile(tmp.path, "tsconfig.json", "{}");
+      writeFile(tmp.path, ".claude/skills/typescript-advanced-types/SKILL.md", "");
+
+      const output = run(["--dry-run"], tmp.path);
+      ok(output.includes("typescript-advanced-types"));
+      ok(output.includes("(installed)"));
+    });
+
+    it("works with --yes and --verbose flags", () => {
+      writePackageJson(tmp.path, {
+        devDependencies: { react: "^19" },
+      });
+      const output = run(["--dry-run", "--update", "-y", "-v"], tmp.path);
+      ok(output.includes("React"));
+      ok(output.includes("--dry-run"));
     });
   });
 });
