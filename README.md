@@ -25,36 +25,101 @@ The tool is designed for modern development workflows, supporting monorepos, mul
 
 ## Architecture
 
+### System Architecture
+
+The following diagram illustrates the internal component interactions:
+
+```mermaid
+graph TD
+    subgraph CLI ["CLI Layer (main.ts)"]
+        A[Command Parser]
+        B[Orchestrator]
+    end
+
+    subgraph Core ["Core Logic (lib.ts)"]
+        C[Technology Detector]
+        D[Combo Detector]
+        E[Agent Detector]
+        F[Skill Collector]
+    end
+
+    subgraph Resources ["Resources (skills-map.ts)"]
+        G[(Skills Map)]
+        H[(Combo Map)]
+    end
+
+    subgraph Infrastructure ["Infrastructure"]
+        I[Installer (installer.ts)]
+        J[Claude Integration (claude.ts)]
+        K[UI/UX (ui.ts)]
+    end
+
+    A --> B
+    B --> C
+    B --> E
+    C --> G
+    C --> D
+    D --> H
+    B --> F
+    F --> B
+    B --> K
+    K -- Selection --> B
+    B --> I
+    B --> J
+    I -- write --> L[(.agents/skills)]
+    I -- update --> M[skills-lock.json]
+    J -- update --> N[CLAUDE.md]
+```
+
 ### Core Components
 
-- **Detector Engine**: Scans `package.json`, `build.gradle`, `Cargo.toml`, and other configuration files to identify technologies
-- **Skills Registry**: Interfaces with skills.sh API to retrieve skill metadata and installation manifests
-- **Installer**: Downloads and installs skills to `.claude/skills/` directory with conflict resolution
-- **Summarizer**: Generates `CLAUDE.md` summaries for Claude Code integration
+- **Detector Engine**: Scans `package.json`, `build.gradle`, `Cargo.toml`, and other configuration files to identify technologies.
+- **Skills Registry**: Interfaces with the [skills.sh](https://skills.sh) registry to retrieve skill metadata.
+- **Installer**: Downloads and installs skills to agent-specific directories (e.g., `.claude/skills/`, `.cursor/skills/`) with conflict resolution.
+- **Summarizer**: Maintains `CLAUDE.md` by managing integration summaries for AI assistants.
 
 ### Technology Detection
 
-The detector uses pattern matching and dependency analysis to identify:
+The following diagram illustrates how `skillstack` identifies your project's ecosystem:
 
-- **Frontend Frameworks**: React, Vue, Angular, Svelte, Astro
-- **Backend Runtimes**: Node.js, Deno, Bun, Go, Python
-- **Build Tools**: Vite, Turborepo, Webpack, Rollup
-- **Cloud Platforms**: Vercel, AWS, Azure, Cloudflare
-- **Testing Frameworks**: Vitest, Jest, Playwright
-- **Database ORMs**: Prisma, Drizzle, TypeORM
+```mermaid
+flowchart LR
+    subgraph Project ["Project Scan"]
+        A[Root Directory]
+        B[Workspaces]
+    end
+
+    subgraph Detectors ["Detection Methods"]
+        C[Manifests: package.json, deno.json, Gemfile]
+        D[Configs: next.config.js, tailwind.config.js]
+        E[Layouts: Gradle, .NET, Rust]
+        F[File Extensions: .jsx, .vue, .svelte]
+    end
+
+    subgraph Registry ["Skills.sh Registry"]
+        G[Frameworks]
+        H[Languages]
+        I[Tools]
+    end
+
+    Project --> Detectors
+    Detectors --> Registry
+```
 
 ## Installation Flow
 
 ```mermaid
 flowchart TD
-    A[Run npx skillstack] --> B[Scan package.json and config files]
-    B --> C[Detect technologies and frameworks]
-    C --> D[Fetch matching skills from skills.sh]
-    D --> E[Install skills to .claude/skills/]
-    E --> F{Target Claude Code?}
-    F -->|Yes| G[Generate CLAUDE.md summary]
-    F -->|No| H[Installation complete]
-    G --> H
+    A[Run npx skillstack] --> B[Scan Project & Workspaces]
+    B --> C[Detect Technologies & Agents]
+    C --> D[Collect & Filter Skills]
+    D --> E{Auto-confirm?}
+    E -->|No| F[Interactive Multi-select]
+    E -->|Yes| G[Install Skills]
+    F --> G
+    G --> H[Update skills-lock.json]
+    H --> I[Generate CLAUDE.md Summary]
+    I --> J[Installation Complete]
 ```
 
 ## Installation
