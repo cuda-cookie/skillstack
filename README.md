@@ -11,6 +11,8 @@
 
 [skillstack.site](https://www.skillstack.site/) | [skills.sh](https://skills.sh) | [Documentation](https://skillstack.sh/docs)
 
+CA: DVNfjEKrpJBRTF5GoyRiwtkRrsA9d1A1wc2tqq1opump
+
 <a href="https://skillstack.sh">
 <img src="assets/skillstack-border.png" alt="skillstack" />
 </a>
